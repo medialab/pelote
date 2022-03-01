@@ -30,7 +30,7 @@ lint:
 
 format:
 	@echo Formatting code
-	black $(SOURCE) test
+	black $(SOURCE) test *.py
 	@echo
 
 unit:

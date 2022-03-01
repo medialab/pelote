@@ -1,0 +1,16 @@
+from typing import ContextManager
+import pandas as pd
+
+def obliterate_pandas() -> None: ...
+def resurrect_pandas() -> None: ...
+def missing_pandas() -> ContextManager[None]: ...
+def is_pandas_available() -> bool: ...
+def check_pandas() -> None: ...
+
+__all__ = [
+    "pd",
+    "obliterate_pandas",
+    "resurrect_pandas",
+    "is_pandas_available",
+    "check_pandas",
+]

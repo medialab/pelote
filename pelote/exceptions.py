@@ -1,8 +1,10 @@
 # =============================================================================
-# Pelote Dummy Unit Tests
+# Pelote Custom Exceptions
 # =============================================================================
+#
+class PeloteException(Exception):
+    pass
 
 
-class TestDummy(object):
-    def test_basics(self):
-        assert True
+class MissingPandasException(Exception):
+    pass
