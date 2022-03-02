@@ -1,4 +1,11 @@
 import networkx as nx
-from typing import Union
+from typing import Union, TypeVar
 
-AnyGraph = Union[nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph]
+NodeKey = TypeVar("NodeKey")
+
+AnyGraph = Union[
+    "nx.Graph[NodeKey]",
+    "nx.DiGraph[NodeKey]",
+    "nx.MultiGraph[NodeKey]",
+    "nx.MultiDiGraph[NodeKey]",
+]
