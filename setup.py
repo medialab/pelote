@@ -17,6 +17,6 @@ setup(
     python_requires=">=3.6",
     packages=find_packages(exclude=["test"]),
     package_data={"docs": ["README.md"]},
-    install_requires=["networkx>=2,<3"],
+    install_requires=["networkx>=2,<3", "typing_extensions"],
     zip_safe=True,
 )
