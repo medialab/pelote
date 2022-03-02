@@ -3,7 +3,10 @@ networkx==2.5.1
 # Dev Dependencies
 black==22.1.0
 importchecker==2.0
+mypy==0.931
 pandas==1.1.5
+pandas-stubs==1.2.0.49
 pytest==7.0.1
+setuptools
 twine
 wheel

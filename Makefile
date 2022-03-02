@@ -10,7 +10,7 @@ define clean
 endef
 
 # Commands
-all: lint test
+all: lint check test
 test: unit
 publish: clean lint test upload
 	$(call clean)
@@ -29,8 +29,13 @@ lint:
 	@echo
 
 format:
-	@echo Formatting code
+	@echo Formatting code...
 	black $(SOURCE) test *.py
+	@echo
+
+check:
+	@echo Type checking...
+	MYPYPATH=./typings mypy -p pelote
 	@echo
 
 unit:
