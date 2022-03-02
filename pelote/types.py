@@ -1,6 +1,6 @@
 import networkx as nx
-from typing import Any, Union, TypeVar, Dict, Optional, List
-from typing_extensions import TypedDict, Literal
+from typing import Any, Union, TypeVar, Dict, List
+from typing_extensions import TypedDict, Literal, NotRequired
 from pathlib import Path
 from io import IOBase
 
@@ -25,15 +25,15 @@ GraphologyType = Literal["directed", "undirected", "mixed"]
 
 class GraphologySerializedNode(TypedDict):
     key: str
-    attributes: Optional[SerializedAttributes]
+    attributes: NotRequired[SerializedAttributes]
 
 
 class GraphologySerializedEdge(TypedDict):
-    key: Optional[str]
+    key: NotRequired[str]
     source: str
     target: str
-    attributes: Optional[SerializedAttributes]
-    undirected: Optional[bool]
+    attributes: NotRequired[SerializedAttributes]
+    undirected: NotRequired[bool]
 
 
 class GraphologySerializedOptions(TypedDict):
@@ -43,7 +43,7 @@ class GraphologySerializedOptions(TypedDict):
 
 
 class GraphologySerializedGraph(TypedDict):
-    options: Optional[GraphologySerializedOptions]
-    attributes: Optional[SerializedAttributes]
-    nodes: Optional[List[GraphologySerializedNode]]
-    edges: Optional[List[GraphologySerializedEdge]]
+    options: NotRequired[GraphologySerializedOptions]
+    attributes: NotRequired[SerializedAttributes]
+    nodes: NotRequired[List[GraphologySerializedNode]]
+    edges: NotRequired[List[GraphologySerializedEdge]]

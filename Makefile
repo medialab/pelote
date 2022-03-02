@@ -39,4 +39,5 @@ unit:
 
 upload:
 	python setup.py sdist bdist_wheel
-	twine upload dist/*
+	twine check dist/pelote-*
+	twine upload dist/pelote-*
