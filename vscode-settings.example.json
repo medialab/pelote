@@ -1,7 +1,7 @@
 {
   "editor.formatOnSave": true,
   "python.formatting.provider": "black",
-  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.typeCheckingMode": "basic",
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingTypeStubs": "warning",
     "reportUnnecessaryIsInstance": "none"

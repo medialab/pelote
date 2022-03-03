@@ -5,10 +5,28 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
+from typing import Sequence, Union, Callable, Dict, Any, Optional
 
 from pelote.utils import IncrementalId
 from pelote.shim import is_dataframe
-from pelote.types import AnyGraph, Tabular, GenericKey
+from pelote.types import AnyGraph, Tabular, GenericKey, Indexable
+
+RowDataSpec = Union[Sequence[GenericKey], Callable[[Indexable], Dict[Any, Any]]]
+
+
+def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
+    if callable(spec):
+        attr = spec(row)
+
+        if not isinstance(attr, dict):
+            raise TypeError(
+                "row data collection should return a dict but returned %s instead"
+                % type(attr).__name__
+            )
+
+        return attr
+
+    return {k: row[k] for k in spec}
 
 
 def to_bipartite_graph(
@@ -18,6 +36,8 @@ def to_bipartite_graph(
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
+    first_part_data: Optional[RowDataSpec] = None,
+    second_part_data: Optional[RowDataSpec] = None,
     disjoint_keys: bool = False
 ) -> AnyGraph:
     """
@@ -42,6 +62,14 @@ def to_bipartite_graph(
         edge_weight_attr (str, optional): name of the edge attribute containing
             its weight, i.e. the number of times it was found in the table.
             Defaults to "weight".
+        first_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+            of column from rows to keep as node attributes for the graph's first part.
+            Can also be a function returning a dict of those attributes.
+            Defaults to None.
+        second_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+            of column from rows to keep as node attributes for the graph's second part.
+            Can also be a function returning a dict of those attributes.
+            Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
             mechanism if you know your part keys are disjoint, i.e. if no
             value for `first_part_col` can also be found in `second_part_col`.
@@ -78,10 +106,18 @@ def to_bipartite_graph(
 
         if n1 not in graph:
             node_attr = {node_part_attr: first_part_col, "label": str(label1)}
+
+            if first_part_data:
+                node_attr.update(collect_row_data(first_part_data, row))
+
             graph.add_node(n1, **node_attr)
 
         if n2 not in graph:
             node_attr = {node_part_attr: second_part_col, "label": str(label2)}
+
+            if second_part_data:
+                node_attr.update(collect_row_data(second_part_data, row))
+
             graph.add_node(n2, **node_attr)
 
         if graph.has_edge(n1, n2):
