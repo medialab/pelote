@@ -5,12 +5,11 @@
 # Functions used to read from various data formats.
 #
 import networkx as nx
-from typing import cast, Any
 
 from pelote.types import GraphologySerializedGraph, AnyGraph
 
 
-def parse_graphology_json(data: GraphologySerializedGraph) -> "AnyGraph[str]":
+def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
     if "options" not in data:
         raise TypeError(
             "cannot parse a graphology json that does not record the graph options"
@@ -26,7 +25,7 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> "AnyGraph[str]":
 
     is_multi = options["multi"]
 
-    g: Any
+    g: AnyGraph
 
     if graph_type == "directed":
         if is_multi:
@@ -38,8 +37,6 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> "AnyGraph[str]":
             g = nx.MultiGraph()
         else:
             g = nx.Graph()
-
-    g = cast("AnyGraph[str]", g)
 
     nodes = data.get("nodes")
 

@@ -4,14 +4,14 @@
 #
 # Functions able to convert networkx to various tabular data formats.
 #
-from typing import Any, Optional
+from typing import Optional
 
 from pelote.types import AnyGraph
 from pelote.shim import pd, check_pandas
 
 
 def to_nodes_dataframe(
-    graph: "AnyGraph[Any]", node_key_col: Optional[str] = "key"
+    graph: AnyGraph, node_key_col: Optional[str] = "key"
 ) -> pd.DataFrame:
     check_pandas()
 

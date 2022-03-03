@@ -11,10 +11,10 @@ FileHandle = Union[str, Path, IOBase]
 NodeKey = TypeVar("NodeKey")
 
 AnyGraph = Union[
-    "nx.Graph[NodeKey]",
-    "nx.DiGraph[NodeKey]",
-    "nx.MultiGraph[NodeKey]",
-    "nx.MultiDiGraph[NodeKey]",
+    nx.Graph,
+    nx.DiGraph,
+    nx.MultiGraph,
+    nx.MultiDiGraph,
 ]
 
 
