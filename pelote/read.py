@@ -4,9 +4,12 @@
 #
 # Functions used to read from various data formats.
 #
+import json
 import networkx as nx
+from pathlib import Path
+from io import IOBase
 
-from pelote.types import GraphologySerializedGraph, AnyGraph
+from pelote.types import GraphologySerializedGraph, AnyGraph, FileHandle
 
 
 def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
@@ -58,3 +61,19 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
                 g.add_edge(source, target, **attr)
 
     return g
+
+
+def read_graphology_json(target: FileHandle) -> AnyGraph:
+    data: GraphologySerializedGraph
+
+    if isinstance(target, (str, Path)):
+        with open(target) as f:
+            data = json.load(f)
+
+    elif isinstance(target, IOBase):
+        data = json.load(target)
+
+    else:
+        raise TypeError("expecting a path or a file")
+
+    return parse_graphology_json(data)

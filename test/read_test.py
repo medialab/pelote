@@ -4,17 +4,18 @@
 import networkx as nx
 from typing import cast, Any
 from pytest import raises
+from pathlib import Path
 
-from pelote.types import GraphologySerializedGraph
-from pelote.read import parse_graphology_json
+from test.utils import get_resource_path
+
+from pelote.types import GraphologySerializedGraph, AnyGraph
+from pelote.read import parse_graphology_json, read_graphology_json
 
 
 class TestReadGraphologyJson(object):
     def test_parsing_errors(self):
-        data = cast(GraphologySerializedGraph, {})
-
         with raises(TypeError):
-            parse_graphology_json(data)
+            parse_graphology_json(cast(GraphologySerializedGraph, {}))
 
     def test_parsing_basic(self):
         data: GraphologySerializedGraph = {
@@ -71,3 +72,20 @@ class TestReadGraphologyJson(object):
         ]
 
         assert isinstance(g, nx.MultiGraph)
+
+    def test_read(self):
+        with raises(TypeError):
+            read_graphology_json(cast(str, None))
+
+        les_miserables_path = get_resource_path("les_miserables.json")
+
+        def check_graph(g: AnyGraph) -> None:
+            assert g.order() == 77
+            assert g.size() == 254
+            assert isinstance(g, nx.DiGraph)
+
+        check_graph(read_graphology_json(les_miserables_path))
+        check_graph(read_graphology_json(Path(les_miserables_path)))
+
+        with open(les_miserables_path) as f:
+            check_graph(read_graphology_json(f))
