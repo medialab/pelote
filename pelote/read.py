@@ -67,6 +67,17 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
 def read_graphology_json(
     target: Union[FileHandle, GraphologySerializedGraph]
 ) -> AnyGraph:
+    """
+    Function reading and parsing the given json file as a networkx graph.
+
+    Args:
+        target (str or Path or file or dict): target to read and parse. Can
+            be a string path, a Path instance, a file buffer or already
+            parsed JSON data as a dict.
+
+    Returns:
+        nx.AnyGraph: a networkx graph instance.
+    """
     data: GraphologySerializedGraph
 
     if isinstance(target, (str, Path)):

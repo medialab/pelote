@@ -13,6 +13,20 @@ from pelote.shim import pd, check_pandas
 def to_nodes_dataframe(
     graph: AnyGraph, node_key_col: Optional[str] = "key"
 ) -> pd.DataFrame:
+    """
+    Function converting the given networkx graph into a pandas DataFrame of
+    its nodes.
+
+    Args:
+        nx.AnyGraph: a networkx graph instance
+        node_key_col (str, optional): name of the DataFrame column containing
+            the node keys. If None, the node keys will be used as the DataFrame
+            index. Defaults to "key".
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame
+    """
+
     check_pandas()
 
     if node_key_col is None:
