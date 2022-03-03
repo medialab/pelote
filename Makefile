@@ -12,7 +12,7 @@ endef
 # Commands
 all: check test
 test: unit
-publish: clean lint test upload
+publish: clean check test upload
 	$(call clean)
 
 clean:
