@@ -23,25 +23,19 @@ def has_mixed_types(iterable: Iterable[Any]) -> bool:
     return False
 
 
-class IncrementalCounter(object):
-    def __init__(self):
-        self.i = -1
-
-    def __call__(self) -> int:
-        self.i += 1
-        return self.i
-
-
 class IncrementalId(object):
+    __slots__ = ("i", "index")
+
     def __init__(self):
-        self.counter = IncrementalCounter()
+        self.i = 0
         self.index: Dict[Any, int] = {}
 
     def __getitem__(self, item: Any) -> int:
         item_id = self.index.get(item)
 
         if item_id is None:
-            item_id = self.counter()
+            item_id = self.i
+            self.i += 1
             self.index[item] = item_id
 
         return item_id
