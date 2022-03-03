@@ -27,25 +27,25 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
 
     is_multi = options["multi"]
 
-    g: AnyGraph
+    graph: AnyGraph
 
     if graph_type == "directed":
         if is_multi:
-            g = nx.MultiDiGraph()
+            graph = nx.MultiDiGraph()
         else:
-            g = nx.DiGraph()
+            graph = nx.DiGraph()
     else:
         if is_multi:
-            g = nx.MultiGraph()
+            graph = nx.MultiGraph()
         else:
-            g = nx.Graph()
+            graph = nx.Graph()
 
     nodes = data.get("nodes")
 
     if nodes is not None:
         for serialized_node in nodes:
             attr = serialized_node.get("attributes", {})
-            g.add_node(serialized_node["key"], **attr)
+            graph.add_node(serialized_node["key"], **attr)
 
     edges = data.get("edges")
 
@@ -57,11 +57,11 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
             target = serialized_edge["target"]
 
             if key is not None and is_multi:
-                g.add_edge(source, target, key=key, **attr)
+                graph.add_edge(source, target, key=key, **attr)
             else:
-                g.add_edge(source, target, **attr)
+                graph.add_edge(source, target, **attr)
 
-    return g
+    return graph
 
 
 def read_graphology_json(

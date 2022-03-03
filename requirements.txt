@@ -6,6 +6,10 @@ mypy==0.931
 pandas==1.1.5
 pandas-stubs==1.2.0.49
 pytest==7.0.1
+
+jupyterlab
+ipysigma
+
 setuptools
 twine
 wheel

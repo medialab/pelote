@@ -1,4 +1,5 @@
-from typing import ContextManager
+from typing import ContextManager, Any
+from typing_extensions import TypeGuard
 import pandas as pd
 
 def obliterate_pandas() -> None: ...
@@ -6,6 +7,7 @@ def resurrect_pandas() -> None: ...
 def missing_pandas() -> ContextManager[None]: ...
 def is_pandas_available() -> bool: ...
 def check_pandas() -> None: ...
+def is_dataframe(value: Any) -> TypeGuard[pd.DataFrame]: ...
 
 __all__ = [
     "pd",
@@ -13,4 +15,5 @@ __all__ = [
     "resurrect_pandas",
     "is_pandas_available",
     "check_pandas",
+    "is_dataframe",
 ]

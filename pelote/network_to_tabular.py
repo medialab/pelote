@@ -2,7 +2,7 @@
 # Pelote Network to Tabular Conversion Functions
 # =============================================================================
 #
-# Functions able to convert networkx to various tabular data formats.
+# Functions able to convert networkx graphs to various tabular data formats.
 #
 from typing import Optional
 

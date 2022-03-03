@@ -4,20 +4,44 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
-from typing import Iterable, Any
+from typing import Iterable, Any, Dict
 
 
 def has_mixed_types(iterable: Iterable[Any]) -> bool:
-    nodes = iter(iterable)
+    iterator = iter(iterable)
 
     main_type = None
 
-    for node in nodes:
-        main_type = type(node)
+    for item in iterator:
+        main_type = type(item)
         break
 
-    for node in nodes:
-        if type(node) is not main_type:
+    for item in iterator:
+        if type(item) is not main_type:
             return True
 
     return False
+
+
+class IncrementalCounter(object):
+    def __init__(self):
+        self.i = -1
+
+    def __call__(self) -> int:
+        self.i += 1
+        return self.i
+
+
+class IncrementalId(object):
+    def __init__(self):
+        self.counter = IncrementalCounter()
+        self.index: Dict[Any, int] = {}
+
+    def __getitem__(self, item: Any) -> int:
+        item_id = self.index.get(item)
+
+        if item_id is None:
+            item_id = self.counter()
+            self.index[item] = item_id
+
+        return item_id

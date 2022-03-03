@@ -1,3 +1,4 @@
+from typing import Any
 from contextlib import contextmanager
 
 try:
@@ -63,3 +64,12 @@ def check_pandas() -> None:
         raise MissingPandasException(
             "pandas must be installed for this function to work"
         )
+
+
+def is_dataframe(value: Any) -> bool:
+    global pd
+
+    if pd is None:
+        return False
+
+    return isinstance(value, pd.DataFrame)
