@@ -8,6 +8,7 @@ from pelote.shim import pd
 
 # Misc utils
 FileHandle = Union[str, Path, IOBase]
+GenericKey = Union[str, int]
 
 
 class Indexable(Protocol):
@@ -15,7 +16,7 @@ class Indexable(Protocol):
         ...
 
 
-Tabular = Union['pd.DataFrame', Iterable[Indexable]]
+Tabular = Union["pd.DataFrame", Iterable[Indexable]]
 
 
 # Networkx-related
