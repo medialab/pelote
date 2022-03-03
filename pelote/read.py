@@ -16,8 +16,6 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
         )
 
     options = data["options"]
-    assert options is not None  # Casting the value
-
     graph_type = options["type"]
 
     if graph_type == "mixed":
