@@ -1,6 +1,7 @@
 # =============================================================================
 # Pelote Read Unit Tests
 # =============================================================================
+import json
 import networkx as nx
 from typing import cast, Any
 from pytest import raises
@@ -89,3 +90,7 @@ class TestReadGraphologyJson(object):
 
         with open(les_miserables_path) as f:
             check_graph(read_graphology_json(f))
+
+        with open(les_miserables_path) as f:
+            data = json.load(f)
+            check_graph(read_graphology_json(data))

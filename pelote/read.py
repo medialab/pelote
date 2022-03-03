@@ -8,6 +8,7 @@ import json
 import networkx as nx
 from pathlib import Path
 from io import IOBase
+from typing import Union
 
 from pelote.types import GraphologySerializedGraph, AnyGraph, FileHandle
 
@@ -63,7 +64,9 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
     return g
 
 
-def read_graphology_json(target: FileHandle) -> AnyGraph:
+def read_graphology_json(
+    target: Union[FileHandle, GraphologySerializedGraph]
+) -> AnyGraph:
     data: GraphologySerializedGraph
 
     if isinstance(target, (str, Path)):
@@ -72,6 +75,9 @@ def read_graphology_json(target: FileHandle) -> AnyGraph:
 
     elif isinstance(target, IOBase):
         data = json.load(target)
+
+    elif isinstance(target, dict):
+        data = target
 
     else:
         raise TypeError("expecting a path or a file")
