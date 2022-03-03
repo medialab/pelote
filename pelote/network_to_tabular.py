@@ -12,7 +12,7 @@ from pelote.shim import pd, check_pandas
 
 def to_nodes_dataframe(
     graph: AnyGraph, node_key_col: Optional[str] = "key"
-) -> pd.DataFrame:
+) -> "pd.DataFrame":
     """
     Function converting the given networkx graph into a pandas DataFrame of
     its nodes.
