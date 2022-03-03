@@ -4,14 +4,11 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
-from pelote.types import AnyGraph
+from typing import Iterable, Any
 
 
-def has_mixed_type_node_keys(graph: AnyGraph) -> bool:
-    if not graph:
-        return False
-
-    nodes = iter(graph.nodes)
+def has_mixed_types(iterable: Iterable[Any]) -> bool:
+    nodes = iter(iterable)
 
     main_type = None
 

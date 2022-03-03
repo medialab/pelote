@@ -10,8 +10,8 @@ from pelote.shim import missing_pandas
 from pelote.network_to_tabular import to_nodes_dataframe
 
 
-def get_basic_range_graph(n: int = 3) -> "nx.Graph[int]":
-    g: nx.Graph[int] = nx.Graph()
+def get_basic_range_graph(n: int = 3) -> nx.Graph:
+    g = nx.Graph()
     g.add_nodes_from(range(n))
 
     for i, node in enumerate(g):

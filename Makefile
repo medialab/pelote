@@ -29,7 +29,7 @@ format:
 
 check:
 	@echo Type checking...
-	MYPYPATH=./typings mypy -p pelote
+	MYPYPATH=./typings mypy -p pelote -p test
 	@echo
 
 unit:
