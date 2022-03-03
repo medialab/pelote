@@ -43,4 +43,18 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
             attr = serialized_node.get("attributes", {})
             g.add_node(serialized_node["key"], **attr)
 
+    edges = data.get("edges")
+
+    if edges is not None:
+        for serialized_edge in edges:
+            key = serialized_edge.get("key")
+            attr = serialized_edge.get("attributes", {})
+            source = serialized_edge["source"]
+            target = serialized_edge["target"]
+
+            if key is not None and is_multi:
+                g.add_edge(source, target, key=key, **attr)
+            else:
+                g.add_edge(source, target, **attr)
+
     return g
