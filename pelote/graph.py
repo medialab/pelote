@@ -5,7 +5,7 @@
 # Miscellaneous helper functions to deal with networkx graphs.
 #
 import networkx as nx
-from typing import Set, Any, Optional, List
+from typing import Set, Any, Optional, List, Callable, Dict
 from typing_extensions import TypeGuard
 
 from pelote.types import AnyGraph
@@ -120,3 +120,31 @@ def are_same_graphs(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) ->
     return have_same_nodes(A, B, check_attributes=check_attributes) and have_same_edges(
         A, B, check_attributes=check_attributes
     )
+
+
+def remove_edges(
+    graph: AnyGraph, predicate: Callable[[Any, Any, Dict[Any, Any]], bool]
+) -> None:
+    """
+    Function removing all edges that do not pass a predicate function from a
+    given networkx graph.
+
+    Note that this function mutates the given graph.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each edge source, target and
+            attributes and returning True if you want to keep the edge or False
+            if you want to remove it.
+    """
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    edges_to_drop = []
+
+    for u, v, a in graph.edges.data():
+        if not predicate(u, v, a):
+            edges_to_drop.append((u, v))
+
+    for u, v in edges_to_drop:
+        graph.remove_edge(u, v)
