@@ -65,10 +65,14 @@ def to_bipartite_graph(
         first_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's first part.
             Can also be a function returning a dict of those attributes.
+            Note that the first row containing a given node will take precedence over
+            subsequent ones regarding data to include.
             Defaults to None.
         second_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's second part.
             Can also be a function returning a dict of those attributes.
+            Note that the first row containing a given node will take precedence over
+            subsequent ones regarding data to include.
             Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
             mechanism if you know your part keys are disjoint, i.e. if no
