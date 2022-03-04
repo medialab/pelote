@@ -9,7 +9,8 @@ It mainly helps with the following things:
 - Conversion of tabular formats to networks (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
 - Conversion of networks to tabular formats
 - Monopartite projections of bipartite networks
-- Miscellaneous
+- Miscellaneous graph helper functions (filtering out nodes, edges etc.)
+- Sparsification of networks
 - Reading & writing of graph formats not found in `networkx` (such as [graphology](https://graphology.github.io/) JSON)
 
 ## Installation

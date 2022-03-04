@@ -67,16 +67,16 @@ CLEAN_RE = re.compile(r"`")
 def template_param(param):
     line = "* **%s** " % param.arg_name
 
-    line += '<span style="color: #268bd2">%s</span>' % (
-        param.type_name if not param.is_optional else "?" + param.type_name
-    )
+    if param.type_name:
+        if param.is_optional:
+            line += "*%s, optional*" % param.type_name
+        else:
+            line += "*%s*" % param.type_name
 
     m = DEFAULT_RE.search(param.description)
 
     if m is not None:
-        line += ' <span style="color: #cb4b16;">%s</span>' % CLEAN_RE.sub(
-            "", m.group(1)
-        )
+        line += " `%s`" % CLEAN_RE.sub("", m.group(1))
 
     line += " - %s" % DEFAULT_RE.sub(".", param.description)
 
@@ -84,7 +84,7 @@ def template_param(param):
 
 
 def template_return(param):
-    line = '<span style="color: #268bd2">%s</span>' % param.type_name
+    line = "*%s*" % param.type_name
     line += " - %s" % DEFAULT_RE.sub(".", param.description)
     return line
 
@@ -97,6 +97,9 @@ def build_docs(data):
     p()
 
     for item in data:
+        p()
+        p("---")
+        p()
         p("### %s" % item["title"])
         p()
 

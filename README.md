@@ -9,7 +9,8 @@ It mainly helps with the following things:
 - Conversion of tabular formats to networks (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
 - Conversion of networks to tabular formats
 - Monopartite projections of bipartite networks
-- Miscellaneous
+- Miscellaneous graph helper functions (filtering out nodes, edges etc.)
+- Sparsification of networks
 - Reading & writing of graph formats not found in `networkx` (such as [graphology](https://graphology.github.io/) JSON)
 
 ## Installation
@@ -43,6 +44,9 @@ pip install pandas
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 
+
+---
+
 ### Tabular to network
 
 #### to_bipartite_graph
@@ -51,37 +55,40 @@ Function creating a bipartite graph from the given tabular data.
 
 *Arguments*
 
-* **table** <span style="color: #268bd2">Iterable[Indexable] or pd.DataFrame</span> - input tabular data. It can
+* **table** *Iterable[Indexable] or pd.DataFrame* - input tabular data. It can
 be a large variety of things as long as it is 1. iterable and 2.
 yields indexable values such as dicts or lists. This can for instance
 be a list of dicts, a csv.DictReader stream etc. It also supports
 pandas DataFrame if the library is installed.
-* **first_part_col** <span style="color: #268bd2">str or int</span> - the name of the column containing the
+* **first_part_col** *str or int* - the name of the column containing the
 value representing a node in the resulting graph's first part.
 It could be the index if your rows are lists or a key if your rows
 are dicts instead.
-* **second_par_col** <span style="color: #268bd2">str or int</span> - the name of the column containing the
+* **second_par_col** *str or int* - the name of the column containing the
 value representing a node in the resulting graph's second part.
 It could be the index if your rows are lists or a key if your rows
 are dicts instead.
-* **node_part_attr** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"part"</span> - name of the node attribute containing
+* **node_part_attr** *str, optional* `"part"` - name of the node attribute containing
 the part it belongs to.
-* **edge_weight_attr** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"weight"</span> - name of the edge attribute containing
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 its weight, i.e. the number of times it was found in the table.
-* **first_part_data** <span style="color: #268bd2">?Sequence or Callable</span> <span style="color: #cb4b16;">None</span> - sequence (i.e. list, tuple etc.)
+* **first_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's first part.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
-* **second_part_data** <span style="color: #268bd2">?Sequence or Callable</span> <span style="color: #cb4b16;">None</span> - sequence (i.e. list, tuple etc.)
+* **second_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's second part.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
-* **disjoint_keys** <span style="color: #268bd2">?bool</span> <span style="color: #cb4b16;">False</span> - set this to True as an optimization
+* **disjoint_keys** *bool, optional* `False` - set this to True as an optimization
 mechanism if you know your part keys are disjoint, i.e. if no
 value for `first_part_col` can also be found in `second_part_col`.
 If you enable this option wrongly, the result can be incorrect.
+
+
+---
 
 ### Network to tabular
 
@@ -98,14 +105,14 @@ df = to_nodes_dataframe(graph)
 
 *Arguments*
 
-* **nx.AnyGraph** <span style="color: #268bd2">None</span> - a networkx graph instance
-* **node_key_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"key"</span> - name of the DataFrame column containing
+* **nx.AnyGraph**  - a networkx graph instance
+* **node_key_col** *str, optional* `"key"` - name of the DataFrame column containing
 the node keys. If None, the node keys will be used as the DataFrame
 index.
 
 *Returns*
 
-<span style="color: #268bd2">pd.DataFrame</span> - A pandas DataFrame
+*pd.DataFrame* - A pandas DataFrame
 
 #### to_edges_dataframe
 
@@ -114,15 +121,15 @@ its edges.
 
 *Arguments*
 
-* **nx.AnyGraph** <span style="color: #268bd2">None</span> - a networkx graph instance
-* **edge_source_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"source"</span> - name of the DataFrame column containing
+* **nx.AnyGraph**  - a networkx graph instance
+* **edge_source_col** *str, optional* `"source"` - name of the DataFrame column containing
 the edge source.
-* **edge_target_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"target"</span> - name of the DataFrame column containing
+* **edge_target_col** *str, optional* `"target"` - name of the DataFrame column containing
 the edge target.
 
 *Returns*
 
-<span style="color: #268bd2">pd.DataFrame</span> - A pandas DataFrame
+*pd.DataFrame* - A pandas DataFrame
 
 #### to_dataframes
 
@@ -131,18 +138,21 @@ one for its nodes, one for its edges.
 
 *Arguments*
 
-* **nx.AnyGraph** <span style="color: #268bd2">None</span> - a networkx graph instance
-* **node_key_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"key"</span> - name of the node DataFrame column containing
+* **nx.AnyGraph**  - a networkx graph instance
+* **node_key_col** *str, optional* `"key"` - name of the node DataFrame column containing
 the node keys. If None, the node keys will be used as the DataFrame
 index.
-* **edge_source_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"source"</span> - name of the edge DataFrame column containing
+* **edge_source_col** *str, optional* `"source"` - name of the edge DataFrame column containing
 the edge source.
-* **edge_target_col** <span style="color: #268bd2">?str</span> <span style="color: #cb4b16;">"target"</span> - name of the edge DataFrame column containing
+* **edge_target_col** *str, optional* `"target"` - name of the edge DataFrame column containing
 the edge target.
 
 *Returns*
 
-<span style="color: #268bd2">None</span> - (pd.DataFrame, pd.DataFrame)
+*None* - (pd.DataFrame, pd.DataFrame)
+
+
+---
 
 ### Graph projection
 
@@ -153,6 +163,9 @@ the edge target.
 *Arguments*
 
 
+
+---
+
 ### Graph utilities
 
 #### largest_connected_component
@@ -162,11 +175,11 @@ as a set of nodes.
 
 *Arguments*
 
-* **graph** <span style="color: #268bd2">nx.AnyGraph</span> - target graph.
+* **graph** *nx.AnyGraph* - target graph.
 
 *Returns*
 
-<span style="color: #268bd2">set</span> - set of nodes representing the largest connected component.
+*set* - set of nodes representing the largest connected component.
 
 #### crop_to_largest_connected_components
 
@@ -175,7 +188,7 @@ largest connected component.
 
 *Arguments*
 
-* **graph** <span style="color: #268bd2">nx.AnyGraph</span> - target graph.
+* **graph** *nx.AnyGraph* - target graph.
 
 #### remove_edges
 
@@ -186,10 +199,13 @@ Note that this function mutates the given graph.
 
 *Arguments*
 
-* **graph** <span style="color: #268bd2">nx.AnyGraph</span> - a networkx graph.
-* **predicate** <span style="color: #268bd2">callable</span> - a function taking each edge source, target and
+* **graph** *nx.AnyGraph* - a networkx graph.
+* **predicate** *callable* - a function taking each edge source, target and
 attributes and returning True if you want to keep the edge or False
 if you want to remove it.
+
+
+---
 
 ### Reading & Writing
 
@@ -199,10 +215,10 @@ Function reading and parsing the given json file as a networkx graph.
 
 *Arguments*
 
-* **target** <span style="color: #268bd2">str or Path or file or dict</span> - target to read and parse. Can
+* **target** *str or Path or file or dict* - target to read and parse. Can
 be a string path, a Path instance, a file buffer or already
 parsed JSON data as a dict.
 
 *Returns*
 
-<span style="color: #268bd2">nx.AnyGraph</span> - a networkx graph instance.
+*nx.AnyGraph* - a networkx graph instance.
