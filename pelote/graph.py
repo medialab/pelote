@@ -39,6 +39,13 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
 
 
 def crop_to_largest_connected_components(graph: AnyGraph) -> None:
+    """
+    Function mutating the given networkx graph in order to keep only the
+    largest connected component.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+    """
     component = largest_connected_component(graph)
 
     if component is None:
