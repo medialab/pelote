@@ -3,23 +3,14 @@
 # =============================================================================
 import networkx as nx
 
-from pelote.metrics import (
-    edge_disparity
-)
+from pelote.metrics import edge_disparity
 
 
 class TestEdgeDisparity(object):
     def test_identical_values(self):
         g = nx.Graph()
         g.add_weighted_edges_from(
-            [
-                (0, 1, 1),
-                (0, 2, 1),
-                (0, 3, 1),
-                (1, 2, 1),
-                (1, 3, 1),
-                (2, 3, 1)
-            ]
+            [(0, 1, 1), (0, 2, 1), (0, 3, 1), (1, 2, 1), (1, 3, 1), (2, 3, 1)]
         )
         disparities = edge_disparity(g)
         for i, disparity in enumerate(disparities.values()):
@@ -52,7 +43,7 @@ class TestEdgeDisparity(object):
             (0, 3): 0.038461538461538436,
             (1, 3): 0.9272976680384089,
             (1, 4): 0.5,
-            (2, 4): 0.5
+            (2, 4): 0.5,
         }
 
         assert correct_result == disparities

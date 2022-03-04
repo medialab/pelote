@@ -1,7 +1,11 @@
-from typing import Iterable, Generator, Dict, Any, Tuple, Set, overload
+from typing import Optional, Iterable, Generator, Dict, Any, Tuple, Set, overload
 from typing_extensions import Literal
 
 Attributes = Dict[Any, Any]
+
+class DegreeView:
+    def __call__(self, key: Any, weight: Optional[str] = ...) -> int: ...
+    def __getitem__(self, key: Any) -> int: ...
 
 class NodeView:
     @overload
@@ -24,7 +28,7 @@ class EdgeView:
     @overload
     def __call__(
         self, data: Literal[True]
-    ) -> Generator[Tuple[Any, Attributes], None, None]: ...
+    ) -> Generator[Tuple[Any, Any, Attributes], None, None]: ...
     @overload
     def __call__(self) -> Generator[Any, None, None]: ...
     def __iter__(self) -> Generator[Any, None, None]: ...
@@ -38,6 +42,7 @@ class AtlasView:
 class AbstractGraph:
     nodes: NodeView
     edges: EdgeView
+    degree: DegreeView
 
     def __iter__(self) -> Generator[Any, None, None]: ...
     def __contains__(self, key: Any) -> bool: ...

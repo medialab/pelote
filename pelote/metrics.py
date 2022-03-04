@@ -3,15 +3,17 @@
 # =============================================================================
 #
 import math
-from typing import Dict
+from typing import Dict, Any
+
 from pelote.types import AnyGraph
 
 
-def edge_disparity(graph: AnyGraph) -> Dict:
+def edge_disparity(graph: AnyGraph) -> Dict[Any, float]:
     """
     Function computing the disparity score of each edge in the given graph. This
     score is typically used to extract the multiscale backbone of a weighted
     graph.
+
     Args:
         graph(nx.AnyGraph): target graph.
 
