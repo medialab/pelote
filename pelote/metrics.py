@@ -2,7 +2,6 @@
 # Pelote Metrics Functions
 # =============================================================================
 #
-import networkx as nx
 import math
 from typing import Dict
 from pelote.types import AnyGraph
