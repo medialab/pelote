@@ -24,7 +24,7 @@ deps:
 
 format:
 	@echo Formatting code...
-	black $(SOURCE) test *.py
+	black $(SOURCE) test scripts *.py
 	@echo
 
 check:

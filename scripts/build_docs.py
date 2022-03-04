@@ -9,10 +9,17 @@ from docstring_parser import (
     DocstringDeprecated,
 )
 
-from pelote.network_to_tabular import to_nodes_dataframe
+from pelote.network_to_tabular import (
+    to_nodes_dataframe,
+    to_edges_dataframe,
+    to_dataframes,
+)
 
 DOCS = [
-    {"title": "Network to Tabular", "fns": [to_nodes_dataframe]},
+    {
+        "title": "Network to Tabular",
+        "fns": [to_nodes_dataframe, to_edges_dataframe, to_dataframes],
+    },
 ]
 
 
@@ -25,7 +32,7 @@ def build_toc(data):
 
     for item in data:
         lines.append(
-            "* [%s](#%s)" % (item["title"], item["title"].lower().replace(" ", "_"))
+            "* [%s](#%s)" % (item["title"], item["title"].lower().replace(" ", "-"))
         )
 
         for fn in item["fns"]:
@@ -70,18 +77,25 @@ CLEAN_RE = re.compile(r"`")
 def template_param(param):
     line = "* **%s** " % param.arg_name
 
-    if param.is_optional:
-        line += "*?%s*" % param.type_name
-    else:
-        line += "*%s*" % param.type_name
+    line += '<span style="color: #268bd2">%s</span>' % (
+        param.type_name if not param.is_optional else "?" + param.type_name
+    )
 
     m = DEFAULT_RE.search(param.description)
 
     if m is not None:
-        line += " [`%s`]" % CLEAN_RE.sub("", m.group(1))
+        line += ' <span style="color: #cb4b16;">%s</span>' % CLEAN_RE.sub(
+            "", m.group(1)
+        )
 
-    line += ": %s" % DEFAULT_RE.sub(".", param.description)
+    line += " - %s" % DEFAULT_RE.sub(".", param.description)
 
+    return line
+
+
+def template_return(param):
+    line = '<span style="color: #268bd2">%s</span>' % param.type_name
+    line += " - %s" % DEFAULT_RE.sub(".", param.description)
     return line
 
 
@@ -117,6 +131,10 @@ def build_docs(data):
             for param in docstring.params:
                 p(template_param(param))
 
+            p()
+            p("*Returns*")
+            p()
+            p(template_return(docstring.returns))
             p()
 
     result = f.getvalue()
