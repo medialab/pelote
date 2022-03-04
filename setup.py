@@ -15,7 +15,7 @@ setup(
     author_email="guillaume.plique@sciencespo.fr",
     keywords="network",
     python_requires=">=3.6",
-    packages=find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["docs", "test"]),
     package_data={"docs": ["README.md"], "pelote": ["*.pyi"]},
     install_requires=["networkx>=2,<3", "typing_extensions"],
     zip_safe=True,

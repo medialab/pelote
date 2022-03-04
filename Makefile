@@ -37,6 +37,9 @@ unit:
 	pytest -svvv
 	@echo
 
+readme:
+	python -m scripts.build_docs > README.md
+
 upload:
 	python setup.py sdist bdist_wheel
 	twine check dist/pelote-*
