@@ -18,7 +18,6 @@ class Indexable(Protocol):
 
 Tabular = Union["pd.DataFrame", Iterable[Indexable]]
 
-
 # Networkx-related
 AnyGraph = Union[
     nx.Graph,
@@ -26,7 +25,6 @@ AnyGraph = Union[
     nx.MultiGraph,
     nx.MultiDiGraph,
 ]
-
 
 # Graphology serialization
 SerializedAttributes = Dict[str, Any]
