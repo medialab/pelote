@@ -12,6 +12,7 @@ from typing_extensions import Literal
 
 from pelote.types import AnyGraph
 from pelote.graph import check_graph
+from pelote.utils import dict_without
 
 MONOPARTITE_PROJECTION_METRICS = {
     "jaccard",
@@ -23,18 +24,6 @@ MONOPARTITE_PROJECTION_METRICS = {
 MonopartiteProjectionMetric = Literal[
     "jaccard", "overlap", "cosine", "dice", "binary_cosine"
 ]
-
-
-def without(d: Dict[Any, Any], k: str) -> Dict[Any, Any]:
-    o = {}
-
-    for n, v in d.items():
-        if n == k:
-            continue
-
-        o[n] = v
-
-    return o
 
 
 def compute_metric(
@@ -111,7 +100,7 @@ def monopartite_projection(
 
             norms[n1] = norm
 
-        monopartite_graph.add_node(n1, **without(a1, node_part_attr))
+        monopartite_graph.add_node(n1, **dict_without(a1, node_part_attr))
 
     for n1, norm1 in norms.items():
         intersection: Counter[Any] = Counter()
@@ -124,6 +113,10 @@ def monopartite_projection(
                 w1 = ta[edge_weight_attr]
 
             for n2, a2 in bipartite_graph[token].items():
+
+                # Don't compare to self
+                if n2 == n1:
+                    continue
 
                 # NOTE: since we are dealing with undirected graphs we can
                 # avoid doing the same computations twice.

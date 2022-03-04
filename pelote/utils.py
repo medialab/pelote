@@ -39,3 +39,15 @@ class IncrementalId(object):
             self.index[item] = item_id
 
         return item_id
+
+
+def dict_without(d: Dict[Any, Any], k: str) -> Dict[Any, Any]:
+    o = {}
+
+    for n, v in d.items():
+        if n == k:
+            continue
+
+        o[n] = v
+
+    return o
