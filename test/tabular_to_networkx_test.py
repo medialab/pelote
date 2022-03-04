@@ -33,3 +33,38 @@ class TestToBipartiteGraph(object):
         expected.add_edge("lisa", "pear", weight=1)
 
         assert are_same_graphs(g, expected, check_attributes=True)
+
+    def test_key_generation(self):
+        table = [
+            ("john", "apple"),
+            ("jack", "apple"),
+            ("lisa", "pear"),
+        ]
+
+        g = to_bipartite_graph(table, 0, 1)
+
+        expected = nx.Graph()
+        expected.add_node(0, part=0, label="john")
+        expected.add_node(2, part=0, label="jack")
+        expected.add_node(3, part=0, label="lisa")
+        expected.add_node(1, part=1, label="apple")
+        expected.add_node(4, part=1, label="pear")
+        expected.add_edge(0, 1, weight=1)
+        expected.add_edge(2, 1, weight=1)
+        expected.add_edge(3, 4, weight=1)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+    def test_weight(self):
+        table = [("john", "apple"), ("john", "apple"), ("john", "pear")]
+
+        g = to_bipartite_graph(table, 0, 1, disjoint_keys=True)
+
+        expected = nx.Graph()
+        expected.add_node("john", part=0, label="john")
+        expected.add_node("apple", part=1, label="apple")
+        expected.add_node("pear", part=1, label="pear")
+        expected.add_edge("john", "apple", weight=2)
+        expected.add_edge("john", "pear", weight=1)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
