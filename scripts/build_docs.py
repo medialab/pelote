@@ -9,18 +9,7 @@ from docstring_parser import (
     DocstringDeprecated,
 )
 
-from pelote.network_to_tabular import (
-    to_nodes_dataframe,
-    to_edges_dataframe,
-    to_dataframes,
-)
-
-DOCS = [
-    {
-        "title": "Network to Tabular",
-        "fns": [to_nodes_dataframe, to_edges_dataframe, to_dataframes],
-    },
-]
+from scripts.docs import DOCS
 
 
 with open("./README.template.md") as f:
@@ -44,12 +33,13 @@ def build_toc(data):
 
 
 def assembling_description(docstring):
-    d = docstring.short_description
+    d = docstring.short_description or ""
 
-    if docstring.blank_after_long_description:
-        d += "\n" + docstring.long_description
-    else:
-        d += " " + docstring.long_description
+    if docstring.long_description:
+        if docstring.blank_after_long_description:
+            d += "\n" + docstring.long_description
+        else:
+            d += " " + docstring.long_description
 
     return d.strip()
 
@@ -132,10 +122,12 @@ def build_docs(data):
                 p(template_param(param))
 
             p()
-            p("*Returns*")
-            p()
-            p(template_return(docstring.returns))
-            p()
+
+            if docstring.returns:
+                p("*Returns*")
+                p()
+                p(template_return(docstring.returns))
+                p()
 
     result = f.getvalue()
     f.close()

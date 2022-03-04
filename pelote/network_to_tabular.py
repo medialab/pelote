@@ -26,6 +26,11 @@ def to_nodes_dataframe(
 
     Returns:
         pd.DataFrame: A pandas DataFrame
+
+    Example:
+        from pelote import to_nodes_dataframe
+
+        df = to_nodes_dataframe(graph)
     """
 
     check_pandas()
