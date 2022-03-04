@@ -24,7 +24,9 @@ def build_toc(data):
     lines = []
 
     for item in data:
-        lines.append("* [%s](#%s)" % (item["title"], item["title"].lower()))
+        lines.append(
+            "* [%s](#%s)" % (item["title"], item["title"].lower().replace(" ", "_"))
+        )
 
         for fn in item["fns"]:
             name = fn.__name__

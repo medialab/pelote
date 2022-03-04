@@ -26,7 +26,7 @@ pip install pandas
 
 ## Usage
 
-* [Network to Tabular](#network to tabular)
+* [Network to Tabular](#network_to_tabular)
   * [to_nodes_dataframe](#to_nodes_dataframe)
 
 ### Network to Tabular
