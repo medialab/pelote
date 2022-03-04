@@ -8,6 +8,7 @@ from typing import Optional
 
 from pelote.types import AnyGraph
 from pelote.shim import pd, check_pandas
+from pelote.graph import check_graph
 
 
 def to_nodes_dataframe(
@@ -28,6 +29,7 @@ def to_nodes_dataframe(
     """
 
     check_pandas()
+    check_graph(graph)
 
     if node_key_col is None:
 

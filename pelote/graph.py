@@ -6,8 +6,35 @@
 #
 import networkx as nx
 from typing import Set, Any, Optional, List
+from typing_extensions import TypeGuard
 
 from pelote.types import AnyGraph
+
+GRAPH_TYPES = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
+
+
+def is_graph(value: Any) -> TypeGuard[AnyGraph]:
+    """
+    Function returning whether the given value is a networkx graph.
+
+    Args:
+        value (any): value to test.
+
+    Returns
+        bool
+    """
+    return isinstance(value, GRAPH_TYPES)
+
+
+def check_graph(value: Any) -> None:
+    """
+    Function raising if the given value is not a networkx graph.
+
+    Args:
+        value (any): value to test.
+    """
+    if not is_graph(value):
+        raise TypeError("expected a networkx graph but got %s" % type(value).__name__)
 
 
 def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:

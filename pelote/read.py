@@ -91,6 +91,6 @@ def read_graphology_json(
         data = target
 
     else:
-        raise TypeError("expecting a path or a file")
+        raise TypeError("expected a path or a file")
 
     return parse_graphology_json(data)

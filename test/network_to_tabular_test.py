@@ -25,6 +25,9 @@ class TestToNodesDataframe(object):
         with raises(MissingPandasException), missing_pandas():
             to_nodes_dataframe(nx.Graph())
 
+        with raises(TypeError):
+            to_nodes_dataframe(None)
+
     def test_default_behavior(self):
         g = get_basic_range_graph()
 
