@@ -2,16 +2,18 @@
 
 # Pelote
 
-Pelote is a python library full of network-related functions.
+Pelote is a python library full of network-related functions that can be used to complement [networkx](https://networkx.org/) for higher-level tasks.
 
 It mainly helps with the following things:
 
-- Conversion of tabular formats to networks (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
-- Conversion of networks to tabular formats
-- Monopartite projections of bipartite networks
+- Conversion of tabular data to networks (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
+- Conversion of networks to tabular data
+- Monopartite projections of bipartite graphs
 - Miscellaneous graph helper functions (filtering out nodes, edges etc.)
 - Sparsification of networks
 - Reading & writing of graph formats not found in `networkx` (such as [graphology](https://graphology.github.io/) JSON)
+
+As such it is the perfect companion to [ipysigma](https://github.com/Yomguithereal/ipysigma), our Jupyter widget that can render interactive graphs directly within your notebooks.
 
 ## Installation
 
