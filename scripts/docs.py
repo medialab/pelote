@@ -12,6 +12,8 @@ from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.tabular_to_network import to_bipartite_graph
 
+from pelote.metrics import edge_disparity
+
 DOCS = [
     {"title": "Tabular to network", "fns": [to_bipartite_graph]},
     {
@@ -28,6 +30,7 @@ DOCS = [
         ],
     },
     {"title": "Reading & Writing", "fns": [read_graphology_json]},
+    {"title": "Metrics", "fns": [edge_disparity]},
 ]
 
 __all__ = ["DOCS"]

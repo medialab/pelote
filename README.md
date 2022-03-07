@@ -2,7 +2,7 @@
 
 # Pelote
 
-Pelote is a python library full of network-related functions.
+Pelote is a python library full of network-related functions that can be used to complement [networkx](https://networkx.org/) for higher-level tasks.
 
 It mainly helps with the following things:
 
@@ -45,6 +45,8 @@ pip install pandas
   * [remove_edges](#remove_edges)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
+* [Metrics](#metrics)
+  * [edge_disparity](#edge_disparity)
 
 
 ---
@@ -224,3 +226,24 @@ parsed JSON data as a dict.
 *Returns*
 
 *nx.AnyGraph* - a networkx graph instance.
+
+
+---
+
+### Metrics
+
+#### edge_disparity
+
+Function computing the disparity score of each edge in the given graph. This
+score is typically used to extract the multiscale backbone of a weighted
+graph.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
+its weight.
+
+*Returns*
+
+*dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
