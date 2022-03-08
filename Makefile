@@ -19,7 +19,7 @@ clean:
 	$(call clean)
 
 deps:
-	pip3 install -U pip
+	pip3 install --user -U pip
 	pip3 install -r requirements.txt
 
 format:
