@@ -11,7 +11,7 @@ from pelote.graph import (
 
 class TestGraph(object):
     def test_largest_connected_component(self):
-        g = nx.Graph()
+        g = nx.MultiGraph()
         g.add_edge(0, 1)
         g.add_edge(1, 2)
         g.add_edge(0, 2)
@@ -34,3 +34,20 @@ class TestGraph(object):
 
         assert set(g.nodes) == {7, 8, 9, 10, 11}
         assert g.size() == 4
+
+        g = nx.DiGraph()
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(0, 2)
+
+        g.add_edge(3, 4)
+        g.add_edge(4, 5)
+
+        g.add_node(6)
+
+        assert largest_connected_component(g) == {0, 1, 2}
+
+        crop_to_largest_connected_components(g)
+
+        assert set(g.nodes) == {0, 1, 2}
+        assert g.size() == 3

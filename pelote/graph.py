@@ -42,6 +42,9 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
     Function returning the largest connected component of given networkx graph
     as a set of nodes.
 
+    Note that this function will consider any given graph as undirected and
+    will therefore work with weakly connected components in the directed case.
+
     Args:
         graph (nx.AnyGraph): target graph.
 
@@ -52,7 +55,13 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
     largest = None
     remaining_nodes = graph.order()
 
-    for component in nx.connected_components(graph):
+    components = (
+        nx.connected_components
+        if not graph.is_directed()
+        else nx.weakly_connected_components
+    )
+
+    for component in components(graph):
         if largest is None or len(component) > len(largest):
             largest = component
 
@@ -69,6 +78,9 @@ def crop_to_largest_connected_components(graph: AnyGraph) -> None:
     """
     Function mutating the given networkx graph in order to keep only the
     largest connected component.
+
+    Note that this function will consider any given graph as undirected and
+    will therefore work with weakly connected components in the directed case.
 
     Args:
         graph (nx.AnyGraph): target graph.
