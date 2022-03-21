@@ -14,6 +14,7 @@ from pelote.graph_to_tabular import (
     graph_to_dataframes,
 )
 from pelote.learn import floatsam_threshold_learner
+from pelote.metrics import edge_disparity
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.sparsification import global_threshold_sparsify
@@ -28,6 +29,7 @@ __all__ = [
     "graph_to_edges_dataframe",
     "graph_to_dataframes",
     "floatsam_threshold_learner",
+    "edge_disparity",
     "monopartite_projection",
     "read_graphology_json",
     "global_threshold_sparsify",
