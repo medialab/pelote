@@ -2,10 +2,9 @@
 # Pelote Metrics Functions
 # =============================================================================
 #
-import math
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
-from pelote.types import AnyGraph, Indexable
+from pelote.types import AnyGraph
 
 
 def edge_disparity(
@@ -26,20 +25,18 @@ def edge_disparity(
         dict: Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
 
     """
-    # todo: raise if multigraph
+    # todo: raise if multigraph, raise if directed or at least change code to optimize
 
     disparities = {}
-    first_edge = True
-    previous: Any
+    previous: Optional[Any] = None
     weighted_degrees = graph.degree(weight=edge_weight_attr)
 
     for source, target, weight in graph.edges.data(data=edge_weight_attr):
 
-        if first_edge or previous != source:
+        if previous is None or previous != source:
             previous = source
             previous_degree = graph.degree(source)
             previous_weighted_degree = weighted_degrees[source]
-            first_edge = False
 
         target_degree = graph.degree(target)
         target_weighted_degree = weighted_degrees[target]
@@ -47,8 +44,8 @@ def edge_disparity(
         normalized_weight_source = weight / previous_weighted_degree
         normalized_weight_target = weight / target_weighted_degree
 
-        source_score = math.pow(1 - normalized_weight_source, previous_degree - 1)
-        target_score = math.pow(1 - normalized_weight_target, target_degree - 1)
+        source_score = (1 - normalized_weight_source) ** (previous_degree - 1)
+        target_score = (1 - normalized_weight_target) ** (target_degree - 1)
 
         disparities[(source, target)] = min(source_score, target_score)
 
