@@ -74,7 +74,7 @@ class TestToEdgesDataframe(object):
 
         assert df.equals(expected)
 
-    def test_key_cols(self):
+    def test_source_target_cols(self):
         g = nx.Graph()
         g.add_edge(0, 1, weight=2.0)
 
@@ -82,6 +82,45 @@ class TestToEdgesDataframe(object):
             g, edge_source_col="Source", edge_target_col="Target"
         )
         expected = pd.DataFrame(data={"Source": [0], "Target": [1], "weight": [2.0]})
+
+        assert df.equals(expected)
+
+    def test_source_target_data(self):
+        g = nx.DiGraph()
+        g.add_node(1, name="John", age=34)
+        g.add_node(2, name="Lisa", age=47)
+
+        g.add_edge(1, 2)
+
+        # Source data
+        df = graph_to_edges_dataframe(g, source_node_data=("age",))
+
+        expected = pd.DataFrame(data={"source": [1], "target": [2], "age": [34]})
+
+        assert df.equals(expected)
+
+        # Target data
+        df = graph_to_edges_dataframe(g, target_node_data=("age",))
+
+        expected = pd.DataFrame(data={"source": [1], "target": [2], "age": [47]})
+
+        assert df.equals(expected)
+
+        # Both with mapping
+        df = graph_to_edges_dataframe(
+            g,
+            source_node_data={"name": "source_name"},
+            target_node_data={"age": "target_age"},
+        )
+
+        expected = pd.DataFrame(
+            data={
+                "source": [1],
+                "target": [2],
+                "source_name": ["John"],
+                "target_age": [47],
+            }
+        )
 
         assert df.equals(expected)
 

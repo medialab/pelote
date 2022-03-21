@@ -134,6 +134,12 @@ its edges.
 the edge source.
 * **edge_target_col** *str, optional* `"target"` - name of the DataFrame column containing
 the edge target.
+* **source_node_data** *Iterable or Mapping, optional* `None` - iterable of attribute names
+or mapping from attribute names to column name to be used to add
+columns to the resulting dataframe based on source node data.
+* **target_node_data** *Iterable or Mapping, optional* `None` - iterable of attribute names
+or mapping from attribute names to column name to be used to add
+columns to the resulting dataframe based on target node data.
 
 *Returns*
 
@@ -154,6 +160,12 @@ index.
 the edge source.
 * **edge_target_col** *str, optional* `"target"` - name of the edge DataFrame column containing
 the edge target.
+* **source_node_data** *Iterable or Mapping, optional* `None` - iterable of attribute names
+or mapping from attribute names to column name to be used to add
+columns to the edge dataframe based on source node data.
+* **target_node_data** *Iterable or Mapping, optional* `None` - iterable of attribute names
+or mapping from attribute names to column name to be used to add
+columns to the edge dataframe based on target node data.
 
 *Returns*
 
