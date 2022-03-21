@@ -7,7 +7,7 @@ from pytest import raises
 
 from pelote.exceptions import MissingPandasException
 from pelote.shim import missing_pandas
-from pelote.network_to_tabular import (
+from pelote.graph_to_tabular import (
     to_nodes_dataframe,
     to_edges_dataframe,
     to_dataframes,

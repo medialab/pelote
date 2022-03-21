@@ -1,4 +1,4 @@
-from pelote.network_to_tabular import (
+from pelote.graph_to_tabular import (
     to_nodes_dataframe,
     to_edges_dataframe,
     to_dataframes,
@@ -11,17 +11,18 @@ from pelote.graph import (
 )
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
-from pelote.tabular_to_network import to_bipartite_graph
+from pelote.tabular_to_graph import to_bipartite_graph
 
 from pelote.metrics import edge_disparity
 
 DOCS = [
-    {"title": "Tabular to network", "fns": [to_bipartite_graph]},
+    {"title": "Tabular data to graphs", "fns": [to_bipartite_graph]},
     {
-        "title": "Network to tabular",
+        "title": "Graphs to tabular data",
         "fns": [to_nodes_dataframe, to_edges_dataframe, to_dataframes],
     },
     {"title": "Graph projection", "fns": [monopartite_projection]},
+    {"title": "Metrics", "fns": [edge_disparity]},
     {
         "title": "Graph utilities",
         "fns": [
@@ -32,7 +33,6 @@ DOCS = [
         ],
     },
     {"title": "Reading & Writing", "fns": [read_graphology_json]},
-    {"title": "Metrics", "fns": [edge_disparity]},
 ]
 
 __all__ = ["DOCS"]

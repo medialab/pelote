@@ -2,15 +2,15 @@
 
 # Pelote
 
-Pelote is a python library full of network-related functions that can be used to complement [networkx](https://networkx.org/) for higher-level tasks.
+Pelote is a python library full of graph-related functions that can be used to complement [networkx](https://networkx.org/) for higher-level tasks.
 
 It mainly helps with the following things:
 
-- Conversion of tabular data to networks (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
-- Conversion of networks to tabular data
+- Conversion of tabular data to graphs (bipartites, citation etc. in the spirit of [Table2Net](https://medialab.github.io/table2net/))
+- Conversion of graphs to tabular data
 - Monopartite projections of bipartite graphs
 - Miscellaneous graph helper functions (filtering out nodes, edges etc.)
-- Sparsification of networks
+- Sparsification of graphs
 - Reading & writing of graph formats not found in `networkx` (such as [graphology](https://graphology.github.io/) JSON)
 
 As such it is the perfect companion to [ipysigma](https://github.com/Yomguithereal/ipysigma), our Jupyter widget that can render interactive graphs directly within your notebooks.
@@ -31,14 +31,16 @@ pip install pandas
 
 ## Usage
 
-* [Tabular to network](#tabular-to-network)
+* [Tabular data to graphs](#tabular-data-to-graphs)
   * [to_bipartite_graph](#to_bipartite_graph)
-* [Network to tabular](#network-to-tabular)
+* [Graphs to tabular data](#graphs-to-tabular-data)
   * [to_nodes_dataframe](#to_nodes_dataframe)
   * [to_edges_dataframe](#to_edges_dataframe)
   * [to_dataframes](#to_dataframes)
 * [Graph projection](#graph-projection)
   * [monopartite_projection](#monopartite_projection)
+* [Metrics](#metrics)
+  * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_components](#crop_to_largest_connected_components)
@@ -46,13 +48,11 @@ pip install pandas
   * [connected_component_sizes](#connected_component_sizes)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
-* [Metrics](#metrics)
-  * [edge_disparity](#edge_disparity)
 
 
 ---
 
-### Tabular to network
+### Tabular data to graphs
 
 #### to_bipartite_graph
 
@@ -95,7 +95,7 @@ If you enable this option wrongly, the result can be incorrect.
 
 ---
 
-### Network to tabular
+### Graphs to tabular data
 
 #### to_nodes_dataframe
 
@@ -167,6 +167,27 @@ the edge target.
 
 *Arguments*
 
+
+
+---
+
+### Metrics
+
+#### edge_disparity
+
+Function computing the disparity score of each edge in the given graph. This
+score is typically used to extract the multiscale backbone of a weighted
+graph.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
+its weight.
+
+*Returns*
+
+*dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
 
 
 ---
@@ -249,24 +270,3 @@ parsed JSON data as a dict.
 *Returns*
 
 *nx.AnyGraph* - a networkx graph instance.
-
-
----
-
-### Metrics
-
-#### edge_disparity
-
-Function computing the disparity score of each edge in the given graph. This
-score is typically used to extract the multiscale backbone of a weighted
-graph.
-
-*Arguments*
-
-* **graph** *nx.AnyGraph* - target graph.
-* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
-its weight.
-
-*Returns*
-
-*dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
