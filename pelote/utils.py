@@ -4,7 +4,10 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
-from typing import Iterable, Any, Dict
+from typing import Iterable, Any, Dict, TypeVar
+
+K = TypeVar("K")
+V = TypeVar("V")
 
 
 def has_mixed_types(iterable: Iterable[Any]) -> bool:
@@ -41,7 +44,7 @@ class IncrementalId(object):
         return item_id
 
 
-def dict_without(d: Dict[Any, Any], k: str) -> Dict[Any, Any]:
+def dict_without(d: Dict[K, V], k: str) -> Dict[K, V]:
     o = {}
 
     for n, v in d.items():
