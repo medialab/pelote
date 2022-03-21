@@ -45,6 +45,7 @@ pip install pandas
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_components](#crop_to_largest_connected_components)
   * [remove_edges](#remove_edges)
+  * [filter_edges](#filter_edges)
   * [connected_component_sizes](#connected_component_sizes)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
@@ -235,6 +236,22 @@ Note that this function mutates the given graph.
 * **predicate** *callable* - a function taking each edge source, target and
 attributes and returning True if you want to keep the edge or False
 if you want to remove it.
+
+#### filter_edges
+
+Function returning a copy of the given networkx graph but without the edges
+filtered out by the given predicate function
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
+* **predicate** *callable* - a function taking each edge source, target and
+attributes and returning True if you want to keep the edge or False
+if you want to remove it.
+
+*Returns*
+
+*nx.AnyGraph* - the filtered graph.
 
 #### connected_component_sizes
 

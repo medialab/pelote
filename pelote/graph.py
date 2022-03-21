@@ -139,9 +139,10 @@ def are_same_graphs(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) ->
     )
 
 
-def remove_edges(
-    graph: AnyGraph, predicate: Callable[[Any, Any, Dict[Any, Any]], bool]
-) -> None:
+EdgePredictate = Callable[[Any, Any, Dict[Any, Any]], bool]
+
+
+def remove_edges(graph: AnyGraph, predicate: EdgePredictate) -> None:
     """
     Function removing all edges that do not pass a predicate function from a
     given networkx graph.
@@ -167,6 +168,34 @@ def remove_edges(
 
     for u, v in edges_to_drop:
         graph.remove_edge(u, v)
+
+
+def filter_edges(graph: AnyGraph, predicate: EdgePredictate) -> AnyGraph:
+    """
+    Function returning a copy of the given networkx graph but without the edges
+    filtered out by the given predicate function
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each edge source, target and
+            attributes and returning True if you want to keep the edge or False
+            if you want to remove it.
+
+    Returns:
+        nx.AnyGraph: the filtered graph.
+    """
+    check_graph(graph)
+
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    copy = nx.create_empty_copy(graph)
+
+    for u, v, a in graph.edges.data():
+        if predicate(u, v, a):
+            copy.add_edge(u, v, **a)
+
+    return copy
 
 
 EdgeFilterFunction = Callable[[Any, Any, Attributes], bool]
