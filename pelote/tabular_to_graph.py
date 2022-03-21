@@ -29,7 +29,7 @@ def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
     return {k: row[k] for k in spec}
 
 
-def to_bipartite_graph(
+def table_to_bipartite_graph(
     table: Tabular,
     first_part_col: GenericKey,
     second_part_col: GenericKey,

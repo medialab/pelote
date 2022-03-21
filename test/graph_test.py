@@ -7,7 +7,7 @@ from collections import Counter
 
 from pelote.graph import (
     largest_connected_component,
-    crop_to_largest_connected_components,
+    crop_to_largest_connected_component,
     connected_component_sizes,
 )
 
@@ -33,7 +33,7 @@ class TestGraph(object):
 
         assert largest_connected_component(g) == {7, 8, 9, 10, 11}
 
-        crop_to_largest_connected_components(g)
+        crop_to_largest_connected_component(g)
 
         assert set(g.nodes) == {7, 8, 9, 10, 11}
         assert g.size() == 4
@@ -50,7 +50,7 @@ class TestGraph(object):
 
         assert largest_connected_component(g) == {0, 1, 2}
 
-        crop_to_largest_connected_components(g)
+        crop_to_largest_connected_component(g)
 
         assert set(g.nodes) == {0, 1, 2}
         assert g.size() == 3

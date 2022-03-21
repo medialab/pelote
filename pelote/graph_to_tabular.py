@@ -11,7 +11,7 @@ from pelote.shim import pd, check_pandas
 from pelote.graph import check_graph
 
 
-def to_nodes_dataframe(
+def graph_to_nodes_dataframe(
     graph: AnyGraph, node_key_col: Optional[str] = "key"
 ) -> "pd.DataFrame":
     """
@@ -55,7 +55,7 @@ def to_nodes_dataframe(
         return pd.DataFrame(data=data_with_key())
 
 
-def to_edges_dataframe(
+def graph_to_edges_dataframe(
     graph: AnyGraph,
     *,
     edge_source_col: Optional[str] = "source",
@@ -88,7 +88,7 @@ def to_edges_dataframe(
     return pd.DataFrame(data=data())
 
 
-def to_dataframes(
+def graph_to_dataframes(
     graph: AnyGraph,
     *,
     node_key_col: Optional[str] = "key",
@@ -112,8 +112,8 @@ def to_dataframes(
     Returns:
         (pd.DataFrame, pd.DataFrame)
     """
-    nodes = to_nodes_dataframe(graph, node_key_col=node_key_col)
-    edges = to_edges_dataframe(
+    nodes = graph_to_nodes_dataframe(graph, node_key_col=node_key_col)
+    edges = graph_to_edges_dataframe(
         graph, edge_source_col=edge_source_col, edge_target_col=edge_target_col
     )
 

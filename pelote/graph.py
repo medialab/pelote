@@ -77,7 +77,7 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
     return largest
 
 
-def crop_to_largest_connected_components(graph: AnyGraph) -> None:
+def crop_to_largest_connected_component(graph: AnyGraph) -> None:
     """
     Function mutating the given networkx graph in order to keep only the
     largest connected component.
@@ -242,7 +242,7 @@ def connected_component_sizes(
                 n1 = stack.pop()
                 size += 1
 
-                for _, n2, edge_attr in graph.edges(node, data=True):
+                for _, n2, edge_attr in graph.edges(n1, data=True):
                     if edge_filter is not None and not edge_filter(n1, n2, edge_attr):
                         continue
 

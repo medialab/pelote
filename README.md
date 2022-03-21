@@ -32,21 +32,23 @@ pip install pandas
 ## Usage
 
 * [Tabular data to graphs](#tabular-data-to-graphs)
-  * [to_bipartite_graph](#to_bipartite_graph)
+  * [table_to_bipartite_graph](#table_to_bipartite_graph)
 * [Graphs to tabular data](#graphs-to-tabular-data)
-  * [to_nodes_dataframe](#to_nodes_dataframe)
-  * [to_edges_dataframe](#to_edges_dataframe)
-  * [to_dataframes](#to_dataframes)
+  * [graph_to_nodes_dataframe](#graph_to_nodes_dataframe)
+  * [graph_to_edges_dataframe](#graph_to_edges_dataframe)
+  * [graph_to_dataframes](#graph_to_dataframes)
 * [Graph projection](#graph-projection)
   * [monopartite_projection](#monopartite_projection)
 * [Metrics](#metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
   * [largest_connected_component](#largest_connected_component)
-  * [crop_to_largest_connected_components](#crop_to_largest_connected_components)
+  * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
   * [remove_edges](#remove_edges)
   * [filter_edges](#filter_edges)
   * [connected_component_sizes](#connected_component_sizes)
+* [Learning](#learning)
+  * [floatsam](#floatsam)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 
@@ -55,7 +57,7 @@ pip install pandas
 
 ### Tabular data to graphs
 
-#### to_bipartite_graph
+#### table_to_bipartite_graph
 
 Function creating a bipartite graph from the given tabular data.
 
@@ -98,7 +100,7 @@ If you enable this option wrongly, the result can be incorrect.
 
 ### Graphs to tabular data
 
-#### to_nodes_dataframe
+#### graph_to_nodes_dataframe
 
 Function converting the given networkx graph into a pandas DataFrame of
 its nodes.
@@ -120,7 +122,7 @@ index.
 
 *pd.DataFrame* - A pandas DataFrame
 
-#### to_edges_dataframe
+#### graph_to_edges_dataframe
 
 Function converting the given networkx graph into a pandas DataFrame of
 its edges.
@@ -137,7 +139,7 @@ the edge target.
 
 *pd.DataFrame* - A pandas DataFrame
 
-#### to_dataframes
+#### graph_to_dataframes
 
 Function converting the given networkx graph into two pandas DataFrames:
 one for its nodes, one for its edges.
@@ -211,7 +213,7 @@ will therefore work with weakly connected components in the directed case.
 
 *set* - set of nodes representing the largest connected component.
 
-#### crop_to_largest_connected_components
+#### crop_to_largest_connected_component
 
 Function mutating the given networkx graph in order to keep only the
 largest connected component.
@@ -268,6 +270,42 @@ attributes and returning whether we should follow this edge or not.
 *Yields*
 
 *int* - the size of a connected component.
+
+
+---
+
+### Learning
+
+#### floatsam
+
+Function using an iterative algorithm to try and find the best weight
+threshold to apply to trim the given graph's edges while keeping the
+underlying community structure.
+
+It works by iteratively increasing the threshold and stopping as soon as
+a significant connected component starts to drift away from the principal
+one.
+
+This is basically an optimization algorithm applied to a complex nonlinear
+function using a very naive cost heuristic, but it works decently for typical
+cases as it emulates the method used by hand by some researchers when they
+perform this kind of task on Gephi, for instance.
+
+*Arguments*
+
+* **graph** *nx.Graph* - Graph to sparsify.
+* **starting_treshold** *float, optional* `0.0` - Starting similarity threshold.
+* **learning_rate** *float, optional* `0.05` - How much to increase the threshold
+at each step of the algorithm.
+* **max_drifter_size** *int, optional* - Max size of component to detach itself
+from the principal one before stopping the algorithm. If not
+provided it will default to the logarithm of the graph's total
+number of nodes.
+* **edge_weight_attr** *str, optional* `"weight"` - Name of the weight attribute.
+
+*Returns*
+
+*float* - The found threshold
 
 
 ---

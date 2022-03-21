@@ -5,13 +5,13 @@ import networkx as nx
 from pytest import raises
 
 from pelote.graph import are_same_graphs
-from pelote import to_bipartite_graph
+from pelote import table_to_bipartite_graph
 
 
 class TestToBipartiteGraph(object):
     def test_errors(self):
         with raises(TypeError):
-            to_bipartite_graph([], "one", "one")
+            table_to_bipartite_graph([], "one", "one")
 
     def test_basic(self):
         table = [
@@ -20,7 +20,7 @@ class TestToBipartiteGraph(object):
             ("lisa", "pear"),
         ]
 
-        g = to_bipartite_graph(table, 0, 1, disjoint_keys=True)
+        g = table_to_bipartite_graph(table, 0, 1, disjoint_keys=True)
 
         expected = nx.Graph()
         expected.add_node("john", part=0, label="john")
@@ -41,7 +41,7 @@ class TestToBipartiteGraph(object):
             ("lisa", "pear"),
         ]
 
-        g = to_bipartite_graph(table, 0, 1)
+        g = table_to_bipartite_graph(table, 0, 1)
 
         expected = nx.Graph()
         expected.add_node(0, part=0, label="john")
@@ -58,7 +58,7 @@ class TestToBipartiteGraph(object):
     def test_weight(self):
         table = [("john", "apple"), ("john", "apple"), ("john", "pear")]
 
-        g = to_bipartite_graph(table, 0, 1, disjoint_keys=True)
+        g = table_to_bipartite_graph(table, 0, 1, disjoint_keys=True)
 
         expected = nx.Graph()
         expected.add_node("john", part=0, label="john")
@@ -72,7 +72,7 @@ class TestToBipartiteGraph(object):
     def test_custom_attributes(self):
         table = [("john", "apple"), ("john", "apple"), ("john", "pear")]
 
-        g = to_bipartite_graph(
+        g = table_to_bipartite_graph(
             table,
             0,
             1,
@@ -93,7 +93,7 @@ class TestToBipartiteGraph(object):
     def test_part_data(self):
         table = [{"person": "john", "color": "red", "light": "high", "age": 45}]
 
-        g = to_bipartite_graph(
+        g = table_to_bipartite_graph(
             table,
             "person",
             "color",
