@@ -48,7 +48,7 @@ pip install pandas
   * [filter_edges](#filter_edges)
   * [connected_component_sizes](#connected_component_sizes)
 * [Learning](#learning)
-  * [floatsam](#floatsam)
+  * [floatsam_threshold_learner](#floatsam_threshold_learner)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 
@@ -276,7 +276,7 @@ attributes and returning whether we should follow this edge or not.
 
 ### Learning
 
-#### floatsam
+#### floatsam_threshold_learner
 
 Function using an iterative algorithm to try and find the best weight
 threshold to apply to trim the given graph's edges while keeping the

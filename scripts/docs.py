@@ -10,7 +10,7 @@ from pelote.graph import (
     filter_edges,
     connected_component_sizes,
 )
-from pelote.learn import floatsam
+from pelote.learn import floatsam_threshold_learner
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.tabular_to_graph import table_to_bipartite_graph
@@ -39,7 +39,7 @@ DOCS = [
             connected_component_sizes,
         ],
     },
-    {"title": "Learning", "fns": [floatsam]},
+    {"title": "Learning", "fns": [floatsam_threshold_learner]},
     {"title": "Reading & Writing", "fns": [read_graphology_json]},
 ]
 

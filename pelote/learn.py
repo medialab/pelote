@@ -11,7 +11,7 @@ from pelote.types import AnyGraph
 from pelote.graph import second_largest_connected_component_size, check_graph
 
 
-def floatsam(
+def floatsam_threshold_learner(
     graph: AnyGraph,
     starting_treshold: float = 0.0,
     learning_rate: float = 0.01,
