@@ -200,6 +200,9 @@ Note that this function mutates the given graph.
 
 * **graph** *nx.AnyGraph* - target graph.
 * **threshold** *float* - weight threshold.
+* **reverse** *bool, optional* - whether to reverse the threshold condition.
+That is to say an edge would be removed if its weight is greater
+than the threshold.
 
 
 ---
