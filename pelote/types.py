@@ -25,6 +25,7 @@ AnyGraph = Union[
     nx.MultiGraph,
     nx.MultiDiGraph,
 ]
+Attributes = Dict[Any, Any]
 
 # Graphology serialization
 SerializedAttributes = Dict[str, Any]

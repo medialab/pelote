@@ -43,6 +43,7 @@ pip install pandas
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_components](#crop_to_largest_connected_components)
   * [remove_edges](#remove_edges)
+  * [connected_component_sizes](#connected_component_sizes)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 * [Metrics](#metrics)
@@ -177,6 +178,9 @@ the edge target.
 Function returning the largest connected component of given networkx graph
 as a set of nodes.
 
+Note that this function will consider any given graph as undirected and
+will therefore work with weakly connected components in the directed case.
+
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
@@ -189,6 +193,9 @@ as a set of nodes.
 
 Function mutating the given networkx graph in order to keep only the
 largest connected component.
+
+Note that this function will consider any given graph as undirected and
+will therefore work with weakly connected components in the directed case.
 
 *Arguments*
 
@@ -207,6 +214,22 @@ Note that this function mutates the given graph.
 * **predicate** *callable* - a function taking each edge source, target and
 attributes and returning True if you want to keep the edge or False
 if you want to remove it.
+
+#### connected_component_sizes
+
+Function yielding the given graph's connected component sizes. It is
+faster than calling `len` on sets yielded by nx.connected_components and
+can use an edge filter function.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
+* **edge_filter** *callable, optional* `None` - a function taking n1, n2 & the
+attributes and returning whether we should follow this edge or not.
+
+*Yields*
+
+*int* - the size of a connected component.
 
 
 ---

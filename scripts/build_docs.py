@@ -127,7 +127,7 @@ def build_docs(data):
             p()
 
             if docstring.returns:
-                p("*Returns*")
+                p("*Yields*" if docstring.returns.is_generator else "*Returns*")
                 p()
                 p(template_return(docstring.returns))
                 p()

@@ -7,6 +7,7 @@ from pelote.graph import (
     largest_connected_component,
     crop_to_largest_connected_components,
     remove_edges,
+    connected_component_sizes,
 )
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
@@ -27,6 +28,7 @@ DOCS = [
             largest_connected_component,
             crop_to_largest_connected_components,
             remove_edges,
+            connected_component_sizes,
         ],
     },
     {"title": "Reading & Writing", "fns": [read_graphology_json]},

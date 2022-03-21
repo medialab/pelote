@@ -26,6 +26,10 @@ class NodeView:
 class EdgeView:
     @overload
     def __call__(
+        self, ebunch: Any, data: Literal[True]
+    ) -> Generator[Tuple[Any, Any, Attributes], None, None]: ...
+    @overload
+    def __call__(
         self, data: Literal[True], keys: Literal[True]
     ) -> Generator[Tuple[Any, Any, Any, Attributes], None, None]: ...
     @overload

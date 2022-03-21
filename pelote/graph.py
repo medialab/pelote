@@ -5,10 +5,11 @@
 # Miscellaneous helper functions to deal with networkx graphs.
 #
 import networkx as nx
-from typing import Set, Any, Optional, List, Callable, Dict
+from typing import Set, Any, Optional, List, Callable, Dict, Generator
 from typing_extensions import TypeGuard
 
-from pelote.types import AnyGraph
+from pelote.types import AnyGraph, Attributes
+from pelote.utils import DFSStack
 
 GRAPH_TYPES = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
 
@@ -51,6 +52,7 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
     Returns:
         set: set of nodes representing the largest connected component.
     """
+    check_graph(graph)
 
     largest = None
     remaining_nodes = graph.order()
@@ -85,6 +87,8 @@ def crop_to_largest_connected_components(graph: AnyGraph) -> None:
     Args:
         graph (nx.AnyGraph): target graph.
     """
+    check_graph(graph)
+
     component = largest_connected_component(graph)
 
     if component is None:
@@ -149,6 +153,8 @@ def remove_edges(
             attributes and returning True if you want to keep the edge or False
             if you want to remove it.
     """
+    check_graph(graph)
+
     if not callable(predicate):
         raise TypeError("expecting a callable predicate (i.e. a function etc.)")
 
@@ -160,3 +166,55 @@ def remove_edges(
 
     for u, v in edges_to_drop:
         graph.remove_edge(u, v)
+
+
+def connected_component_sizes(
+    graph: AnyGraph,
+    edge_filter: Optional[Callable[[Any, Any, Attributes], bool]] = None,
+) -> Generator[int, None, None]:
+    """
+    Function yielding the given graph's connected component sizes. It is
+    faster than calling `len` on sets yielded by nx.connected_components and
+    can use an edge filter function.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        edge_filter (callable, optional): a function taking n1, n2 & the
+            attributes and returning whether we should follow this edge or not.
+            Defaults to None.
+
+    Yields:
+        int: the size of a connected component.
+    """
+    check_graph(graph)
+
+    if edge_filter is not None and not callable(edge_filter):
+        raise TypeError("edge_filter should be callable")
+
+    # Wrapping generator to make sure type checking raises on call
+    def generator():
+        stack = DFSStack[Any](graph)
+
+        for node in graph:
+            if stack.has_seen_everything():
+                break
+
+            if node in stack:
+                continue
+
+            stack.append(node)
+            size = 0
+
+            while len(stack) != 0:
+                n1 = stack.pop()
+                size += 1
+
+                for _, n2, edge_attr in graph.edges(node, data=True):
+                    if edge_filter is not None and not edge_filter(n1, n2, edge_attr):
+                        continue
+
+                    stack.append(n2)
+
+            yield size
+
+    return generator()
