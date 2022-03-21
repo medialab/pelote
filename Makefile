@@ -3,7 +3,7 @@ SOURCE = pelote
 
 # Functions
 define clean
-	rm -rf *.egg-info .pytest_cache build dist
+	rm -rf *.egg-info .mypy_cache .pytest_cache build dist
 	find . -name "*.pyc" | xargs rm -f
 	find . -name __pycache__ | xargs rm -rf
 	rm -f *.spec
