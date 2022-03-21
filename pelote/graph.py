@@ -5,6 +5,7 @@
 # Miscellaneous helper functions to deal with networkx graphs.
 #
 import networkx as nx
+from heapq import nlargest
 from typing import Set, Any, Optional, List, Callable, Dict, Generator
 from typing_extensions import TypeGuard
 
@@ -168,9 +169,12 @@ def remove_edges(
         graph.remove_edge(u, v)
 
 
+EdgeFilterFunction = Callable[[Any, Any, Attributes], bool]
+
+
 def connected_component_sizes(
     graph: AnyGraph,
-    edge_filter: Optional[Callable[[Any, Any, Attributes], bool]] = None,
+    edge_filter: Optional[EdgeFilterFunction] = None,
 ) -> Generator[int, None, None]:
     """
     Function yielding the given graph's connected component sizes. It is
@@ -218,3 +222,28 @@ def connected_component_sizes(
             yield size
 
     return generator()
+
+
+def second_largest_connected_component_size(
+    graph: AnyGraph, edge_filter: Optional[EdgeFilterFunction] = None
+) -> Optional[int]:
+    """
+    Function returning the size of the second largest connected component
+    of the given graph.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+        edge_filter (callable, optional): a function taking n1, n2 & the
+            attributes and returning whether we should follow this edge or not.
+            Defaults to None.
+
+    Returns:
+        int or None: size of the component or None if the graph is null or has
+            only a single component.
+    """
+    top2 = nlargest(2, connected_component_sizes(graph, edge_filter))
+
+    if len(top2) < 2:
+        return None
+
+    return top2[1]
