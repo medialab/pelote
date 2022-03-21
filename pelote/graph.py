@@ -201,12 +201,12 @@ def filter_edges(graph: AnyGraph, predicate: EdgePredictate) -> AnyGraph:
 EdgeFilterFunction = Callable[[Any, Any, Attributes], bool]
 
 
-def connected_component_sizes(
+def connected_component_orders(
     graph: AnyGraph,
     edge_filter: Optional[EdgeFilterFunction] = None,
 ) -> Generator[int, None, None]:
     """
-    Function yielding the given graph's connected component sizes. It is
+    Function yielding the given graph's connected component orders. It is
     faster than calling `len` on sets yielded by nx.connected_components and
     can use an edge filter function.
 
@@ -253,11 +253,28 @@ def connected_component_sizes(
     return generator()
 
 
-def second_largest_connected_component_size(
+def largest_connected_component_order(graph: AnyGraph) -> Optional[int]:
+    """
+    Function returning the order of the largest connected component of the given
+    graph.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+
+    Returns:
+        int or None: order of the component or None if the graph is null.
+    """
+    if graph.order() == 0:
+        return None
+
+    return max(connected_component_orders(graph))
+
+
+def second_largest_connected_component_order(
     graph: AnyGraph, edge_filter: Optional[EdgeFilterFunction] = None
 ) -> Optional[int]:
     """
-    Function returning the size of the second largest connected component
+    Function returning the order of the second largest connected component
     of the given graph.
 
     Args:
@@ -267,10 +284,10 @@ def second_largest_connected_component_size(
             Defaults to None.
 
     Returns:
-        int or None: size of the component or None if the graph is null or has
+        int or None: order of the component or None if the graph is null or has
             only a single component.
     """
-    top2 = nlargest(2, connected_component_sizes(graph, edge_filter))
+    top2 = nlargest(2, connected_component_orders(graph, edge_filter))
 
     if len(top2) < 2:
         return None

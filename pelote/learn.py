@@ -8,14 +8,18 @@ import math
 from typing import Optional
 
 from pelote.types import AnyGraph
-from pelote.graph import second_largest_connected_component_size, check_graph
+from pelote.graph import (
+    largest_connected_component_order,
+    second_largest_connected_component_order,
+    check_graph,
+)
 
 
 def floatsam_threshold_learner(
     graph: AnyGraph,
     starting_treshold: float = 0.0,
     learning_rate: float = 0.01,
-    max_drifter_size: Optional[int] = None,
+    max_drifter_order: Optional[int] = None,
     edge_weight_attr: str = "weight",
 ):
     """
@@ -38,10 +42,10 @@ def floatsam_threshold_learner(
             Defaults to `0.0`.
         learning_rate (float, optional): How much to increase the threshold
             at each step of the algorithm. Defaults to `0.05`.
-        max_drifter_size (int, optional): Max size of component to detach itself
+        max_drifter_order (int, optional): Max order of component to detach itself
             from the principal one before stopping the algorithm. If not
-            provided it will default to the logarithm of the graph's total
-            number of nodes.
+            provided it will default to the logarithm of the graph's largest
+            connected component's order.
         edge_weight_attr (str, optional): Name of the weight attribute.
             Defaults to "weight".
 
@@ -59,16 +63,16 @@ def floatsam_threshold_learner(
     def edge_filter(u, v, attr):
         return attr[edge_weight_attr] >= threshold
 
-    if max_drifter_size is None:
-        max_drifter_size = int(math.log(len(graph)))
+    if max_drifter_order is None:
+        max_drifter_order = int(math.log(largest_connected_component_order(graph) or 1))
 
     while True:
         best_threshold = threshold
         threshold += learning_rate
 
-        c = second_largest_connected_component_size(graph, edge_filter)
+        c = second_largest_connected_component_order(graph, edge_filter)
 
-        if c is not None and c >= max_drifter_size:
+        if c is not None and c >= max_drifter_order:
             break
 
     return best_threshold

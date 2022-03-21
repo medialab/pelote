@@ -39,14 +39,15 @@ pip install pandas
   * [graph_to_dataframes](#graph_to_dataframes)
 * [Graph projection](#graph-projection)
   * [monopartite_projection](#monopartite_projection)
-* [Metrics](#metrics)
+* [Graph sparsification](#graph-sparsification)
+  * [global_threshold_sparsify](#global_threshold_sparsify)
+* [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
   * [remove_edges](#remove_edges)
   * [filter_edges](#filter_edges)
-  * [connected_component_sizes](#connected_component_sizes)
 * [Learning](#learning)
   * [floatsam_threshold_learner](#floatsam_threshold_learner)
 * [Reading & Writing](#reading-&-writing)
@@ -186,7 +187,24 @@ columns to the edge dataframe based on target node data.
 
 ---
 
-### Metrics
+### Graph sparsification
+
+#### global_threshold_sparsify
+
+Function sparsifying a networkx graph by removing all its edges
+having a weight less than a given threshold.
+
+Note that this function mutates the given graph.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **threshold** *float* - weight threshold.
+
+
+---
+
+### Miscellaneous graph-related metrics
 
 #### edge_disparity
 
@@ -267,22 +285,6 @@ if you want to remove it.
 
 *nx.AnyGraph* - the filtered graph.
 
-#### connected_component_sizes
-
-Function yielding the given graph's connected component sizes. It is
-faster than calling `len` on sets yielded by nx.connected_components and
-can use an edge filter function.
-
-*Arguments*
-
-* **graph** *nx.AnyGraph* - a networkx graph.
-* **edge_filter** *callable, optional* `None` - a function taking n1, n2 & the
-attributes and returning whether we should follow this edge or not.
-
-*Yields*
-
-*int* - the size of a connected component.
-
 
 ---
 
@@ -309,10 +311,10 @@ perform this kind of task on Gephi, for instance.
 * **starting_treshold** *float, optional* `0.0` - Starting similarity threshold.
 * **learning_rate** *float, optional* `0.05` - How much to increase the threshold
 at each step of the algorithm.
-* **max_drifter_size** *int, optional* - Max size of component to detach itself
+* **max_drifter_order** *int, optional* - Max order of component to detach itself
 from the principal one before stopping the algorithm. If not
-provided it will default to the logarithm of the graph's total
-number of nodes.
+provided it will default to the logarithm of the graph's largest
+connected component's order.
 * **edge_weight_attr** *str, optional* `"weight"` - Name of the weight attribute.
 
 *Returns*

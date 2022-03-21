@@ -8,11 +8,11 @@ from pelote.graph import (
     crop_to_largest_connected_component,
     remove_edges,
     filter_edges,
-    connected_component_sizes,
 )
 from pelote.learn import floatsam_threshold_learner
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
+from pelote.sparsification import global_threshold_sparsify
 from pelote.tabular_to_graph import table_to_bipartite_graph
 
 from pelote.metrics import edge_disparity
@@ -28,7 +28,8 @@ DOCS = [
         ],
     },
     {"title": "Graph projection", "fns": [monopartite_projection]},
-    {"title": "Metrics", "fns": [edge_disparity]},
+    {"title": "Graph sparsification", "fns": [global_threshold_sparsify]},
+    {"title": "Miscellaneous graph-related metrics", "fns": [edge_disparity]},
     {
         "title": "Graph utilities",
         "fns": [
@@ -36,7 +37,6 @@ DOCS = [
             crop_to_largest_connected_component,
             remove_edges,
             filter_edges,
-            connected_component_sizes,
         ],
     },
     {"title": "Learning", "fns": [floatsam_threshold_learner]},
