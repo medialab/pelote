@@ -4,7 +4,7 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
-from typing import Iterable, Any, Dict, TypeVar
+from typing import Iterable, Any, Dict, TypeVar, Generic
 
 K = TypeVar("K")
 V = TypeVar("V")
@@ -26,14 +26,14 @@ def has_mixed_types(iterable: Iterable[Any]) -> bool:
     return False
 
 
-class IncrementalId(object):
+class IncrementalIdRegister(Generic[K]):
     __slots__ = ("i", "index")
 
     def __init__(self):
         self.i = 0
-        self.index: Dict[Any, int] = {}
+        self.index: Dict[K, int] = {}
 
-    def __getitem__(self, item: Any) -> int:
+    def __getitem__(self, item: K) -> int:
         item_id = self.index.get(item)
 
         if item_id is None:

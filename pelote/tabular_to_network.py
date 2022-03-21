@@ -5,9 +5,9 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
-from typing import Sequence, Union, Callable, Dict, Any, Optional
+from typing import Sequence, Union, Callable, Dict, Tuple, Any, Optional
 
-from pelote.utils import IncrementalId
+from pelote.utils import IncrementalIdRegister
 from pelote.shim import is_dataframe
 from pelote.types import AnyGraph, Tabular, GenericKey, Indexable
 
@@ -88,7 +88,7 @@ def to_bipartite_graph(
         table = (row for _, row in table.iterrows())
 
     graph = nx.Graph()
-    node_id = IncrementalId()
+    node_id = IncrementalIdRegister[Tuple[GenericKey, Any]]()
 
     for i, row in enumerate(table):
         try:
