@@ -42,7 +42,7 @@ unit:
 	@echo
 
 readme:
-	python -m scripts.build_docs > README.md
+	python -m docs.build > README.md
 
 upload:
 	python setup.py sdist bdist_wheel

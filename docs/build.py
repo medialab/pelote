@@ -9,7 +9,7 @@ from docstring_parser import (
     DocstringDeprecated,
 )
 
-from scripts.docs import DOCS
+from docs.summary import DOCS
 
 
 with open("./README.template.md") as f:
