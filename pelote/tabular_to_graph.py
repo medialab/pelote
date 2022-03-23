@@ -79,6 +79,9 @@ def table_to_bipartite_graph(
             value for `first_part_col` can also be found in `second_part_col`.
             If you enable this option wrongly, the result can be incorrect.
             Defaults to False.
+
+    Returns:
+        nx.AnyGraph: the bipartite graph.
     """
 
     if first_part_col == second_part_col:

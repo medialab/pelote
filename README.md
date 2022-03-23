@@ -97,6 +97,10 @@ mechanism if you know your part keys are disjoint, i.e. if no
 value for `first_part_col` can also be found in `second_part_col`.
 If you enable this option wrongly, the result can be incorrect.
 
+*Returns*
+
+*nx.AnyGraph* - the bipartite graph.
+
 
 ---
 
