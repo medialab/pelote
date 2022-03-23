@@ -122,7 +122,6 @@ index.
 *Returns*
 
 *pd.DataFrame* - A pandas DataFrame
-
 #### graph_to_edges_dataframe
 
 Function converting the given networkx graph into a pandas DataFrame of
@@ -145,7 +144,6 @@ columns to the resulting dataframe based on target node data.
 *Returns*
 
 *pd.DataFrame* - A pandas DataFrame
-
 #### graph_to_dataframes
 
 Function converting the given networkx graph into two pandas DataFrames:
@@ -171,7 +169,6 @@ columns to the edge dataframe based on target node data.
 *Returns*
 
 *None* - (pd.DataFrame, pd.DataFrame)
-
 
 ---
 
@@ -225,7 +222,6 @@ size of neighbor intersection.
 
 *nx.Graph* - the projected monopartite graph.
 
-
 ---
 
 ### Graph sparsification
@@ -266,7 +262,6 @@ its weight.
 
 *dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
 
-
 ---
 
 ### Graph utilities
@@ -286,7 +281,6 @@ will therefore work with weakly connected components in the directed case.
 *Returns*
 
 *set* - set of nodes representing the largest connected component.
-
 #### crop_to_largest_connected_component
 
 Function mutating the given networkx graph in order to keep only the
@@ -329,7 +323,6 @@ if you want to remove it.
 
 *nx.AnyGraph* - the filtered graph.
 
-
 ---
 
 ### Learning
@@ -364,7 +357,6 @@ connected component's order.
 *Returns*
 
 *float* - The found threshold
-
 
 ---
 
