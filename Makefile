@@ -18,8 +18,12 @@ publish: clean check test upload
 clean:
 	$(call clean)
 
-deps:
+ci:
 	pip3 install --user -U pip
+	pip3 install -r requirements.txt
+
+deps:
+	pip3 install -U pip
 	pip3 install -r requirements.txt
 
 format:

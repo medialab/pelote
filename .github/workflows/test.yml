@@ -41,7 +41,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make deps
+          make ci
 
       - name: Run linter & unit tests
         run: make
