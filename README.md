@@ -217,6 +217,12 @@ the edge's weight.
 * **metric** *str, optional* `None` - one of "jaccard", "overlap", "cosine", "dice"
 or "binary_cosine". If not given, resulting weight will be seyto the
 size of neighbor intersection.
+* **bipartition_check** *bool, optional* `True` - whether to check if given graph
+is truly bipartite. You can disable this as an optimization
+strategy if you know what you are doing.
+* **weight_threshold** *float, optional* `None` - if an edge weight should be less
+than this threshold we would not add it to the projected
+monopartite graph.
 
 *Returns*
 

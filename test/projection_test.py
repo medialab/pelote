@@ -77,6 +77,12 @@ class TestMonopartiteProjection(object):
             g.add_edges_from([(1, 2), (1, 3), (2, 3)])
             monopartite_projection(g, {1, 3})
 
+        # Invalid threshold
+        with raises(TypeError, match="threshold"):
+            g = nx.Graph()
+            g.add_edge(0, 1)
+            monopartite_projection(g, {0}, weight_threshold="test")
+
     def test_minimal(self):
         bipartite = nx.Graph()
         bipartite.add_nodes_from([1, 2, 3], part="account")
@@ -111,3 +117,12 @@ class TestMonopartiteProjection(object):
         monopartite = monopartite_projection(BIPARTITE, PEOPLE_MONOPARTITE_NODES)
 
         assert are_same_graphs(monopartite, PEOPLE_MONOPARTITE)
+
+    def test_weight_threshold(self):
+        monopartite = monopartite_projection(BIPARTITE, "people", weight_threshold=2)
+
+        expected = nx.Graph()
+        expected.add_nodes_from(PEOPLE_MONOPARTITE_NODES)
+        expected.add_edge("John", "Lucy", weight=2)
+
+        assert are_same_graphs(monopartite, expected)

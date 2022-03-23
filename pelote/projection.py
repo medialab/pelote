@@ -73,7 +73,8 @@ def monopartite_projection(
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
     metric: Optional[MonopartiteProjectionMetric] = None,
-    bipartition_check: bool = True
+    bipartition_check: bool = True,
+    weight_threshold: Optional[float] = None
 ) -> AnyGraph:
     """
     Function returning the monopartite projection of a given bipartite graph
@@ -118,6 +119,9 @@ def monopartite_projection(
         bipartition_check (bool, optional): whether to check if given graph
             is truly bipartite. You can disable this as an optimization
             strategy if you know what you are doing. Defaults to True.
+        weight_threshold (float, optional): if an edge weight should be less
+            than this threshold we would not add it to the projected
+            monopartite graph. Defaults to None.
 
     Returns:
         nx.Graph: the projected monopartite graph.
@@ -129,6 +133,11 @@ def monopartite_projection(
             'unknown metric "%s", expecting one of %s'
             % (metric, ", ".join('"%s"' % m for m in MONOPARTITE_PROJECTION_METRICS))
         )
+
+    if weight_threshold is not None and (
+        not isinstance(weight_threshold, (int, float)) or weight_threshold <= 0
+    ):
+        raise TypeError("weight_threshold should be a number >= 0")
 
     # Null graph early exit
     if bipartite_graph.order() == 0:
@@ -224,7 +233,9 @@ def monopartite_projection(
             norm2 = norms[n2]
             weight = compute_metric(metric, norm1, norm2, i)
 
-            # TODO: threshold can go there
+            if weight_threshold is not None and weight < weight_threshold:
+                continue
+
             monopartite_graph.add_edge(n1, n2, weight=weight)
 
     return monopartite_graph
