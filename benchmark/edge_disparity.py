@@ -8,7 +8,7 @@ with open("data/bipartite2.csv") as f:
 
 monopartite = monopartite_projection(bipartite, "account", metric="jaccard")
 
-print(bipartite.order(), bipartite.size())
+print(monopartite.order(), monopartite.size())
 
 with Timer("edge_disparity"):
     edge_disparity(monopartite)
