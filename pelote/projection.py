@@ -54,7 +54,6 @@ def compute_metric(
 
 
 # TODO: bipartition check (is_bipartite_by, graph.py)
-# TODO: partition is not empty
 def monopartite_projection(
     bipartite_graph: AnyGraph,
     part_to_keep: Hashable,
@@ -72,17 +71,23 @@ def monopartite_projection(
             % (metric, ", ".join('"%s"' % m for m in MONOPARTITE_PROJECTION_METRICS))
         )
 
+    # Null graph early exit
+    if bipartite_graph.order() == 0:
+        return nx.Graph()
+
     monopartite_graph = nx.Graph()
 
     # Computing norms
     norms: Dict[Any, float] = {}
+    part_is_empty = True
 
     for n1, a1 in bipartite_graph.nodes(data=True):
-        p1 = a1[node_part_attr]
+        p1 = a1.get(node_part_attr)
 
         if p1 != part_to_keep:
             continue
 
+        part_is_empty = False
         norm: float = 0
 
         for token, ta in bipartite_graph[n1].items():
@@ -101,6 +106,12 @@ def monopartite_projection(
             norms[n1] = norm
 
         monopartite_graph.add_node(n1, **dict_without(a1, node_part_attr))
+
+    if part_is_empty:
+        raise TypeError(
+            '"%s" part does not exist in given graph. Are you sure your nodes have a "%s" attribute?'
+            % (part_to_keep, node_part_attr)
+        )
 
     for n1, norm1 in norms.items():
         intersection: Counter[Any] = Counter()
