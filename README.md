@@ -40,7 +40,7 @@ pip install pandas
 * [Graph projection](#graph-projection)
   * [monopartite_projection](#monopartite_projection)
 * [Graph sparsification](#graph-sparsification)
-  * [global_threshold_sparsify](#global_threshold_sparsify)
+  * [global_threshold_sparsification](#global_threshold_sparsification)
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
@@ -232,21 +232,22 @@ monopartite graph.
 
 ### Graph sparsification
 
-#### global_threshold_sparsify
+#### global_threshold_sparsification
 
-Function sparsifying a networkx graph by removing all its edges
-having a weight less than a given threshold.
-
-Note that this function mutates the given graph.
+Function returning a copy of the given graph without edges whose weight
+is less than a given threshold.
 
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
-* **threshold** *float* - weight threshold.
+* **weight_threshold** *float* - weight threshold.
 * **reverse** *bool, optional* - whether to reverse the threshold condition.
 That is to say an edge would be removed if its weight is greater
 than the threshold.
 
+*Returns*
+
+*nx.AnyGraph* - the sparse version of the graph.
 
 ---
 
