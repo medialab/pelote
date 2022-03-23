@@ -36,7 +36,10 @@ def edge_disparity(
         raise NotImplementedError
 
     disparities: Dict[Tuple[Any, Any], float] = {}
-    weighted_degrees = graph.degree(weight=edge_weight_attr)
+
+    # NOTE: we need to recast as dict to avoid the linear complexity trap
+    # of networkx DegreeView...
+    weighted_degrees = dict(graph.degree(weight=edge_weight_attr))
 
     for source in graph.nodes:
         source_degree = graph.degree(source)
