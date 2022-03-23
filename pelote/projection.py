@@ -7,12 +7,22 @@
 #
 import math
 import networkx as nx
-from typing import Hashable, Optional, Counter, Any, Dict
+from typing import (
+    cast,
+    Hashable,
+    Optional,
+    Counter,
+    Any,
+    Dict,
+    Collection,
+    Union,
+    Iterable,
+)
 from typing_extensions import Literal
 
 from pelote.types import AnyGraph
 from pelote.graph import check_graph
-from pelote.utils import dict_without
+from pelote.utils import dict_without, has_constant_time_lookup
 
 MONOPARTITE_PROJECTION_METRICS = {
     "jaccard",
@@ -53,10 +63,13 @@ def compute_metric(
     return i
 
 
+Part = Union[Hashable, Collection[Any]]
+
+
 # TODO: bipartition check (is_bipartite_by, graph.py)
 def monopartite_projection(
     bipartite_graph: AnyGraph,
-    part_to_keep: Hashable,
+    part_to_keep: Part,
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
@@ -77,15 +90,25 @@ def monopartite_projection(
 
     monopartite_graph = nx.Graph()
 
+    part_to_keep_as_set = not isinstance(part_to_keep, Hashable)
+
+    if part_to_keep_as_set:
+        if not has_constant_time_lookup(part_to_keep):
+            part_to_keep = set(cast(Iterable[Any], part_to_keep))
+
     # Computing norms
     norms: Dict[Any, float] = {}
     part_is_empty = True
 
     for n1, a1 in bipartite_graph.nodes(data=True):
-        p1 = a1.get(node_part_attr)
+        if part_to_keep_as_set:
+            if n1 not in part_to_keep:  # type: ignore
+                continue
+        else:
+            p1 = a1.get(node_part_attr)
 
-        if p1 != part_to_keep:
-            continue
+            if p1 != part_to_keep:
+                continue
 
         part_is_empty = False
         norm: float = 0

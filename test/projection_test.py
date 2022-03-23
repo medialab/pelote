@@ -86,3 +86,8 @@ class TestMonopartiteProjection(object):
         monopartite = monopartite_projection(untagged_color_bipartite, "people")
 
         assert are_same_graphs(monopartite, PEOPLE_MONOPARTITE)
+
+    def test_part_as_set(self):
+        monopartite = monopartite_projection(BIPARTITE, PEOPLE_MONOPARTITE_NODES)
+
+        assert are_same_graphs(monopartite, PEOPLE_MONOPARTITE)
