@@ -75,7 +75,50 @@ def monopartite_projection(
     edge_weight_attr: str = "weight",
     metric: Optional[MonopartiteProjectionMetric] = None,
 ) -> AnyGraph:
+    """
+    Function returning the monopartite projection of a given bipartite graph
+    wrt one of both partitions of the graph.
 
+    That is to say the resulting graph will keep a single type of nodes sharing
+    weighted edges based on the neighbors they shared in the bipartite graph.
+
+    Example:
+        import networkx as nx
+        from pelote import monopartite_projection
+
+        bipartite = nx.Graph()
+        bipartite.add_nodes_from([1, 2, 3], part='account')
+        bipartite.add_nodes_from([4, 5, 6], part='color')
+        bipartite.add_edges_from([
+            (1, 4),
+            (1, 5),
+            (2, 6),
+            (3, 4),
+            (3, 6)
+        ])
+
+        # Resulting graph will only contain nodes [1, 2, 3]
+        # with edges: (1, 3) and (2, 3)
+        monopartite = monopartite_projection(bipartite, 'account')
+
+    Args:
+        bipartite_graph (nx.AnyGraph): target graph. The function will raise
+            if given graph is not truly bipartite.
+        part_to_keep (Hashable or Collection): partition to keep in the projected
+            graph. It can either be the value of the part node attribute in the
+            given graph (a string, most commonly), or a collection (a set, list etc.)
+            holding the nodes composing the part to keep.
+        node_part_attr (str, optional): name of the node attribute containing
+            the part the node belongs to. Defaults to "part".
+        edge_weight_attr (str, optional): name of the edge attribute containing
+            the edge's weight. Defaults to "weight".
+        metric (str, optional): one of "jaccard", "overlap", "cosine", "dice"
+            or "binary_cosine". If not given, resulting weight will be seyto the
+            size of neighbor intersection. Defaults to None.
+
+    Returns:
+        nx.Graph: the projected monopartite graph.
+    """
     check_graph(bipartite_graph)
 
     if metric is not None and metric not in MONOPARTITE_PROJECTION_METRICS:

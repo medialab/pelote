@@ -71,6 +71,20 @@ class TestMonopartiteProjection(object):
             g.add_edge(0, 1)
             monopartite_projection(g, "person")
 
+    def test_minimal(self):
+        bipartite = nx.Graph()
+        bipartite.add_nodes_from([1, 2, 3], part="account")
+        bipartite.add_nodes_from([4, 5, 6], part="color")
+        bipartite.add_edges_from([(1, 4), (1, 5), (2, 6), (3, 4), (3, 6)])
+
+        monopartite = monopartite_projection(bipartite, "account")
+
+        expected = nx.Graph()
+        expected.add_nodes_from([1, 2, 3])
+        expected.add_edges_from([(1, 3), (2, 3)])
+
+        assert are_same_graphs(monopartite, expected)
+
     def test_basic(self):
         monopartite = monopartite_projection(BIPARTITE, "people")
 
