@@ -66,7 +66,6 @@ def compute_metric(
 Part = Union[Hashable, Collection[Any]]
 
 
-# TODO: bipartition check (is_bipartite_by, graph.py)
 def monopartite_projection(
     bipartite_graph: AnyGraph,
     part_to_keep: Part,
@@ -74,6 +73,7 @@ def monopartite_projection(
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
     metric: Optional[MonopartiteProjectionMetric] = None,
+    bipartition_check: bool = True
 ) -> AnyGraph:
     """
     Function returning the monopartite projection of a given bipartite graph
@@ -115,6 +115,9 @@ def monopartite_projection(
         metric (str, optional): one of "jaccard", "overlap", "cosine", "dice"
             or "binary_cosine". If not given, resulting weight will be seyto the
             size of neighbor intersection. Defaults to None.
+        bipartition_check (bool, optional): whether to check if given graph
+            is truly bipartite. You can disable this as an optimization
+            strategy if you know what you are doing. Defaults to True.
 
     Returns:
         nx.Graph: the projected monopartite graph.
@@ -157,6 +160,15 @@ def monopartite_projection(
         norm: float = 0
 
         for token, ta in bipartite_graph[n1].items():
+            if bipartition_check:
+                if (part_to_keep_as_set and token in part_to_keep) or ta.get(  # type: ignore
+                    node_part_attr
+                ) == part_to_keep:
+                    raise TypeError(
+                        'given graph is not truly bipartite because of an edge between two nodes of the same part: "%s" and "%s"'
+                        % (n1, token)
+                    )
+
             weight = 1
 
             if metric == "cosine":
