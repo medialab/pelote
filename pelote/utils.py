@@ -4,6 +4,7 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
+from collections import Counter, defaultdict, OrderedDict
 from typing import Iterable, Any, Dict, TypeVar, Generic, List, Set, Optional
 
 from pelote.types import AnyGraph
@@ -88,3 +89,10 @@ def dict_without(d: Dict[K, V], k: str) -> Dict[K, V]:
         o[n] = v
 
     return o
+
+
+CONSTANT_TIME_LOOKUP = (set, frozenset, dict, Counter, defaultdict, OrderedDict)
+
+
+def has_constant_time_lookup(v: Any) -> bool:
+    return isinstance(v, CONSTANT_TIME_LOOKUP)
