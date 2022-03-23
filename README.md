@@ -41,6 +41,7 @@ pip install pandas
   * [monopartite_projection](#monopartite_projection)
 * [Graph sparsification](#graph-sparsification)
   * [global_threshold_sparsification](#global_threshold_sparsification)
+  * [multiscale_backbone](#multiscale_backbone)
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
@@ -122,6 +123,7 @@ index.
 *Returns*
 
 *pd.DataFrame* - A pandas DataFrame
+
 #### graph_to_edges_dataframe
 
 Function converting the given networkx graph into a pandas DataFrame of
@@ -144,6 +146,7 @@ columns to the resulting dataframe based on target node data.
 *Returns*
 
 *pd.DataFrame* - A pandas DataFrame
+
 #### graph_to_dataframes
 
 Function converting the given networkx graph into two pandas DataFrames:
@@ -169,6 +172,7 @@ columns to the edge dataframe based on target node data.
 *Returns*
 
 *None* - (pd.DataFrame, pd.DataFrame)
+
 
 ---
 
@@ -228,6 +232,7 @@ monopartite graph.
 
 *nx.Graph* - the projected monopartite graph.
 
+
 ---
 
 ### Graph sparsification
@@ -247,7 +252,37 @@ than the threshold.
 
 *Returns*
 
-*nx.AnyGraph* - the sparse version of the graph.
+*nx.AnyGraph* - the sparse graph.
+
+#### multiscale_backbone
+
+Function returning the multiscale backbone of the given graph, i.e. a copy
+of the graph were we only kept "relevant" edges, as defined by a
+statistical test where we compare the likelihood of a weighted edge existing
+vs. the null model.
+
+Article:
+    Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting
+    the multiscale backbone of complex weighted networks." Proceedings of the
+    national academy of sciences 106.16 (2009): 6483-6488.
+
+References:
+    - https://www.pnas.org/content/pnas/106/16/6483.full.pdf
+    - https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **alpha** *float, optional* `0.05` - alpha value for the statistical test. It can
+be intuitively thought of as a p-value score for an edge to be
+kept in the resulting graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute holding
+the edge's weight.
+
+*Returns*
+
+*nx.AnyGraph* - the sparse graph.
+
 
 ---
 
@@ -271,6 +306,7 @@ its weight.
 
 *dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
 
+
 ---
 
 ### Graph utilities
@@ -290,6 +326,7 @@ will therefore work with weakly connected components in the directed case.
 *Returns*
 
 *set* - set of nodes representing the largest connected component.
+
 #### crop_to_largest_connected_component
 
 Function mutating the given networkx graph in order to keep only the
@@ -332,6 +369,7 @@ if you want to remove it.
 
 *nx.AnyGraph* - the filtered graph.
 
+
 ---
 
 ### Learning
@@ -366,6 +404,7 @@ connected component's order.
 *Returns*
 
 *float* - The found threshold
+
 
 ---
 
