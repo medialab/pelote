@@ -396,7 +396,7 @@ perform this kind of task on Gephi, for instance.
 *Arguments*
 
 * **graph** *nx.Graph* - Graph to sparsify.
-* **starting_treshold** *float, optional* `0.0` - Starting similarity threshold.
+* **starting_threshold** *float, optional* `0.0` - Starting similarity threshold.
 * **learning_rate** *float, optional* `0.05` - How much to increase the threshold
 at each step of the algorithm.
 * **max_drifter_order** *int, optional* - Max order of component to detach itself

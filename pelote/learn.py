@@ -17,7 +17,7 @@ from pelote.graph import (
 
 def floatsam_threshold_learner(
     graph: AnyGraph,
-    starting_treshold: float = 0.0,
+    starting_threshold: float = 0.0,
     learning_rate: float = 0.01,
     max_drifter_order: Optional[int] = None,
     edge_weight_attr: str = "weight",
@@ -38,7 +38,7 @@ def floatsam_threshold_learner(
 
     Args:
         graph (nx.Graph): Graph to sparsify.
-        starting_treshold (float, optional): Starting similarity threshold.
+        starting_threshold (float, optional): Starting similarity threshold.
             Defaults to `0.0`.
         learning_rate (float, optional): How much to increase the threshold
             at each step of the algorithm. Defaults to `0.05`.
@@ -55,9 +55,9 @@ def floatsam_threshold_learner(
     check_graph(graph)
 
     if graph.size() == 0:
-        return starting_treshold
+        return starting_threshold
 
-    threshold = starting_treshold
+    threshold = starting_threshold
     best_threshold = None
 
     def edge_filter(u, v, attr):
