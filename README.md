@@ -263,6 +263,8 @@ graph.
 * **graph** *nx.AnyGraph* - target graph.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 its weight.
+* **reverse** *bool, optional* `False` - whether to reverse the metric, i.e. return
+`1 - score`.
 
 *Returns*
 

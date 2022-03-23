@@ -8,7 +8,7 @@ from pelote.types import AnyGraph
 
 
 def edge_disparity(
-    graph: AnyGraph, edge_weight_attr: str = "weight"
+    graph: AnyGraph, edge_weight_attr: str = "weight", reverse: bool = False
 ) -> Dict[Any, float]:
     """
     Function computing the disparity score of each edge in the given graph. This
@@ -20,6 +20,8 @@ def edge_disparity(
         edge_weight_attr (str, optional): name of the edge attribute containing
             its weight.
             Defaults to "weight".
+        reverse (bool, optional): whether to reverse the metric, i.e. return
+            `1 - score`. Defaults to False.
 
     Returns:
         dict: Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
@@ -47,6 +49,11 @@ def edge_disparity(
         source_score = (1 - normalized_weight_source) ** (previous_degree - 1)
         target_score = (1 - normalized_weight_target) ** (target_degree - 1)
 
-        disparities[(source, target)] = min(source_score, target_score)
+        d = min(source_score, target_score)
+
+        if reverse:
+            d = 1.0 - d
+
+        disparities[(source, target)] = d
 
     return disparities
