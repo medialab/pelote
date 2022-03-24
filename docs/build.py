@@ -1,7 +1,7 @@
 import re
 from io import StringIO
 from functools import partial
-from docstring_parser import parse as docstring_parser
+from docstring_parser import parse as docstring_parser, DocstringStyle
 from docstring_parser import (
     DocstringParam,
     DocstringReturns,
@@ -105,7 +105,7 @@ def build_docs(data):
 
         for fn in item["fns"]:
             name = fn.__name__
-            docstring = docstring_parser(fn.__doc__)
+            docstring = docstring_parser(fn.__doc__, DocstringStyle.GOOGLE)
             description = assembling_description(docstring)
 
             p("#### %s" % name)
