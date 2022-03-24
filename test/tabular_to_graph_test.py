@@ -108,3 +108,23 @@ class TestToBipartiteGraph(object):
         expected.add_edge("john", "red", weight=1)
 
         assert are_same_graphs(g, expected, check_attributes=True)
+
+    # TODO: test callable spec also
+    # def test_renamed_part_data(self):
+    #     table = [{"person": "john", "color": "red", "light": "high", "age": 45}]
+
+    #     g = table_to_bipartite_graph(
+    #         table,
+    #         "person",
+    #         "color",
+    #         first_part_data={"age": "Age"},
+    #         second_part_data={"light": "Light"},
+    #         disjoint_keys=True,
+    #     )
+
+    #     expected = nx.Graph()
+    #     expected.add_node("john", part="person", label="john", Age=45)
+    #     expected.add_node("red", part="color", label="red", Light="high")
+    #     expected.add_edge("john", "red", weight=1)
+
+    #     assert are_same_graphs(g, expected, check_attributes=True)
