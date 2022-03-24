@@ -5,13 +5,18 @@
 # Collection of learning function related to graph sparsification mostly.
 #
 import math
-from typing import Optional
+from typing import Optional, Callable
+from collections import namedtuple
 
 from pelote.types import AnyGraph
 from pelote.graph import (
     largest_connected_component_order,
     second_largest_connected_component_order,
     check_graph,
+)
+
+FloatsamEpoch = namedtuple(
+    "FloatsamEpoch", ["nth", "max_drifter_order", "drifter_order", "threshold"]
 )
 
 
@@ -21,6 +26,7 @@ def floatsam_threshold_learner(
     learning_rate: float = 0.01,
     max_drifter_order: Optional[int] = None,
     edge_weight_attr: str = "weight",
+    on_epoch: Optional[Callable[[FloatsamEpoch], None]] = None,
 ):
     """
     Function using an iterative algorithm to try and find the best weight
@@ -48,11 +54,16 @@ def floatsam_threshold_learner(
             connected component's order.
         edge_weight_attr (str, optional): Name of the weight attribute.
             Defaults to "weight".
+        on_epoch (callable, optional): Function called on each epoch of the
+            algorithm with some metadata about iteration state.
 
     Returns:
         float: The found threshold
     """
     check_graph(graph)
+
+    if on_epoch is not None and not callable(on_epoch):
+        raise TypeError("on_epoch should be callable")
 
     if graph.size() == 0:
         return starting_threshold
@@ -66,11 +77,19 @@ def floatsam_threshold_learner(
     if max_drifter_order is None:
         max_drifter_order = int(math.log(largest_connected_component_order(graph) or 1))
 
+    n = 0
+
     while True:
+        n += 1
+
         best_threshold = threshold
         threshold += learning_rate
 
         c = second_largest_connected_component_order(graph, edge_filter)
+
+        if on_epoch is not None:
+            epoch = FloatsamEpoch(n, max_drifter_order, c, threshold)
+            on_epoch(epoch)
 
         if c is not None and c >= max_drifter_order:
             break

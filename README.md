@@ -395,6 +395,8 @@ from the principal one before stopping the algorithm. If not
 provided it will default to the logarithm of the graph's largest
 connected component's order.
 * **edge_weight_attr** *str, optional* `"weight"` - Name of the weight attribute.
+* **on_epoch** *callable, optional* - Function called on each epoch of the
+algorithm with some metadata about iteration state.
 
 *Returns*
 
