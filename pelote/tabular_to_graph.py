@@ -38,8 +38,8 @@ def table_to_bipartite_graph(
     edge_weight_attr: str = "weight",
     first_part_data: Optional[RowDataSpec] = None,
     second_part_data: Optional[RowDataSpec] = None,
-    first_part_name: Optional[RowDataSpec] = None,
-    second_part_name: Optional[RowDataSpec] = None,
+    first_part_name: Optional[GenericKey] = None,
+    second_part_name: Optional[GenericKey] = None,
     disjoint_keys: bool = False
 ) -> AnyGraph:
     """
@@ -76,12 +76,12 @@ def table_to_bipartite_graph(
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
             Defaults to None.
-        first_part_name (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+        first_part_name (str or int, optional): sequence (i.e. list, tuple etc.)
             of column from rows to display as labels for the graph's first part.
-            Defaults to first_part_data.
-        second_part_name (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+            Defaults to None.
+        second_part_name (str or int, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as labels for the graph's second part.
-            Defaults to second_part_data.
+            Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
             mechanism if you know your part keys are disjoint, i.e. if no
             value for `first_part_col` can also be found in `second_part_col`.
@@ -102,13 +102,14 @@ def table_to_bipartite_graph(
     node_id = IncrementalIdRegister[Tuple[GenericKey, Any]]()
 
     for i, row in enumerate(table):
-        if first_part_name:
-            label1 = row[first_part_name]
-        else: label1 = row[first_part_col]
-
-        if second_part_name:
-            label2 = row[second_part_name]
-        else: label2 = row[second_part_col]
+        try:
+            label1 = row[first_part_col]
+            label2 = row[second_part_col]
+        except (IndexError, KeyError):
+            raise TypeError(
+                'row %i lacks the "%s" or the "%s" value'
+                % (i, first_part_col, second_part_col)
+            )
 
         if disjoint_keys:
             n1 = label1
@@ -119,18 +120,24 @@ def table_to_bipartite_graph(
             n2 = node_id[second_part_col, label2]
 
         if n1 not in graph:
-            node_attr = {node_part_attr: first_part_col, "label": str(label1)}
 
-            if first_part_data:
-                node_attr.update(collect_row_data(first_part_data, row))
+            if first_part_name is not None:
+                node_attr = {node_part_attr: first_part_name, "label": str(row[first_part_name])}
+            else:
+                node_attr = {node_part_attr: first_part_col, "label": str(label1)}
+                if first_part_data:
+                    node_attr.update(collect_row_data(first_part_data, row))
 
             graph.add_node(n1, **node_attr)
 
         if n2 not in graph:
-            node_attr = {node_part_attr: second_part_col, "label": str(label2)}
 
-            if second_part_data:
-                node_attr.update(collect_row_data(second_part_data, row))
+            if second_part_name is not None:
+                node_attr = {node_part_attr: second_part_name, "label": str(row[second_part_name])}
+            else:
+                node_attr = {node_part_attr: second_part_col, "label": str(label2)}
+                if second_part_data:
+                    node_attr.update(collect_row_data(second_part_data, row))
 
             graph.add_node(n2, **node_attr)
 
