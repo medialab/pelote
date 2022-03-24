@@ -61,8 +61,8 @@ def multiscale_backbone(
         national academy of sciences 106.16 (2009): 6483-6488.
 
     References:
-        - https://www.pnas.org/content/pnas/106/16/6483.full.pdf
-        - https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
+        paper: https://www.pnas.org/content/pnas/106/16/6483.full.pdf
+        wikipedia: https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
 
     Args:
         graph (nx.AnyGraph): target graph.

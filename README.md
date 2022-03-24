@@ -54,7 +54,6 @@ pip install pandas
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 
-
 ---
 
 ### Tabular data to graphs
@@ -100,7 +99,6 @@ If you enable this option wrongly, the result can be incorrect.
 *Returns*
 
 *nx.AnyGraph* - the bipartite graph.
-
 
 ---
 
@@ -177,7 +175,6 @@ columns to the edge dataframe based on target node data.
 
 *None* - (pd.DataFrame, pd.DataFrame)
 
-
 ---
 
 ### Graph projection
@@ -236,7 +233,6 @@ monopartite graph.
 
 *nx.Graph* - the projected monopartite graph.
 
-
 ---
 
 ### Graph sparsification
@@ -265,14 +261,12 @@ of the graph were we only kept "relevant" edges, as defined by a
 statistical test where we compare the likelihood of a weighted edge existing
 vs. the null model.
 
-Article:
-    Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting
-    the multiscale backbone of complex weighted networks." Proceedings of the
-    national academy of sciences 106.16 (2009): 6483-6488.
+> Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
 
-References:
-    - https://www.pnas.org/content/pnas/106/16/6483.full.pdf
-    - https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
+*References*
+
+- https://www.pnas.org/content/pnas/106/16/6483.full.pdf
+- https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
 
 *Arguments*
 
@@ -286,7 +280,6 @@ the edge's weight.
 *Returns*
 
 *nx.AnyGraph* - the sparse graph.
-
 
 ---
 
@@ -309,7 +302,6 @@ its weight.
 *Returns*
 
 *dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
-
 
 ---
 
@@ -373,7 +365,6 @@ if you want to remove it.
 
 *nx.AnyGraph* - the filtered graph.
 
-
 ---
 
 ### Learning
@@ -408,7 +399,6 @@ connected component's order.
 *Returns*
 
 *float* - The found threshold
-
 
 ---
 
