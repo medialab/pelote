@@ -2,12 +2,6 @@ import re
 from io import StringIO
 from functools import partial
 from docstring_parser import parse as docstring_parser, DocstringStyle
-from docstring_parser import (
-    DocstringParam,
-    DocstringReturns,
-    DocstringRaises,
-    DocstringDeprecated,
-)
 
 from docs.summary import DOCS
 
@@ -42,22 +36,6 @@ def assembling_description(docstring):
             d += " " + docstring.long_description
 
     return d.strip()
-
-
-EXAMPLE_BLACKLIST = (
-    DocstringParam,
-    DocstringReturns,
-    DocstringRaises,
-    DocstringDeprecated,
-)
-
-
-def examples_iter(docstring):
-    for meta in docstring.meta:
-        if isinstance(meta, EXAMPLE_BLACKLIST):
-            continue
-
-        yield meta.description
 
 
 DEFAULT_RE = re.compile(r".\s*Defaults? to (.+)\.", re.MULTILINE)
@@ -112,10 +90,10 @@ def build_docs(data):
             p()
             p(description)
 
-            for example in examples_iter(docstring):
+            for example in docstring.examples:
                 p()
                 p("```python")
-                p(example)
+                p(example.description)
                 p("```")
 
             p()
