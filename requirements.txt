@@ -1,4 +1,5 @@
 networkx==2.5.1
+typing-extensions==4.1.1
 
 # Dev Dependencies
 black==22.1.0
