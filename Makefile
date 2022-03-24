@@ -28,7 +28,7 @@ deps:
 
 format:
 	@echo Formatting code...
-	black $(SOURCE) benchmark docs test *.py
+	black $(SOURCE) experiments docs test *.py
 	@echo
 
 check:
