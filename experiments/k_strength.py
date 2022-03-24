@@ -31,13 +31,20 @@ with_quadrangles.add_edge(1, 6)
 with_quadrangles.add_edge(3, 5)
 with_quadrangles.add_edge(3, 6)
 with_quadrangles.add_edge(5, 6)
+with_quadrangles.add_edge(6, 7)
+with_quadrangles.add_edge(6, 8)
+with_quadrangles.add_edge(7, 8)
+
+with_quadrangles.add_edge(6, 4)
+with_quadrangles.add_edge(2, 6)
 
 
 def k_edge_strength(k, g):
     neighborhoods = {}
+    variant = Counter()
 
     for n0 in g:
-        N = Counter()
+        N = set()
 
         if g.degree[n0] < k - 1:
             continue
@@ -46,37 +53,41 @@ def k_edge_strength(k, g):
             if g.degree[n1] < k - 1:
                 continue
 
-            N[n1] += 1
-
             if k < 4:
+                N.add((n1,))
                 continue
 
             for n2 in g.neighbors(n1):
-                if n2 == n0 or n2 == n1:
+                if n2 == n1:
                     continue
 
                 if g.degree[n2] < k - 1:
                     continue
 
-                N[n2] += 1
+                if n0 != n2:
+                    s1, s2, s3 = sorted([n0, n1, n2])
+                    variant[(s1, s2)] += 1
+                    variant[(s2, s3)] += 1
+
+                N.add(tuple(sorted((n0, n1, n2))))
 
         neighborhoods[n0] = N
 
     strengths = {}
 
     for u, v in g.edges:
-        un = neighborhoods.get(u, Counter())
-        vn = neighborhoods.get(v, Counter())
+        un = neighborhoods.get(u, set())
+        vn = neighborhoods.get(v, set())
 
-        strengths[u, v] = len(set(un.items()).intersection(set(vn.items())))
+        strengths[u, v] = len(un.intersection(vn))
 
-    return neighborhoods, strengths
+    return neighborhoods, strengths, variant
 
 
 TESTS = [(3, with_triangles), (4, with_quadrangles)]
 
 for k, g in TESTS:
-    neighborhoods, strengths = k_edge_strength(k, g)
+    neighborhoods, strengths, variant = k_edge_strength(k, g)
 
     print("For k =", k)
     print("Neighborhood")
@@ -87,4 +98,10 @@ for k, g in TESTS:
     for e, strength in strengths.items():
         print(e, "=>", strength)
 
+    print("Variant")
+    for e, strength in variant.items():
+        print(e, "=>", strength)
+
     print()
+
+print(list(nx.all_simple_paths(with_quadrangles, 0, 2, cutoff=2)))
