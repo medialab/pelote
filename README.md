@@ -384,6 +384,10 @@ function using a very naive cost heuristic, but it works decently for typical
 cases as it emulates the method used by hand by some researchers when they
 perform this kind of task on Gephi, for instance.
 
+When working on metrics where lower is better (i.e. edge disparity), you
+can reverse the logic of the algorithm by tweaking `starting_threshold`
+and giving a negative `learning_rate`.
+
 *Arguments*
 
 * **graph** *nx.Graph* - Graph to sparsify.

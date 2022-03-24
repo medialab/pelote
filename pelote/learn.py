@@ -42,6 +42,10 @@ def floatsam_threshold_learner(
     cases as it emulates the method used by hand by some researchers when they
     perform this kind of task on Gephi, for instance.
 
+    When working on metrics where lower is better (i.e. edge disparity), you
+    can reverse the logic of the algorithm by tweaking `starting_threshold`
+    and giving a negative `learning_rate`.
+
     Args:
         graph (nx.Graph): Graph to sparsify.
         starting_threshold (float, optional): Starting similarity threshold.
