@@ -67,9 +67,7 @@ def edge_disparity(
     """
     check_graph(graph)
 
-    # todo: raise if multigraph, raise if directed or at least change code to optimize
-
-    if graph.is_directed():
+    if graph.is_directed() or graph.is_multigraph():
         raise NotImplementedError
 
     disparities: Dict[Tuple[Any, Any], float] = {}
