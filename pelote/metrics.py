@@ -15,7 +15,7 @@ def edge_disparity(
     Function computing the disparity score of each edge in the given graph. This
     score is typically used to extract the multiscale backbone of a weighted
     graph.
-    
+
         The formula from the paper (relying on integral calculus) can be simplified
     to become:
 
