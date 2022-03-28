@@ -28,7 +28,7 @@ deps:
 
 format:
 	@echo Formatting code...
-	black $(SOURCE) test scripts *.py
+	black $(SOURCE) experiments docs test *.py
 	@echo
 
 check:
@@ -42,7 +42,7 @@ unit:
 	@echo
 
 readme:
-	python -m scripts.build_docs > README.md
+	python -m docs.build > README.md
 
 upload:
 	python setup.py sdist bdist_wheel

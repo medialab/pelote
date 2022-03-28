@@ -54,7 +54,6 @@ pip install pandas
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
 
-
 ---
 
 ### Tabular data to graphs
@@ -100,7 +99,6 @@ If you enable this option wrongly, the result can be incorrect.
 *Returns*
 
 *nx.AnyGraph* - the bipartite graph.
-
 
 ---
 
@@ -177,7 +175,6 @@ columns to the edge dataframe based on target node data.
 
 *None* - (pd.DataFrame, pd.DataFrame)
 
-
 ---
 
 ### Graph projection
@@ -236,7 +233,6 @@ monopartite graph.
 
 *nx.Graph* - the projected monopartite graph.
 
-
 ---
 
 ### Graph sparsification
@@ -265,14 +261,12 @@ of the graph were we only kept "relevant" edges, as defined by a
 statistical test where we compare the likelihood of a weighted edge existing
 vs. the null model.
 
-Article:
-    Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting
-    the multiscale backbone of complex weighted networks." Proceedings of the
-    national academy of sciences 106.16 (2009): 6483-6488.
+> Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
 
-References:
-    - https://www.pnas.org/content/pnas/106/16/6483.full.pdf
-    - https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
+*References*
+
+- https://www.pnas.org/content/pnas/106/16/6483.full.pdf
+- https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
 
 *Arguments*
 
@@ -287,7 +281,6 @@ the edge's weight.
 
 *nx.AnyGraph* - the sparse graph.
 
-
 ---
 
 ### Miscellaneous graph-related metrics
@@ -297,6 +290,41 @@ the edge's weight.
 Function computing the disparity score of each edge in the given graph. This
 score is typically used to extract the multiscale backbone of a weighted
 graph.
+
+    The formula from the paper (relying on integral calculus) can be simplified
+to become:
+
+disparity(u, v) = min(
+(1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+(1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+)
+
+where normalizedWeight(u, v) = weight(u, v) / weightedDegree(u)
+where weightedDegree(u) = sum(weight(u, v) for v in neighbors(u))
+
+This score can sometimes be found reversed likewise:
+
+disparity(u, v) = max(
+1 - (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+1 - (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+)
+
+so that higher score means better edges. I chose to keep the metric close
+to the paper to keep the statistical test angle. This means that, in my
+implementation at least, a low score for an edge means a high relevance and
+increases its chances to be kept in the backbone.
+
+Note that this algorithm has no proper definition for directed graphs and
+is only useful if edges have varying weights. This said, it could be
+possible to compute the disparity score only based on edge direction, if
+we drop the min part.
+
+> Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
+
+*References*
+
+- https://www.pnas.org/content/pnas/106/16/6483.full.pdf
+- https://en.wikipedia.org/wiki/Disparity_filter_algorithm_of_weighted_network
 
 *Arguments*
 
@@ -309,7 +337,6 @@ its weight.
 *Returns*
 
 *dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
-
 
 ---
 
@@ -373,7 +400,6 @@ if you want to remove it.
 
 *nx.AnyGraph* - the filtered graph.
 
-
 ---
 
 ### Learning
@@ -393,10 +419,14 @@ function using a very naive cost heuristic, but it works decently for typical
 cases as it emulates the method used by hand by some researchers when they
 perform this kind of task on Gephi, for instance.
 
+When working on metrics where lower is better (i.e. edge disparity), you
+can reverse the logic of the algorithm by tweaking `starting_threshold`
+and giving a negative `learning_rate`.
+
 *Arguments*
 
 * **graph** *nx.Graph* - Graph to sparsify.
-* **starting_treshold** *float, optional* `0.0` - Starting similarity threshold.
+* **starting_threshold** *float, optional* `0.0` - Starting similarity threshold.
 * **learning_rate** *float, optional* `0.05` - How much to increase the threshold
 at each step of the algorithm.
 * **max_drifter_order** *int, optional* - Max order of component to detach itself
@@ -404,11 +434,12 @@ from the principal one before stopping the algorithm. If not
 provided it will default to the logarithm of the graph's largest
 connected component's order.
 * **edge_weight_attr** *str, optional* `"weight"` - Name of the weight attribute.
+* **on_epoch** *callable, optional* - Function called on each epoch of the
+algorithm with some metadata about iteration state.
 
 *Returns*
 
 *float* - The found threshold
-
 
 ---
 

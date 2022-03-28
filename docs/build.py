@@ -1,19 +1,41 @@
 import re
+import sys
 from io import StringIO
 from functools import partial
-from docstring_parser import parse as docstring_parser
-from docstring_parser import (
-    DocstringParam,
-    DocstringReturns,
-    DocstringRaises,
-    DocstringDeprecated,
-)
+from docstring_parser import parse as docstring_parser, DocstringStyle, DocstringMeta
+from docstring_parser.google import DEFAULT_SECTIONS, Section, SectionType
 
-from scripts.docs import DOCS
+from docs.summary import DOCS
 
+DEFAULT_SECTIONS.append(Section("Article", "article", SectionType.SINGULAR))
+DEFAULT_SECTIONS.append(Section("References", "references", SectionType.MULTIPLE))
+
+print_err = partial(print, file=sys.stderr)
 
 with open("./README.template.md") as f:
     TEMPLATE = f.read()
+
+
+def collapse(text):
+    return text.replace("\n", " ").strip()
+
+
+def get_article(docstring):
+    for meta in docstring.meta:
+        if type(meta) is DocstringMeta and meta.args == ["article"]:
+            return collapse(meta.description)
+
+    return None
+
+
+def get_references(docstring):
+    references = []
+
+    for meta in docstring.meta:
+        if type(meta) is DocstringMeta and meta.args[0] == "references":
+            references.append(meta.description)
+
+    return references
 
 
 def build_toc(data):
@@ -42,22 +64,6 @@ def assembling_description(docstring):
             d += " " + docstring.long_description
 
     return d.strip()
-
-
-EXAMPLE_BLACKLIST = (
-    DocstringParam,
-    DocstringReturns,
-    DocstringRaises,
-    DocstringDeprecated,
-)
-
-
-def examples_iter(docstring):
-    for meta in docstring.meta:
-        if isinstance(meta, EXAMPLE_BLACKLIST):
-            continue
-
-        yield meta.description
 
 
 DEFAULT_RE = re.compile(r".\s*Defaults? to (.+)\.", re.MULTILINE)
@@ -94,28 +100,41 @@ def build_docs(data):
 
     p = partial(print, file=f)
 
-    p()
-
     for item in data:
         p()
         p("---")
         p()
         p("### %s" % item["title"])
-        p()
 
         for fn in item["fns"]:
             name = fn.__name__
-            docstring = docstring_parser(fn.__doc__)
+            docstring = docstring_parser(fn.__doc__, DocstringStyle.GOOGLE)
             description = assembling_description(docstring)
 
+            p()
             p("#### %s" % name)
             p()
             p(description)
 
-            for example in examples_iter(docstring):
+            article = get_article(docstring)
+
+            if article is not None:
+                p()
+                p("> " + article)
+
+            references = get_references(docstring)
+
+            if references:
+                p()
+                p("*References*")
+                p()
+                for ref in references:
+                    p("- " + ref)
+
+            for example in docstring.examples:
                 p()
                 p("```python")
-                p(example)
+                p(example.description)
                 p("```")
 
             p()
@@ -124,13 +143,11 @@ def build_docs(data):
             for param in docstring.params:
                 p(template_param(param))
 
-            p()
-
             if docstring.returns:
+                p()
                 p("*Yields*" if docstring.returns.is_generator else "*Returns*")
                 p()
                 p(template_return(docstring.returns))
-                p()
 
     result = f.getvalue()
     f.close()

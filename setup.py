@@ -5,7 +5,7 @@ with open("./README.md", "r") as f:
 
 setup(
     name="pelote",
-    version="0.4.0",
+    version="0.4.1",
     description="Collection of network-related utilities for python.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -15,8 +15,8 @@ setup(
     author_email="guillaume.plique@sciencespo.fr",
     keywords="network",
     python_requires=">=3.6",
-    packages=find_packages(exclude=["docs", "test"]),
+    packages=find_packages(exclude=["docs", "experiments", "test"]),
     package_data={"docs": ["README.md"], "pelote": ["*.pyi"]},
-    install_requires=["networkx>=2,<3", "typing_extensions>=4"],
+    install_requires=["networkx>=2,<3", "typing-extensions>=4"],
     zip_safe=True,
 )
