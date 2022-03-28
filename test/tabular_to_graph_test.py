@@ -110,7 +110,7 @@ class TestToBipartiteGraph(object):
         assert are_same_graphs(g, expected, check_attributes=True)
 
     def test_names(self):
-        table = [{"person": "john", "color": "red", "light": "high", "age": 45, "vegetable": "asparagus", "fruit": "coconut"}]
+        table = [{"person": "john", "color": "red", "light": "high", "age": 45}]
 
         g = table_to_bipartite_graph(
             table,

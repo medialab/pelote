@@ -122,6 +122,8 @@ def table_to_bipartite_graph(
         if n1 not in graph:
 
             part_1 = first_part_name if first_part_name else first_part_col
+            if first_part_name == 0:
+                raise TypeError("first_part_name can't be none")
             node_attr = {node_part_attr: part_1, "label": str(label1)}
 
             if first_part_data:
@@ -132,6 +134,8 @@ def table_to_bipartite_graph(
         if n2 not in graph:
 
             part_2 = second_part_name if second_part_name else second_part_col
+            if second_part_name == 0:
+                raise TypeError("second_part_name can't be none")
             node_attr = {node_part_attr: part_2, "label": str(label2)}
 
             if second_part_data:
