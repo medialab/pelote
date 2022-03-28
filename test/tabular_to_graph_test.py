@@ -124,8 +124,8 @@ class TestToBipartiteGraph(object):
         )
 
         expected = nx.Graph()
-        expected.add_node("john", part="vegetable", age=45, label="asparagus",)
-        expected.add_node("red", part="fruit", light="high", label="coconut")
+        expected.add_node("john", part="vegetable", age=45, label="john",)
+        expected.add_node("red", part="fruit", light="high", label="red")
         expected.add_edge("john", "red", weight=1)
 
         assert are_same_graphs(g, expected, check_attributes=True)

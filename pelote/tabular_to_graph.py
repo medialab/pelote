@@ -76,11 +76,11 @@ def table_to_bipartite_graph(
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
             Defaults to None.
-        first_part_name (str or int, optional): sequence (i.e. list, tuple etc.)
-            of column from rows to display as labels for the graph's first part.
+        first_part_name (str or int, optional): string or number
+            to display as graph's first part's name.
             Defaults to None.
-        second_part_name (str or int, optional): sequence (i.e. list, tuple etc.)
-            of column from rows to keep as labels for the graph's second part.
+        second_part_name (str or int, optional): string or number
+            to display as graph's second part's name.
             Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
             mechanism if you know your part keys are disjoint, i.e. if no
@@ -121,23 +121,21 @@ def table_to_bipartite_graph(
 
         if n1 not in graph:
 
-            if first_part_name is not None:
-                node_attr = {node_part_attr: first_part_name, "label": str(row[first_part_name])}
-            else:
-                node_attr = {node_part_attr: first_part_col, "label": str(label1)}
-                if first_part_data:
-                    node_attr.update(collect_row_data(first_part_data, row))
+            part_1 = first_part_name if first_part_name else first_part_col
+            node_attr = {node_part_attr: part_1, "label": str(label1)}
+
+            if first_part_data:
+                node_attr.update(collect_row_data(first_part_data, row))
 
             graph.add_node(n1, **node_attr)
 
         if n2 not in graph:
 
-            if second_part_name is not None:
-                node_attr = {node_part_attr: second_part_name, "label": str(row[second_part_name])}
-            else:
-                node_attr = {node_part_attr: second_part_col, "label": str(label2)}
-                if second_part_data:
-                    node_attr.update(collect_row_data(second_part_data, row))
+            part_2 = second_part_name if second_part_name else second_part_col
+            node_attr = {node_part_attr: part_2, "label": str(label2)}
+
+            if second_part_data:
+                node_attr.update(collect_row_data(second_part_data, row))
 
             graph.add_node(n2, **node_attr)
 
