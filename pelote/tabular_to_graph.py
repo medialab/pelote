@@ -38,6 +38,8 @@ def table_to_bipartite_graph(
     edge_weight_attr: str = "weight",
     first_part_data: Optional[RowDataSpec] = None,
     second_part_data: Optional[RowDataSpec] = None,
+    first_part_name: Optional[GenericKey] = None,
+    second_part_name: Optional[GenericKey] = None,
     disjoint_keys: bool = False
 ) -> AnyGraph:
     """
@@ -73,6 +75,12 @@ def table_to_bipartite_graph(
             Can also be a function returning a dict of those attributes.
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
+            Defaults to None.
+        first_part_name (str or int, optional): string or number
+            to display as graph's first part's name.
+            Defaults to None.
+        second_part_name (str or int, optional): string or number
+            to display as graph's second part's name.
             Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
             mechanism if you know your part keys are disjoint, i.e. if no
@@ -112,7 +120,9 @@ def table_to_bipartite_graph(
             n2 = node_id[second_part_col, label2]
 
         if n1 not in graph:
-            node_attr = {node_part_attr: first_part_col, "label": str(label1)}
+
+            part_1 = first_part_name if first_part_name is not None else first_part_col
+            node_attr = {node_part_attr: part_1, "label": str(label1)}
 
             if first_part_data:
                 node_attr.update(collect_row_data(first_part_data, row))
@@ -120,7 +130,9 @@ def table_to_bipartite_graph(
             graph.add_node(n1, **node_attr)
 
         if n2 not in graph:
-            node_attr = {node_part_attr: second_part_col, "label": str(label2)}
+
+            part_2 = second_part_name if second_part_name is not None else second_part_col
+            node_attr = {node_part_attr: part_2, "label": str(label2)}
 
             if second_part_data:
                 node_attr.update(collect_row_data(second_part_data, row))
