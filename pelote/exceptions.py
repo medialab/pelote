@@ -6,5 +6,5 @@ class PeloteException(Exception):
     pass
 
 
-class MissingPandasException(Exception):
+class MissingPandasException(PeloteException):
     pass
