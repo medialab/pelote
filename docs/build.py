@@ -120,6 +120,7 @@ def build_docs(data):
 
             if article is not None:
                 p()
+                p("*Article*")
                 p("> " + article)
 
             references = get_references(docstring)

@@ -265,6 +265,7 @@ of the graph were we only kept "relevant" edges, as defined by a
 statistical test where we compare the likelihood of a weighted edge existing
 vs. the null model.
 
+*Article*
 > Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
 
 *References*
@@ -331,6 +332,7 @@ is only useful if edges have varying weights. This said, it could be
 possible to compute the disparity score only based on edge direction, if
 we drop the min part.
 
+*Article*
 > Serrano, M. Ángeles, Marián Boguná, and Alessandro Vespignani. "Extracting the multiscale backbone of complex weighted networks." Proceedings of the national academy of sciences 106.16 (2009): 6483-6488.
 
 *References*
