@@ -5,13 +5,13 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
-from typing import Sequence, Union, Callable, Dict, Tuple, Any, Optional
+from typing import Sequence, Union, Callable, Dict, Tuple, Any, Optional, Hashable
 
 from pelote.utils import IncrementalIdRegister
 from pelote.shim import is_dataframe
-from pelote.types import AnyGraph, Tabular, GenericKey, Indexable
+from pelote.types import AnyGraph, Tabular, Indexable
 
-RowDataSpec = Union[Sequence[GenericKey], Callable[[Indexable], Dict[Any, Any]]]
+RowDataSpec = Union[Sequence[Hashable], Callable[[Indexable], Dict[Any, Any]]]
 
 
 def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
@@ -31,15 +31,15 @@ def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
 
 def table_to_bipartite_graph(
     table: Tabular,
-    first_part_col: GenericKey,
-    second_part_col: GenericKey,
+    first_part_col: Hashable,
+    second_part_col: Hashable,
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
     first_part_data: Optional[RowDataSpec] = None,
     second_part_data: Optional[RowDataSpec] = None,
-    first_part_name: Optional[GenericKey] = None,
-    second_part_name: Optional[GenericKey] = None,
+    first_part_name: Optional[Hashable] = None,
+    second_part_name: Optional[Hashable] = None,
     disjoint_keys: bool = False
 ) -> AnyGraph:
     """
@@ -51,11 +51,11 @@ def table_to_bipartite_graph(
             yields indexable values such as dicts or lists. This can for instance
             be a list of dicts, a csv.DictReader stream etc. It also supports
             pandas DataFrame if the library is installed.
-        first_part_col (str or int): the name of the column containing the
+        first_part_col (Hashable): the name of the column containing the
             value representing a node in the resulting graph's first part.
             It could be the index if your rows are lists or a key if your rows
             are dicts instead.
-        second_par_col (str or int): the name of the column containing the
+        second_par_col (Hashable): the name of the column containing the
             value representing a node in the resulting graph's second part.
             It could be the index if your rows are lists or a key if your rows
             are dicts instead.
@@ -76,10 +76,9 @@ def table_to_bipartite_graph(
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
             Defaults to None.
-        first_part_name (str or int, optional): string or number
-            to display as graph's first part's name.
+        first_part_name (Hashable, optional): can be given to rename the first part.
             Defaults to None.
-        second_part_name (str or int, optional): string or number
+        second_part_name (Hashable, optional): can be given to rename the second part.
             to display as graph's second part's name.
             Defaults to None.
         disjoint_keys (bool, optional): set this to True as an optimization
@@ -95,11 +94,17 @@ def table_to_bipartite_graph(
     if first_part_col == second_part_col:
         raise TypeError("first_part_col and second_part_col must be different")
 
+    if first_part_name is None:
+        first_part_name = first_part_col
+
+    if second_part_name is None:
+        second_part_name = second_part_col
+
     if is_dataframe(table):
         table = (row for _, row in table.iterrows())
 
     graph = nx.Graph()
-    node_id = IncrementalIdRegister[Tuple[GenericKey, Any]]()
+    node_id = IncrementalIdRegister[Tuple[Hashable, Any]]()
 
     for i, row in enumerate(table):
         try:
@@ -120,9 +125,7 @@ def table_to_bipartite_graph(
             n2 = node_id[second_part_col, label2]
 
         if n1 not in graph:
-
-            part_1 = first_part_name if first_part_name is not None else first_part_col
-            node_attr = {node_part_attr: part_1, "label": str(label1)}
+            node_attr = {node_part_attr: first_part_name, "label": str(label1)}
 
             if first_part_data:
                 node_attr.update(collect_row_data(first_part_data, row))
@@ -130,9 +133,7 @@ def table_to_bipartite_graph(
             graph.add_node(n1, **node_attr)
 
         if n2 not in graph:
-
-            part_2 = second_part_name if second_part_name is not None else second_part_col
-            node_attr = {node_part_attr: part_2, "label": str(label2)}
+            node_attr = {node_part_attr: second_part_name, "label": str(label2)}
 
             if second_part_data:
                 node_attr.update(collect_row_data(second_part_data, row))

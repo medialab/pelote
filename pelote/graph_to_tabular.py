@@ -4,7 +4,7 @@
 #
 # Functions able to convert networkx graphs to various tabular data formats.
 #
-from typing import Optional, Tuple, Mapping, Iterable, Union, Dict, Any
+from typing import Optional, Tuple, Mapping, Iterable, Union
 
 from pelote.types import AnyGraph
 from pelote.shim import pd, check_pandas

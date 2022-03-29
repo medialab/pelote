@@ -69,11 +69,11 @@ be a large variety of things as long as it is 1. iterable and 2.
 yields indexable values such as dicts or lists. This can for instance
 be a list of dicts, a csv.DictReader stream etc. It also supports
 pandas DataFrame if the library is installed.
-* **first_part_col** *str or int* - the name of the column containing the
+* **first_part_col** *Hashable* - the name of the column containing the
 value representing a node in the resulting graph's first part.
 It could be the index if your rows are lists or a key if your rows
 are dicts instead.
-* **second_par_col** *str or int* - the name of the column containing the
+* **second_par_col** *Hashable* - the name of the column containing the
 value representing a node in the resulting graph's second part.
 It could be the index if your rows are lists or a key if your rows
 are dicts instead.
@@ -91,9 +91,8 @@ of column from rows to keep as node attributes for the graph's second part.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
-* **first_part_name** *str or int, optional* `None` - string or number
-to display as graph's first part's name.
-* **second_part_name** *str or int, optional* `None` - string or number
+* **first_part_name** *Hashable, optional* `None` - can be given to rename the first part.
+* **second_part_name** *Hashable, optional* `None` - can be given to rename the second part.
 to display as graph's second part's name.
 * **disjoint_keys** *bool, optional* `False` - set this to True as an optimization
 mechanism if you know your part keys are disjoint, i.e. if no

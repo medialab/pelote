@@ -8,7 +8,6 @@ from pelote.shim import pd
 
 # Misc utils
 FileHandle = Union[str, Path, IOBase]
-GenericKey = Union[str, int]
 
 
 class Indexable(Protocol):
