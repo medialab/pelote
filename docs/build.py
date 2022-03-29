@@ -5,7 +5,7 @@ from functools import partial
 from docstring_parser import parse as docstring_parser, DocstringStyle, DocstringMeta
 from docstring_parser.google import DEFAULT_SECTIONS, Section, SectionType
 
-from docs.summary import DOCS
+from pelote import __toc__ as DOCS
 
 DEFAULT_SECTIONS.append(Section("Article", "article", SectionType.SINGULAR))
 DEFAULT_SECTIONS.append(Section("References", "references", SectionType.MULTIPLE))
