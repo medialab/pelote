@@ -2,11 +2,16 @@
 # Pelote Metrics Unit Tests
 # =============================================================================
 import networkx as nx
+from pytest import raises
 
 from pelote.metrics import edge_disparity
 
 
 class TestEdgeDisparity(object):
+    def test_errors(self):
+        with raises(TypeError, match="directed"):
+            edge_disparity(nx.DiGraph())
+
     def test_identical_values(self):
         g = nx.Graph()
         g.add_weighted_edges_from(
@@ -46,4 +51,17 @@ class TestEdgeDisparity(object):
             (2, 4): 0.5,
         }
 
-        assert correct_result == disparities
+        assert disparities == correct_result
+
+        reversed_disparities = edge_disparity(g, reverse=True)
+
+        correct_result = {
+            (0, 1): 0.9945130315500685,
+            (0, 2): 0.9615384615384616,
+            (0, 3): 0.9615384615384616,
+            (1, 3): 0.07270233196159115,
+            (1, 4): 0.5,
+            (2, 4): 0.5,
+        }
+
+        assert reversed_disparities == correct_result

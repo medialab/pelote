@@ -16,26 +16,34 @@ def edge_disparity(
     score is typically used to extract the multiscale backbone of a weighted
     graph.
 
-        The formula from the paper (relying on integral calculus) can be simplified
+    The formula from the paper (relying on integral calculus) can be simplified
     to become:
 
+    ```
     disparity(u, v) = min(
-    (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
-    (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+        (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+        (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
     )
+    ```
 
-    where normalizedWeight(u, v) = weight(u, v) / weightedDegree(u)
-    where weightedDegree(u) = sum(weight(u, v) for v in neighbors(u))
+    where
+
+    ```
+    normalizedWeight(u, v) = weight(u, v) / weightedDegree(u)
+    weightedDegree(u) = sum(weight(u, v) for v in neighbors(u))
+    ```
 
     This score can sometimes be found reversed likewise:
 
+    ```
     disparity(u, v) = max(
-    1 - (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
-    1 - (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+        1 - (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+        1 - (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
     )
+    ```
 
-    so that higher score means better edges. I chose to keep the metric close
-    to the paper to keep the statistical test angle. This means that, in my
+    so that higher score means better edges. We chose to keep the metric close
+    to the paper to keep the statistical test angle. This means that, in this
     implementation at least, a low score for an edge means a high relevance and
     increases its chances to be kept in the backbone.
 
@@ -58,17 +66,16 @@ def edge_disparity(
         edge_weight_attr (str, optional): name of the edge attribute containing
             its weight.
             Defaults to "weight".
-        reverse (bool, optional): whether to reverse the metric, i.e. return
-            `1 - score`. Defaults to False.
+        reverse (bool, optional): whether to reverse the metric, i.e. higher weight
+            means more relevant edges. Defaults to False.
 
     Returns:
         dict: Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
-
     """
     check_graph(graph)
 
     if graph.is_directed() or graph.is_multigraph():
-        raise NotImplementedError
+        raise TypeError("edge_disparity cannot work on a directed or multi graph")
 
     disparities: Dict[Tuple[Any, Any], float] = {}
 
@@ -93,11 +100,14 @@ def edge_disparity(
             source_score = (1 - normalized_weight_source) ** (source_degree - 1)
             target_score = (1 - normalized_weight_target) ** (target_degree - 1)
 
-            d = min(source_score, target_score)
-
             if reverse:
-                d = 1.0 - d
+                source_score = 1.0 - source_score
+                target_score = 1.0 - target_score
 
-            disparities[(source, target)] = d
+            disparities[(source, target)] = (
+                min(source_score, target_score)
+                if not reverse
+                else max(source_score, target_score)
+            )
 
     return disparities

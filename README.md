@@ -295,26 +295,34 @@ Function computing the disparity score of each edge in the given graph. This
 score is typically used to extract the multiscale backbone of a weighted
 graph.
 
-    The formula from the paper (relying on integral calculus) can be simplified
+The formula from the paper (relying on integral calculus) can be simplified
 to become:
 
+```
 disparity(u, v) = min(
-(1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
-(1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+    (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+    (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
 )
+```
 
-where normalizedWeight(u, v) = weight(u, v) / weightedDegree(u)
-where weightedDegree(u) = sum(weight(u, v) for v in neighbors(u))
+where
+
+```
+normalizedWeight(u, v) = weight(u, v) / weightedDegree(u)
+weightedDegree(u) = sum(weight(u, v) for v in neighbors(u))
+```
 
 This score can sometimes be found reversed likewise:
 
+```
 disparity(u, v) = max(
-1 - (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
-1 - (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
+    1 - (1 - normalizedWeight(u, v)) ^ (degree(u) - 1)),
+    1 - (1 - normalizedWeight(v, u)) ^ (degree(v) - 1))
 )
+```
 
-so that higher score means better edges. I chose to keep the metric close
-to the paper to keep the statistical test angle. This means that, in my
+so that higher score means better edges. We chose to keep the metric close
+to the paper to keep the statistical test angle. This means that, in this
 implementation at least, a low score for an edge means a high relevance and
 increases its chances to be kept in the backbone.
 
@@ -335,8 +343,8 @@ we drop the min part.
 * **graph** *nx.AnyGraph* - target graph.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 its weight.
-* **reverse** *bool, optional* `False` - whether to reverse the metric, i.e. return
-`1 - score`.
+* **reverse** *bool, optional* `False` - whether to reverse the metric, i.e. higher weight
+means more relevant edges.
 
 *Returns*
 
