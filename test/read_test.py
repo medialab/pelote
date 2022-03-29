@@ -18,8 +18,20 @@ class TestReadGraphologyJson(object):
         with raises(TypeError):
             parse_graphology_json(cast(GraphologySerializedGraph, {}))
 
+        with raises(TypeError, match="mixed"):
+            data = {
+                "options": {"type": "mixed", "multi": False, "allowSelfLoops": True},
+                "nodes": [{"key": "one"}, {"key": "two"}, {"key": "three"}],
+                "edges": [
+                    {"source": "one", "target": "two", "undirected": True},
+                    {"source": "two", "target": "three", "undirected": False},
+                ],
+            }
+
+            parse_graphology_json(data)
+
     def test_parsing_basic(self):
-        data: GraphologySerializedGraph = {
+        data = {
             "options": {"type": "directed", "multi": False, "allowSelfLoops": True},
             "nodes": [
                 {"key": "one", "attributes": {"hello": "world"}},
@@ -40,7 +52,7 @@ class TestReadGraphologyJson(object):
         assert isinstance(g, nx.DiGraph)
 
     def test_parsing_multi(self):
-        data: GraphologySerializedGraph = {
+        data = {
             "options": {"type": "undirected", "multi": True, "allowSelfLoops": True},
             "nodes": [
                 {"key": "one", "attributes": {"hello": "world"}},
@@ -94,3 +106,28 @@ class TestReadGraphologyJson(object):
         with open(les_miserables_path) as f:
             data = json.load(f)
             check_graph(read_graphology_json(data))
+
+    def test_falsely_mixed(self):
+        data = {
+            "options": {"type": "mixed", "multi": False, "allowSelfLoops": True},
+            "nodes": [{"key": "one"}, {"key": "two"}, {"key": "three"}],
+            "edges": [
+                {"source": "one", "target": "two", "undirected": True},
+            ],
+        }
+
+        g = parse_graphology_json(data)
+
+        assert isinstance(g, nx.Graph)
+
+        data = {
+            "options": {"type": "mixed", "multi": False, "allowSelfLoops": True},
+            "nodes": [{"key": "one"}, {"key": "two"}, {"key": "three"}],
+            "edges": [
+                {"source": "one", "target": "two"},
+            ],
+        }
+
+        g = parse_graphology_json(data)
+
+        assert isinstance(g, nx.DiGraph)

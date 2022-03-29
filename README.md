@@ -91,6 +91,10 @@ of column from rows to keep as node attributes for the graph's second part.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
+* **first_part_name** *str or int, optional* `None` - string or number
+to display as graph's first part's name.
+* **second_part_name** *str or int, optional* `None` - string or number
+to display as graph's second part's name.
 * **disjoint_keys** *bool, optional* `False` - set this to True as an optimization
 mechanism if you know your part keys are disjoint, i.e. if no
 value for `first_part_col` can also be found in `second_part_col`.
@@ -447,7 +451,11 @@ algorithm with some metadata about iteration state.
 
 #### read_graphology_json
 
-Function reading and parsing the given json file as a networkx graph.
+Function reading and parsing the given json file representing a serialized
+[graphology](https://graphology.github.io/) graph as a networkx graph.
+
+Note that this function cannot parse a true mixed graph since this is not
+supported by networkx.
 
 *Arguments*
 
