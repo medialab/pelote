@@ -165,10 +165,15 @@ def _edges_table_to_graph(
     edge_source_col: Hashable,
     edge_target_col: Hashable,
     edge_weight_col: Hashable,
-    nodes_exist: bool = False,
+    add_missing_nodes: bool = True,
 ) -> AnyGraph:
     if edge_weight_col:
-        if nodes_exist:
+        if add_missing_nodes:
+            graph.add_weighted_edges_from(
+                (row[edge_source_col], row[edge_target_col], row[edge_weight_col])
+                for row in edge_table
+            )
+        else:
             graph.add_weighted_edges_from(
                 (
                     check_node_exists(graph, row[edge_source_col]),
@@ -177,13 +182,13 @@ def _edges_table_to_graph(
                 )
                 for row in edge_table
             )
-        else:
-            graph.add_weighted_edges_from(
-                (row[edge_source_col], row[edge_target_col], row[edge_weight_col])
-                for row in edge_table
-            )
+
     else:
-        if nodes_exist:
+        if add_missing_nodes:
+            graph.add_edges_from(
+                (row[edge_source_col], row[edge_target_col]) for row in edge_table
+            )
+        else:
             graph.add_edges_from(
                 (
                     check_node_exists(graph, row[edge_source_col]),
@@ -191,10 +196,7 @@ def _edges_table_to_graph(
                 )
                 for row in edge_table
             )
-        else:
-            graph.add_edges_from(
-                (row[edge_source_col], row[edge_target_col]) for row in edge_table
-            )
+
     return graph
 
 
@@ -247,7 +249,7 @@ def tables_to_graph(
     *,
     edge_weight_col: Optional[Hashable] = None,
     node_data: Sequence[Hashable] = [],
-    nodes_exist: bool = True,
+    add_missing_nodes: bool = False,
 ) -> AnyGraph:
     """
     Function creating a graph from two tables: a table of nodes and a table of edges.
@@ -276,7 +278,7 @@ def tables_to_graph(
         node_data (Sequence, optional): sequence (i.e. list, tuple etc.)
             of columns' names from the nodes_table to keep as node attributes in the resulting graph.
             Defaults to [].
-        nodes_exist (bool, optional): set this to True to check that the edges' sources and targets
+        add_missing_nodes (bool, optional): set this to True to check that the edges' sources and targets
             in the edges_table are all defined in the nodes_table.
             Defaults to True.
 
@@ -306,5 +308,5 @@ def tables_to_graph(
         edge_source_col,
         edge_target_col,
         edge_weight_col,
-        nodes_exist=nodes_exist,
+        add_missing_nodes=add_missing_nodes,
     )

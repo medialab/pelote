@@ -139,7 +139,9 @@ class TestToBipartiteGraph(object):
 class TestTablesToGraph(object):
     def test_errors(self):
         tables_to_graph(
-            [{"key": "john"}], [{"source": "john", "target": "lisa"}], nodes_exist=False
+            [{"key": "john"}],
+            [{"source": "john", "target": "lisa"}],
+            add_missing_nodes=True,
         )
 
         with raises(KeyError):
