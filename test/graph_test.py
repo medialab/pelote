@@ -6,14 +6,16 @@ from pytest import raises
 from collections import Counter
 
 from pelote.graph import (
+    are_same_graphs,
     largest_connected_component,
     crop_to_largest_connected_component,
     connected_component_orders,
+    filter_edges,
 )
 
 
-class TestGraph(object):
-    def test_largest_connected_component(self):
+class TestLargestConnectedComponent(object):
+    def test_basics(self):
         g = nx.MultiGraph()
         g.add_edge(0, 1)
         g.add_edge(1, 2)
@@ -84,3 +86,17 @@ class TestConnectedComponentSizes(object):
         assert Counter(
             connected_component_orders(g, lambda s, t, e: not e.get("skip", False))
         ) == Counter([3, 2, 1, 1, 1])
+
+
+class TestFilterEdges(object):
+    def test_basics(self):
+        g = nx.Graph()
+        g.add_weighted_edges_from([(0, 1, 10), (1, 2, 5), (2, 3, 5)])
+
+        h = filter_edges(g, lambda u, v, a: a["weight"] >= 10)
+
+        expected = nx.Graph()
+        expected.add_nodes_from(range(4))
+        expected.add_edge(0, 1, weight=10)
+
+        assert are_same_graphs(h, expected, check_attributes=True)

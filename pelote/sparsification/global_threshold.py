@@ -2,17 +2,33 @@
 # Pelote Global Threshold Sparsification
 # =============================================================================
 #
-from typing import Optional
-
 from pelote.types import AnyGraph
-from pelote.graph import filter_edges, check_graph
+from pelote.sparsification.utils import Sparsifier
+
+
+class GlobalThresholdSparsifier(Sparsifier):
+    def __init__(
+        self,
+        weight_threshold: float,
+        edge_weight_attr: str = "weight",
+        reverse: bool = False,
+    ):
+        self.weight_threshold = weight_threshold
+        self.edge_weight_attr = edge_weight_attr
+        self.reverse = reverse
+
+    def _get_edge_predicate(self):
+        if self.reverse:
+            return lambda _u, _v, a: a[self.edge_weight_attr] <= self.weight_threshold
+
+        return lambda _u, _v, a: a[self.edge_weight_attr] >= self.weight_threshold
 
 
 def global_threshold_sparsification(
     graph: AnyGraph,
     weight_threshold: float,
     edge_weight_attr: str = "weight",
-    reverse: Optional[bool] = False,
+    reverse: bool = False,
 ) -> AnyGraph:
     """
     Function returning a copy of the given graph without edges whose weight
@@ -28,16 +44,8 @@ def global_threshold_sparsification(
     Returns:
         nx.AnyGraph: the sparse graph.
     """
-    check_graph(graph)
-
-    if reverse:
-
-        def edge_predicate(u, v, a):
-            return a[edge_weight_attr] <= weight_threshold
-
-    else:
-
-        def edge_predicate(u, v, a):
-            return a[edge_weight_attr] >= weight_threshold
-
-    return filter_edges(graph, edge_predicate)
+    return GlobalThresholdSparsifier(
+        weight_threshold=weight_threshold,
+        edge_weight_attr=edge_weight_attr,
+        reverse=reverse,
+    ).filter(graph)
