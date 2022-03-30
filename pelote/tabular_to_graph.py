@@ -160,11 +160,11 @@ def table_to_bipartite_graph(
 
 
 def _edges_table_to_graph(
+    graph: AnyGraph,
     edge_table: Tabular,
     edge_source_col: Hashable,
     edge_target_col: Hashable,
-    edge_weight_col: Optional[Hashable],
-    graph: AnyGraph = nx.Graph(),
+    edge_weight_col: Hashable,
     nodes_exist: bool = False,
 ) -> AnyGraph:
     if edge_weight_col:
@@ -231,8 +231,10 @@ def edges_table_to_graph(
     if is_dataframe(edge_table):
         edge_table = (row for _, row in edge_table.iterrows())
 
+    graph = nx.Graph()
+
     return _edges_table_to_graph(
-        edge_table, edge_source_col, edge_target_col, edge_weight_col
+        graph, edge_table, edge_source_col, edge_target_col, edge_weight_col
     )
 
 
@@ -299,10 +301,10 @@ def tables_to_graph(
     )
 
     return _edges_table_to_graph(
+        graph,
         edges_table,
         edge_source_col,
         edge_target_col,
         edge_weight_col,
-        graph=graph,
         nodes_exist=nodes_exist,
     )
