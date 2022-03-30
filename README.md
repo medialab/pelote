@@ -131,6 +131,7 @@ containing the edges' weights.
 of columns' names from the nodes_table to keep as node attributes in the resulting graph.
 * **add_missing_nodes** *bool, optional* `True` - set this to True to check that the edges' sources and targets
 in the edges_table are all defined in the nodes_table.
+* **directed** *bool, optional* `False` - whether the resulting graph must be directed.
 
 *Returns*
 
@@ -153,6 +154,7 @@ nodes in the edges_table.
 nodes in the edges_table.
 * **edge_weight_col** *Hashable, optional* `None: the graph is not weighted` - if the graph is weighted, the name of the column
 containing the edges' weights.
+* **directed** *bool, optional* `False` - whether the resulting graph must be directed.
 
 *Returns*
 

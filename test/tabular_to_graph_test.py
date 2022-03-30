@@ -192,6 +192,33 @@ class TestTablesToGraph(object):
 
         assert are_same_graphs(g, expected, check_attributes=True)
 
+    def test_directed(self):
+        table_nodes = [
+            {"key": "john"},
+            {"key": "jack"},
+            {"key": "lisa"},
+        ]
+
+        table_edges = [
+            {"source": "john", "target": "jack", "weight": 0.5},
+            {"source": "jack", "target": "lisa", "weight": 0.5},
+            {"source": "lisa", "target": "jack", "weight": 0.5},
+        ]
+
+        g = tables_to_graph(
+            table_nodes, table_edges, edge_weight_col="weight", directed=True
+        )
+
+        expected = nx.DiGraph()
+        expected.add_node("john")
+        expected.add_node("jack")
+        expected.add_node("lisa")
+        expected.add_edge("john", "jack", weight=0.5)
+        expected.add_edge("jack", "lisa", weight=0.5)
+        expected.add_edge("lisa", "jack", weight=0.5)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
     def test_custom_attributes(self):
         table_nodes = [
             {"key": "john", "color": "blue"},

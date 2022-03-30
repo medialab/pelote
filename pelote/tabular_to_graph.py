@@ -206,6 +206,7 @@ def edges_table_to_graph(
     edge_target_col: Hashable = "target",
     *,
     edge_weight_col: Optional[Hashable] = None,
+    directed: bool = False,
 ) -> AnyGraph:
     """
     Function creating a graph from a table of edges.
@@ -225,6 +226,8 @@ def edges_table_to_graph(
         edge_weight_col (Hashable, optional): if the graph is weighted, the name of the column
             containing the edges' weights.
             Defaults to None: the graph is not weighted.
+        directed (bool, optional): whether the resulting graph must be directed.
+            Defaults to False.
 
     Returns:
         nx.AnyGraph: the resulting graph.
@@ -233,7 +236,12 @@ def edges_table_to_graph(
     if is_dataframe(edge_table):
         edge_table = (row for _, row in edge_table.iterrows())
 
-    graph = nx.Graph()
+    graph: AnyGraph
+
+    if directed:
+        graph = nx.DiGraph()
+    else:
+        graph = nx.Graph()
 
     return _edges_table_to_graph(
         graph, edge_table, edge_source_col, edge_target_col, edge_weight_col
@@ -250,6 +258,7 @@ def tables_to_graph(
     edge_weight_col: Optional[Hashable] = None,
     node_data: Sequence[Hashable] = [],
     add_missing_nodes: bool = False,
+    directed: bool = False,
 ) -> AnyGraph:
     """
     Function creating a graph from two tables: a table of nodes and a table of edges.
@@ -281,6 +290,8 @@ def tables_to_graph(
         add_missing_nodes (bool, optional): set this to True to check that the edges' sources and targets
             in the edges_table are all defined in the nodes_table.
             Defaults to True.
+        directed (bool, optional): whether the resulting graph must be directed.
+            Defaults to False.
 
     Returns:
         nx.AnyGraph: the resulting graph.
@@ -292,7 +303,12 @@ def tables_to_graph(
     if is_dataframe(nodes_table):
         nodes_table = (row for _, row in nodes_table.iterrows())
 
-    graph = nx.Graph()
+    graph: AnyGraph
+
+    if directed:
+        graph = nx.DiGraph()
+    else:
+        graph = nx.Graph()
 
     graph.add_nodes_from(
         (
