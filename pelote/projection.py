@@ -30,9 +30,10 @@ MONOPARTITE_PROJECTION_METRICS = {
     "cosine",
     "dice",
     "binary_cosine",
+    "pmi"
 }
 MonopartiteProjectionMetric = Literal[
-    "jaccard", "overlap", "cosine", "dice", "binary_cosine"
+    "jaccard", "overlap", "cosine", "dice", "binary_cosine", "pmi"
 ]
 
 
@@ -59,6 +60,9 @@ def compute_metric(
 
     if metric == "binary_cosine":
         return i / math.sqrt(norm1 * norm2)
+
+    if metric == "pmi":
+        return math.log(i/(norm1 * norm2))
 
     return i
 
