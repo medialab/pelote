@@ -33,6 +33,8 @@ pip install pandas
 
 * [Tabular data to graphs](#tabular-data-to-graphs)
   * [table_to_bipartite_graph](#table_to_bipartite_graph)
+  * [tables_to_graph](#tables_to_graph)
+  * [edges_table_to_graph](#edges_table_to_graph)
 * [Graphs to tabular data](#graphs-to-tabular-data)
   * [graph_to_nodes_dataframe](#graph_to_nodes_dataframe)
   * [graph_to_edges_dataframe](#graph_to_edges_dataframe)
@@ -102,6 +104,59 @@ If you enable this option wrongly, the result can be incorrect.
 *Returns*
 
 *nx.AnyGraph* - the bipartite graph.
+
+#### tables_to_graph
+
+Function creating a graph from two tables: a table of nodes and a table of edges.
+
+*Arguments*
+
+* **nodes_table** *Iterable[Indexable] or pd.DataFrame* - input nodes in tabular
+format. It can be a large variety of things as long as it is 1. iterable
+and 2. yields indexable values such as dicts or lists. This can for
+instance be a list of dicts, a csv.DictReader stream etc. It also supports
+pandas DataFrame if the library is installed.
+* **edges_table** *Iterable[Indexable] or pd.DataFrame* - input edges in tabular
+format.
+* **node_col** *Hashable, optional* `"key"` - the name of the column containing the nodes in the nodes_table.
+It could be the index if your rows are lists or a key if your rows
+are dicts instead.
+* **edge_source_col** *Hashable, optional* `"source"` - the name of the column containing the edges' source
+nodes in the edges_table.
+* **edge_target_col** *Hashable, optional* `"target"` - the name of the column containing the edges' target
+nodes in the edges_table.
+* **edge_weight_col** *Hashable, optional* `None: the graph is not weighted` - if the graph is weighted, the name of the column
+containing the edges' weights.
+* **node_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.)
+of columns' names from the nodes_table to keep as node attributes in the resulting graph.
+* **nodes_exist** *bool, optional* `True` - set this to True to check that the edges' sources and targets
+in the edges_table are all defined in the nodes_table.
+
+*Returns*
+
+*nx.AnyGraph* - the resulting graph.
+
+#### edges_table_to_graph
+
+Function creating a graph from a table of edges.
+
+*Arguments*
+
+* **edges_table** *Iterable[Indexable] or pd.DataFrame* - input edges in tabular
+format. It can be a large variety of things as long as it is 1. iterable
+and 2. yields indexable values such as dicts or lists. This can for
+instance be a list of dicts, a csv.DictReader stream etc. It also supports
+pandas DataFrame if the library is installed.
+* **edge_source_col** *Hashable, optional* `"source"` - the name of the column containing the edges' source
+nodes in the edges_table.
+* **edge_target_col** *Hashable, optional* `"target"` - the name of the column containing the edges' target
+nodes in the edges_table.
+* **edge_weight_col** *Hashable, optional* `None: the graph is not weighted` - if the graph is weighted, the name of the column
+containing the edges' weights.
+
+*Returns*
+
+*nx.AnyGraph* - the resulting graph.
 
 ---
 

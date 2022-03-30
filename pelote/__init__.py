@@ -18,7 +18,11 @@ from pelote.metrics import edge_disparity
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.sparsification import global_threshold_sparsification, multiscale_backbone
-from pelote.tabular_to_graph import table_to_bipartite_graph, tables_to_graph
+from pelote.tabular_to_graph import (
+    table_to_bipartite_graph,
+    tables_to_graph,
+    edges_table_to_graph,
+)
 
 __all__ = [
     "largest_connected_component",
@@ -36,10 +40,18 @@ __all__ = [
     "multiscale_backbone",
     "table_to_bipartite_graph",
     "tables_to_graph",
+    "edges_table_to_graph",
 ]
 
 __toc__ = [
-    {"title": "Tabular data to graphs", "fns": [table_to_bipartite_graph]},
+    {
+        "title": "Tabular data to graphs",
+        "fns": [
+            table_to_bipartite_graph,
+            tables_to_graph,
+            edges_table_to_graph,
+        ],
+    },
     {
         "title": "Graphs to tabular data",
         "fns": [
