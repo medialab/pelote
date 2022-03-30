@@ -5,9 +5,19 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
-from typing import Sequence, Union, Callable, Dict, Tuple, Any, Optional, Hashable
+from typing import (
+    Sequence,
+    Union,
+    Callable,
+    Dict,
+    Tuple,
+    Any,
+    Optional,
+    Hashable,
+    Iterable,
+)
 
-from pelote.utils import IncrementalIdRegister
+from pelote.utils import IncrementalIdRegister, check_node_exists
 from pelote.shim import is_dataframe
 from pelote.types import AnyGraph, Tabular, Indexable
 
@@ -40,7 +50,7 @@ def table_to_bipartite_graph(
     second_part_data: Optional[RowDataSpec] = None,
     first_part_name: Optional[Hashable] = None,
     second_part_name: Optional[Hashable] = None,
-    disjoint_keys: bool = False
+    disjoint_keys: bool = False,
 ) -> AnyGraph:
     """
     Function creating a bipartite graph from the given tabular data.
@@ -147,3 +157,122 @@ def table_to_bipartite_graph(
             graph.add_edge(n1, n2, **edge_attr)
 
     return graph
+
+
+def _edges_table_to_graph(
+    edge_table: Tabular,
+    edge_source_col: Hashable,
+    edge_target_col: Hashable,
+    edge_weight_col: Optional[Hashable],
+    graph: AnyGraph = nx.Graph(),
+    nodes_exist: bool = False,
+) -> AnyGraph:
+    if edge_weight_col:
+        if nodes_exist:
+            graph.add_weighted_edges_from(
+                (
+                    check_node_exists(graph, row[edge_source_col]),
+                    check_node_exists(graph, row[edge_target_col]),
+                    row[edge_weight_col],
+                )
+                for row in edge_table
+            )
+        else:
+            graph.add_weighted_edges_from(
+                (row[edge_source_col], row[edge_target_col], row[edge_weight_col])
+                for row in edge_table
+            )
+    else:
+        if nodes_exist:
+            graph.add_edges_from(
+                (
+                    check_node_exists(graph, row[edge_source_col]),
+                    check_node_exists(graph, row[edge_target_col]),
+                )
+                for row in edge_table
+            )
+        else:
+            graph.add_edges_from(
+                (row[edge_source_col], row[edge_target_col]) for row in edge_table
+            )
+    return graph
+
+
+def edges_table_to_graph(
+    edge_table: Tabular,
+    edge_source_col: Hashable = "source",
+    edge_target_col: Hashable = "target",
+    *,
+    edge_weight_col: Optional[Hashable] = None,
+) -> AnyGraph:
+    """
+    Function creating a bipartite graph from the given tabular data.
+
+    Args:
+        table (Iterable[Indexable] or pd.DataFrame): input tabular data. It can
+            be a large variety of things as long as it is 1. iterable and 2.
+            yields indexable values such as dicts or lists. This can for instance
+            be a list of dicts, a csv.DictReader stream etc. It also supports
+            pandas DataFrame if the library is installed.
+
+    Returns:
+        nx.AnyGraph: the resulting graph.
+    """
+
+    if is_dataframe(edge_table):
+        edge_table = (row for _, row in edge_table.iterrows())
+
+    return _edges_table_to_graph(
+        edge_table, edge_source_col, edge_target_col, edge_weight_col
+    )
+
+
+def tables_to_graph(
+    node_table: Tabular,
+    edge_table: Tabular,
+    node_col: Hashable = "key",
+    edge_source_col: Hashable = "source",
+    edge_target_col: Hashable = "target",
+    *,
+    edge_weight_col: Optional[Hashable] = None,
+    node_data: Iterable[Hashable] = [],
+    nodes_exist: bool = True,
+) -> AnyGraph:
+    """
+    Function creating a bipartite graph from the given tabular data.
+
+    Args:
+        table (Iterable[Indexable] or pd.DataFrame): input tabular data. It can
+            be a large variety of things as long as it is 1. iterable and 2.
+            yields indexable values such as dicts or lists. This can for instance
+            be a list of dicts, a csv.DictReader stream etc. It also supports
+            pandas DataFrame if the library is installed.
+
+    Returns:
+        nx.AnyGraph: the resulting graph.
+    """
+
+    if is_dataframe(edge_table):
+        edge_table = (row for _, row in edge_table.iterrows())
+
+    if is_dataframe(node_table):
+        node_table = (row for _, row in node_table.iterrows())
+
+    graph = nx.Graph()
+
+    graph.add_nodes_from(
+        (
+            row[node_col],
+            {attr: row[attr] for attr in node_data},
+        )
+        for row in node_table
+    )
+
+    return _edges_table_to_graph(
+        edge_table,
+        edge_source_col,
+        edge_target_col,
+        edge_weight_col,
+        graph=graph,
+        nodes_exist=nodes_exist,
+    )

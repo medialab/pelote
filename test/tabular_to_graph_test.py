@@ -5,7 +5,7 @@ import networkx as nx
 from pytest import raises
 
 from pelote.graph import are_same_graphs
-from pelote import table_to_bipartite_graph
+from pelote import table_to_bipartite_graph, tables_to_graph
 
 
 class TestToBipartiteGraph(object):
@@ -120,13 +120,98 @@ class TestToBipartiteGraph(object):
             second_part_data=("light",),
             disjoint_keys=True,
             first_part_name="vegetable",
-            second_part_name="fruit"
+            second_part_name="fruit",
         )
 
         expected = nx.Graph()
-        expected.add_node("john", part="vegetable", age=45, label="john",)
+        expected.add_node(
+            "john",
+            part="vegetable",
+            age=45,
+            label="john",
+        )
         expected.add_node("red", part="fruit", light="high", label="red")
         expected.add_edge("john", "red", weight=1)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+
+class TestTablesToGraph(object):
+    def test_errors(self):
+        tables_to_graph(
+            [{"key": "john"}], [{"source": "john", "target": "lisa"}], nodes_exist=False
+        )
+
+        with raises(ValueError):
+            tables_to_graph([{"key": "john"}], [{"source": "john", "target": "lisa"}])
+
+    def test_basic(self):
+        table_nodes = [
+            {"key": "john"},
+            {"key": "jack"},
+            {"key": "lisa"},
+        ]
+        table_edges = [
+            {"source": "john", "target": "jack"},
+            {"source": "jack", "target": "lisa"},
+        ]
+
+        g = tables_to_graph(table_nodes, table_edges)
+
+        expected = nx.Graph()
+        expected.add_node("john")
+        expected.add_node("jack")
+        expected.add_node("lisa")
+        expected.add_edge("john", "jack")
+        expected.add_edge("jack", "lisa")
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+    def test_weight(self):
+        table_nodes = [
+            {"key": "john"},
+            {"key": "jack"},
+            {"key": "lisa"},
+        ]
+
+        table_edges = [
+            {"source": "john", "target": "jack", "weight": 0.5},
+            {"source": "jack", "target": "lisa", "weight": 0.5},
+        ]
+
+        g = tables_to_graph(table_nodes, table_edges, edge_weight_col="weight")
+
+        expected = nx.Graph()
+        expected.add_node("john")
+        expected.add_node("jack")
+        expected.add_node("lisa")
+        expected.add_edge("john", "jack", weight=0.5)
+        expected.add_edge("jack", "lisa", weight=0.5)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+    def test_custom_attributes(self):
+        table_nodes = [
+            {"key": "john", "color": "blue"},
+            {"key": "jack", "color": "green"},
+            {"key": "lisa", "color": "green"},
+        ]
+
+        table_edges = [
+            {"source": "john", "target": "jack", "weight": 0.5},
+            {"source": "jack", "target": "lisa", "weight": 0.5},
+        ]
+
+        g = tables_to_graph(
+            table_nodes, table_edges, edge_weight_col="weight", node_data=["color"]
+        )
+
+        expected = nx.Graph()
+        expected.add_node("john", color="blue")
+        expected.add_node("jack", color="green")
+        expected.add_node("lisa", color="green")
+        expected.add_edge("john", "jack", weight=0.5)
+        expected.add_edge("jack", "lisa", weight=0.5)
 
         assert are_same_graphs(g, expected, check_attributes=True)
 

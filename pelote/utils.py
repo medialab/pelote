@@ -11,6 +11,7 @@ from pelote.types import AnyGraph
 
 K = TypeVar("K")
 V = TypeVar("V")
+NodeKey = TypeVar("NodeKey")
 
 
 def has_mixed_types(iterable: Iterable[Any]) -> bool:
@@ -77,6 +78,13 @@ class DFSStack(Generic[V]):
             return None
 
         return self.__stack.pop()
+
+
+def check_node_exists(g: AnyGraph, n: NodeKey) -> NodeKey:
+    if n not in g:
+        raise ValueError("Node {} does not exist. {}".format(n, g.nodes))
+
+    return n
 
 
 def dict_without(d: Dict[K, V], k: str) -> Dict[K, V]:
