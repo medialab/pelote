@@ -222,9 +222,9 @@ holding the nodes composing the part to keep.
 the part the node belongs to.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 the edge's weight.
-* **metric** *str, optional* `None` - one of "jaccard", "overlap", "cosine", "dice"
-or "binary_cosine". If not given, resulting weight will be seyto the
-size of neighbor intersection.
+* **metric** *str, optional* `None` - one of "jaccard", "overlap", "cosine", "dice",
+"binary_cosine", "pmi" or "dot_product". If not given, resulting weight
+will be set to the size of neighbor intersection.
 * **bipartition_check** *bool, optional* `True` - whether to check if given graph
 is truly bipartite. You can disable this as an optimization
 strategy if you know what you are doing.
