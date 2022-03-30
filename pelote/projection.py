@@ -67,7 +67,7 @@ def compute_metric(
         return math.log(i / (norm1 * norm2))
 
     if metric == "dot_product":
-        return norm1 * norm2
+        return (norm1 * norm2) * (i / (norm1 * norm2))
 
     return i
 
