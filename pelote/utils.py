@@ -82,7 +82,7 @@ class DFSStack(Generic[V]):
 
 def check_node_exists(g: AnyGraph, n: NodeKey) -> NodeKey:
     if n not in g:
-        raise ValueError("Node {} does not exist. {}".format(n, g.nodes))
+        raise KeyError("Node {} does not exist. {}".format(n, g.nodes))
 
     return n
 

@@ -142,7 +142,7 @@ class TestTablesToGraph(object):
             [{"key": "john"}], [{"source": "john", "target": "lisa"}], nodes_exist=False
         )
 
-        with raises(ValueError):
+        with raises(KeyError):
             tables_to_graph([{"key": "john"}], [{"source": "john", "target": "lisa"}])
 
     def test_basic(self):
