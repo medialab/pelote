@@ -206,14 +206,23 @@ def edges_table_to_graph(
     edge_weight_col: Optional[Hashable] = None,
 ) -> AnyGraph:
     """
-    Function creating a bipartite graph from the given tabular data.
+    Function creating a graph from a table of edges.
 
     Args:
-        table (Iterable[Indexable] or pd.DataFrame): input tabular data. It can
-            be a large variety of things as long as it is 1. iterable and 2.
-            yields indexable values such as dicts or lists. This can for instance
-            be a list of dicts, a csv.DictReader stream etc. It also supports
+        edges_table (Iterable[Indexable] or pd.DataFrame): input edges in tabular
+            format. It can be a large variety of things as long as it is 1. iterable
+            and 2. yields indexable values such as dicts or lists. This can for
+            instance be a list of dicts, a csv.DictReader stream etc. It also supports
             pandas DataFrame if the library is installed.
+        edge_source_col (Hashable, optional): the name of the column containing the edges' source
+            nodes in the edges_table.
+            Defaults to "source".
+        edge_target_col (Hashable, optional): the name of the column containing the edges' target
+            nodes in the edges_table.
+            Defaults to "target".
+        edge_weight_col (Hashable, optional): if the graph is weighted, the name of the column
+            containing the edges' weights.
+            Defaults to None: the graph is not weighted.
 
     Returns:
         nx.AnyGraph: the resulting graph.
@@ -228,35 +237,56 @@ def edges_table_to_graph(
 
 
 def tables_to_graph(
-    node_table: Tabular,
-    edge_table: Tabular,
+    nodes_table: Tabular,
+    edges_table: Tabular,
     node_col: Hashable = "key",
     edge_source_col: Hashable = "source",
     edge_target_col: Hashable = "target",
     *,
     edge_weight_col: Optional[Hashable] = None,
-    node_data: Iterable[Hashable] = [],
+    node_data: Sequence[Hashable] = [],
     nodes_exist: bool = True,
 ) -> AnyGraph:
     """
-    Function creating a bipartite graph from the given tabular data.
+    Function creating a graph from two tables: a table of nodes and a table of edges.
 
     Args:
-        table (Iterable[Indexable] or pd.DataFrame): input tabular data. It can
-            be a large variety of things as long as it is 1. iterable and 2.
-            yields indexable values such as dicts or lists. This can for instance
-            be a list of dicts, a csv.DictReader stream etc. It also supports
+        nodes_table (Iterable[Indexable] or pd.DataFrame): input nodes in tabular
+            format. It can be a large variety of things as long as it is 1. iterable
+            and 2. yields indexable values such as dicts or lists. This can for
+            instance be a list of dicts, a csv.DictReader stream etc. It also supports
             pandas DataFrame if the library is installed.
+        edges_table (Iterable[Indexable] or pd.DataFrame): input edges in tabular
+            format.
+        node_col (Hashable, optional): the name of the column containing the nodes in the nodes_table.
+            It could be the index if your rows are lists or a key if your rows
+            are dicts instead.
+            Defaults to "key".
+        edge_source_col (Hashable, optional): the name of the column containing the edges' source
+            nodes in the edges_table.
+            Defaults to "source".
+        edge_target_col (Hashable, optional): the name of the column containing the edges' target
+            nodes in the edges_table.
+            Defaults to "target".
+        edge_weight_col (Hashable, optional): if the graph is weighted, the name of the column
+            containing the edges' weights.
+            Defaults to None: the graph is not weighted.
+        node_data (Sequence, optional): sequence (i.e. list, tuple etc.)
+            of columns' names from the nodes_table to keep as node attributes in the resulting graph.
+            Defaults to [].
+        nodes_exist (bool, optional): set this to True to check that the edges' sources and targets
+            in the edges_table are all defined in the nodes_table.
+            Defaults to True.
 
     Returns:
         nx.AnyGraph: the resulting graph.
     """
 
-    if is_dataframe(edge_table):
-        edge_table = (row for _, row in edge_table.iterrows())
+    if is_dataframe(edges_table):
+        edges_table = (row for _, row in edges_table.iterrows())
 
-    if is_dataframe(node_table):
-        node_table = (row for _, row in node_table.iterrows())
+    if is_dataframe(nodes_table):
+        nodes_table = (row for _, row in nodes_table.iterrows())
 
     graph = nx.Graph()
 
@@ -265,11 +295,11 @@ def tables_to_graph(
             row[node_col],
             {attr: row[attr] for attr in node_data},
         )
-        for row in node_table
+        for row in nodes_table
     )
 
     return _edges_table_to_graph(
-        edge_table,
+        edges_table,
         edge_source_col,
         edge_target_col,
         edge_weight_col,
