@@ -2,7 +2,9 @@
 # Pelote Sparsification Utilities
 # =============================================================================
 #
-from pelote.types import AnyGraph
+from typing import Generator, Tuple, Any
+
+from pelote.types import AnyGraph, Attributes
 from pelote.graph import check_graph, filter_edges
 
 
@@ -18,3 +20,21 @@ class Sparsifier(object):
 
     def __call__(self, graph: AnyGraph) -> AnyGraph:
         return self.filter(graph)
+
+    def relevant_edges(
+        self, graph: AnyGraph
+    ) -> Generator[Tuple[Any, Any, Attributes], None, None]:
+        edge_predicate = self._get_edge_predicate()
+
+        for u, v, a in graph.edges.data():
+            if edge_predicate(u, v, a):
+                yield u, v, a
+
+    def redundant_edges(
+        self, graph: AnyGraph
+    ) -> Generator[Tuple[Any, Any, Attributes], None, None]:
+        edge_predicate = self._get_edge_predicate()
+
+        for u, v, a in graph.edges.data():
+            if not edge_predicate(u, v, a):
+                yield u, v, a
