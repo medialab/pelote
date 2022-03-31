@@ -297,7 +297,7 @@ def tables_to_graph(
             {"source": "bob", "target": "alice", "weight": 0.2}
         ]
 
-        graph = tables_to_graph(table_nodes, table_edges, node_col="name", node_data=["age"], "edge_data"=["weight"])
+        graph = tables_to_graph(table_nodes, table_edges, node_col="name", node_data=["age"], edge_data=["weight"])
     """
 
     if is_dataframe(edges_table):
