@@ -181,7 +181,7 @@ class TestTablesToGraph(object):
             {"source": "jack", "target": "lisa", "weight": 0.5},
         ]
 
-        g = tables_to_graph(table_nodes, table_edges, edge_weight_col="weight")
+        g = tables_to_graph(table_nodes, table_edges, edge_data=["weight"])
 
         expected = nx.Graph()
         expected.add_node("john")
@@ -206,7 +206,7 @@ class TestTablesToGraph(object):
         ]
 
         g = tables_to_graph(
-            table_nodes, table_edges, edge_weight_col="weight", directed=True
+            table_nodes, table_edges, edge_data=["weight"], directed=True
         )
 
         expected = nx.DiGraph()
@@ -232,7 +232,7 @@ class TestTablesToGraph(object):
         ]
 
         g = tables_to_graph(
-            table_nodes, table_edges, edge_weight_col="weight", node_data=["color"]
+            table_nodes, table_edges, edge_data=["weight"], node_data=["color"]
         )
 
         expected = nx.Graph()

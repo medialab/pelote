@@ -109,6 +109,22 @@ If you enable this option wrongly, the result can be incorrect.
 
 Function creating a graph from two tables: a table of nodes and a table of edges.
 
+```python
+from pelote import tables_to_graph
+
+table_nodes = [
+    {"name": "alice", "age": 50},
+    {"name": "bob", "age": 12}
+]
+
+table_edges = [
+    {"source": "alice", "target": "bob", "weight": 0.8},
+    {"source": "bob", "target": "alice", "weight": 0.2}
+]
+
+graph = tables_to_graph(table_nodes, table_edges, node_col="name", node_data=["age"], "edge_data"=["weight"])
+```
+
 *Arguments*
 
 * **nodes_table** *Iterable[Indexable] or pd.DataFrame* - input nodes in tabular
@@ -125,10 +141,10 @@ are dicts instead.
 nodes in the edges_table.
 * **edge_target_col** *Hashable, optional* `"target"` - the name of the column containing the edges' target
 nodes in the edges_table.
-* **edge_weight_col** *Hashable, optional* `None: the graph is not weighted` - if the graph is weighted, the name of the column
-containing the edges' weights.
 * **node_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.)
 of columns' names from the nodes_table to keep as node attributes in the resulting graph.
+* **edge_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.) of columns' names
+from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
 * **add_missing_nodes** *bool, optional* `True` - set this to True to check that the edges' sources and targets
 in the edges_table are all defined in the nodes_table.
 * **directed** *bool, optional* `False` - whether the resulting graph must be directed.
@@ -152,8 +168,8 @@ pandas DataFrame if the library is installed.
 nodes in the edges_table.
 * **edge_target_col** *Hashable, optional* `"target"` - the name of the column containing the edges' target
 nodes in the edges_table.
-* **edge_weight_col** *Hashable, optional* `None: the graph is not weighted` - if the graph is weighted, the name of the column
-containing the edges' weights.
+* **edge_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.) of columns' names
+from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
 * **directed** *bool, optional* `False` - whether the resulting graph must be directed.
 
 *Returns*

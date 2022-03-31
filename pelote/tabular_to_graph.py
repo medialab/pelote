@@ -165,37 +165,24 @@ def _edges_table_to_graph(
     edge_table: Tabular,
     edge_source_col: Hashable,
     edge_target_col: Hashable,
-    edge_weight_col: Hashable,
+    edge_data: Sequence[Hashable],
     add_missing_nodes: bool = True,
 ) -> AnyGraph:
-    if edge_weight_col:
-        if add_missing_nodes:
-            graph.add_weighted_edges_from(
-                (row[edge_source_col], row[edge_target_col], row[edge_weight_col])
-                for row in edge_table
-            )
-        else:
-            graph.add_weighted_edges_from(
-                (
-                    check_node_exists(graph, row[edge_source_col]),
-                    check_node_exists(graph, row[edge_target_col]),
-                    row[edge_weight_col],
-                )
-                for row in edge_table
+
+    if add_missing_nodes:
+        for row in edge_table:
+            graph.add_edge(
+                row[edge_source_col],
+                row[edge_target_col],
+                **{str(attr): row[attr] for attr in edge_data},
             )
 
     else:
-        if add_missing_nodes:
-            graph.add_edges_from(
-                (row[edge_source_col], row[edge_target_col]) for row in edge_table
-            )
-        else:
-            graph.add_edges_from(
-                (
-                    check_node_exists(graph, row[edge_source_col]),
-                    check_node_exists(graph, row[edge_target_col]),
-                )
-                for row in edge_table
+        for row in edge_table:
+            graph.add_edge(
+                check_node_exists(graph, row[edge_source_col]),
+                check_node_exists(graph, row[edge_target_col]),
+                **{str(attr): row[attr] for attr in edge_data},
             )
 
     return graph
@@ -206,7 +193,7 @@ def edges_table_to_graph(
     edge_source_col: Hashable = "source",
     edge_target_col: Hashable = "target",
     *,
-    edge_weight_col: Optional[Hashable] = None,
+    edge_data: Sequence[Hashable] = [],
     directed: bool = False,
 ) -> AnyGraph:
     """
@@ -224,9 +211,9 @@ def edges_table_to_graph(
         edge_target_col (Hashable, optional): the name of the column containing the edges' target
             nodes in the edges_table.
             Defaults to "target".
-        edge_weight_col (Hashable, optional): if the graph is weighted, the name of the column
-            containing the edges' weights.
-            Defaults to None: the graph is not weighted.
+        edge_data (Sequence, optional): sequence (i.e. list, tuple etc.) of columns' names
+            from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
+            Defaults to [].
         directed (bool, optional): whether the resulting graph must be directed.
             Defaults to False.
 
@@ -245,7 +232,7 @@ def edges_table_to_graph(
         graph = nx.Graph()
 
     return _edges_table_to_graph(
-        graph, edge_table, edge_source_col, edge_target_col, edge_weight_col
+        graph, edge_table, edge_source_col, edge_target_col, edge_data
     )
 
 
@@ -256,8 +243,8 @@ def tables_to_graph(
     edge_source_col: Hashable = "source",
     edge_target_col: Hashable = "target",
     *,
-    edge_weight_col: Optional[Hashable] = None,
     node_data: Sequence[Hashable] = [],
+    edge_data: Sequence[Hashable] = [],
     add_missing_nodes: bool = False,
     directed: bool = False,
 ) -> AnyGraph:
@@ -282,11 +269,11 @@ def tables_to_graph(
         edge_target_col (Hashable, optional): the name of the column containing the edges' target
             nodes in the edges_table.
             Defaults to "target".
-        edge_weight_col (Hashable, optional): if the graph is weighted, the name of the column
-            containing the edges' weights.
-            Defaults to None: the graph is not weighted.
         node_data (Sequence, optional): sequence (i.e. list, tuple etc.)
             of columns' names from the nodes_table to keep as node attributes in the resulting graph.
+            Defaults to [].
+        edge_data (Sequence, optional): sequence (i.e. list, tuple etc.) of columns' names
+            from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
             Defaults to [].
         add_missing_nodes (bool, optional): set this to True to check that the edges' sources and targets
             in the edges_table are all defined in the nodes_table.
@@ -296,6 +283,21 @@ def tables_to_graph(
 
     Returns:
         nx.AnyGraph: the resulting graph.
+
+    Example:
+        from pelote import tables_to_graph
+
+        table_nodes = [
+            {"name": "alice", "age": 50},
+            {"name": "bob", "age": 12}
+        ]
+
+        table_edges = [
+            {"source": "alice", "target": "bob", "weight": 0.8},
+            {"source": "bob", "target": "alice", "weight": 0.2}
+        ]
+
+        graph = tables_to_graph(table_nodes, table_edges, node_col="name", node_data=["age"], "edge_data"=["weight"])
     """
 
     if is_dataframe(edges_table):
@@ -311,19 +313,14 @@ def tables_to_graph(
     else:
         graph = nx.Graph()
 
-    graph.add_nodes_from(
-        (
-            row[node_col],
-            {attr: row[attr] for attr in node_data},
-        )
-        for row in nodes_table
-    )
+    for row in nodes_table:
+        graph.add_node(row[node_col], **{str(attr): row[attr] for attr in node_data})
 
     return _edges_table_to_graph(
         graph,
         edges_table,
         edge_source_col,
         edge_target_col,
-        edge_weight_col,
+        edge_data,
         add_missing_nodes=add_missing_nodes,
     )
