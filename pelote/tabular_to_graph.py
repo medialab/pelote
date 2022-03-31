@@ -17,7 +17,8 @@ from typing import (
     Iterable,
 )
 
-from pelote.utils import IncrementalIdRegister, check_node_exists
+from pelote.utils import check_node_exists
+from pelote.classes import IncrementalIdRegister
 from pelote.shim import is_dataframe
 from pelote.types import AnyGraph, Tabular, Indexable
 

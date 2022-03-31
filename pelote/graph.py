@@ -10,7 +10,7 @@ from typing import Set, Any, Optional, List, Callable, Dict, Generator
 from typing_extensions import TypeGuard
 
 from pelote.types import AnyGraph, Attributes
-from pelote.utils import DFSStack
+from pelote.classes import DFSStack
 
 GRAPH_TYPES = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
 
