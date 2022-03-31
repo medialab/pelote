@@ -298,7 +298,7 @@ def tables_to_graph(
         ]
 
         g = tables_to_graph(
-            table_nodes, table_edges, node_col="name", node_data=["age"], edge_data=["weight"]
+            table_nodes, table_edges, node_col="name", node_data=["age"], edge_data=["weight"], directed=True
         )
     """
 
