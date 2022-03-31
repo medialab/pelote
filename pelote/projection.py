@@ -30,9 +30,11 @@ MONOPARTITE_PROJECTION_METRICS = {
     "cosine",
     "dice",
     "binary_cosine",
+    "pmi",
+    "dot_product",
 }
 MonopartiteProjectionMetric = Literal[
-    "jaccard", "overlap", "cosine", "dice", "binary_cosine"
+    "jaccard", "overlap", "cosine", "dice", "binary_cosine", "pmi", "dot_product"
 ]
 
 
@@ -59,6 +61,13 @@ def compute_metric(
 
     if metric == "binary_cosine":
         return i / math.sqrt(norm1 * norm2)
+
+    # NOTE: In some cases, weight can be 0, what should we do?
+    if metric == "pmi":
+        return math.log(i / (norm1 * norm2))
+
+    if metric == "dot_product":
+        return (norm1 * norm2) * (i / (norm1 * norm2))
 
     return i
 
@@ -113,9 +122,9 @@ def monopartite_projection(
             the part the node belongs to. Defaults to "part".
         edge_weight_attr (str, optional): name of the edge attribute containing
             the edge's weight. Defaults to "weight".
-        metric (str, optional): one of "jaccard", "overlap", "cosine", "dice"
-            or "binary_cosine". If not given, resulting weight will be seyto the
-            size of neighbor intersection. Defaults to None.
+        metric (str, optional): one of "jaccard", "overlap", "cosine", "dice",
+            "binary_cosine", "pmi" or "dot_product". If not given, resulting weight
+            will be set to the size of neighbor intersection. Defaults to None.
         bipartition_check (bool, optional): whether to check if given graph
             is truly bipartite. You can disable this as an optimization
             strategy if you know what you are doing. Defaults to True.
