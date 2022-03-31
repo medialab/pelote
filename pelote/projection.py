@@ -5,72 +5,21 @@
 # Functions used to compute various networkx projections such as bipartite
 # to monopartite, for instance.
 #
-import math
 import networkx as nx
 from typing import (
     cast,
     Hashable,
     Optional,
-    Counter,
     Any,
-    Dict,
     Collection,
     Union,
     Iterable,
 )
-from typing_extensions import Literal
+from pelote.classes.online_metrics import Metric, instantiate_online_metric
 
 from pelote.types import AnyGraph
 from pelote.graph import check_graph
 from pelote.utils import dict_without, has_constant_time_lookup
-
-MONOPARTITE_PROJECTION_METRICS = {
-    "jaccard",
-    "overlap",
-    "cosine",
-    "dice",
-    "binary_cosine",
-    "pmi",
-    "dot_product",
-}
-MonopartiteProjectionMetric = Literal[
-    "jaccard", "overlap", "cosine", "dice", "binary_cosine", "pmi", "dot_product"
-]
-
-
-def compute_metric(
-    metric: Optional[MonopartiteProjectionMetric],
-    norm1: float,
-    norm2: float,
-    i: float,
-):
-    if i == 0:
-        return 0
-
-    if metric == "cosine":
-        return i / (norm1 * norm2)
-
-    if metric == "jaccard":
-        return i / (norm1 + norm2 - i)
-
-    if metric == "dice":
-        return (2 * i) / (norm1 + norm2)
-
-    if metric == "overlap":
-        return i / min(norm1, norm2)
-
-    if metric == "binary_cosine":
-        return i / math.sqrt(norm1 * norm2)
-
-    # NOTE: In some cases, weight can be 0, what should we do?
-    if metric == "pmi":
-        return math.log(i / (norm1 * norm2))
-
-    if metric == "dot_product":
-        return (norm1 * norm2) * (i / (norm1 * norm2))
-
-    return i
-
 
 Part = Union[Hashable, Collection[Any]]
 
@@ -81,7 +30,7 @@ def monopartite_projection(
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
-    metric: Optional[MonopartiteProjectionMetric] = None,
+    metric: Optional[Metric] = None,
     bipartition_check: bool = True,
     weight_threshold: Optional[float] = None
 ) -> AnyGraph:
@@ -137,11 +86,7 @@ def monopartite_projection(
     """
     check_graph(bipartite_graph)
 
-    if metric is not None and metric not in MONOPARTITE_PROJECTION_METRICS:
-        raise TypeError(
-            'unknown metric "%s", expecting one of %s'
-            % (metric, ", ".join('"%s"' % m for m in MONOPARTITE_PROJECTION_METRICS))
-        )
+    online_metric = instantiate_online_metric(metric)
 
     if weight_threshold is not None and (
         not isinstance(weight_threshold, (int, float)) or weight_threshold <= 0
@@ -161,7 +106,6 @@ def monopartite_projection(
             part_to_keep = set(cast(Iterable[Any], part_to_keep))
 
     # Computing norms
-    norms: Dict[Any, float] = {}
     part_is_empty = True
 
     for n1, a1 in bipartite_graph.nodes(data=True):
@@ -175,7 +119,6 @@ def monopartite_projection(
                 continue
 
         part_is_empty = False
-        norm: float = 0
 
         for token, ta in bipartite_graph[n1].items():
             if bipartition_check:
@@ -187,20 +130,10 @@ def monopartite_projection(
                         % (n1, token)
                     )
 
-            weight = 1
+            weight = ta.get(edge_weight_attr, 1)
+            online_metric.accumulate_norm(weight)
 
-            if metric == "cosine":
-                weight = ta[edge_weight_attr]
-                weight *= weight
-
-            norm += weight
-
-        if norm > 0:
-            if metric == "cosine":
-                norm = math.sqrt(norm)
-
-            norms[n1] = norm
-
+        online_metric.add_norm(n1)
         monopartite_graph.add_node(n1, **dict_without(a1, node_part_attr))
 
     if part_is_empty:
@@ -209,15 +142,14 @@ def monopartite_projection(
             % (part_to_keep, node_part_attr)
         )
 
-    for n1, norm1 in norms.items():
-        intersection: Counter[Any] = Counter()
+    online_metric.finalize()
+
+    for n1 in online_metric.nodes():
+        online_metric.start_intersection(n1)
 
         # Computing intersections
         for token, ta in bipartite_graph[n1].items():
-            w1 = 1
-
-            if metric == "cosine":
-                w1 = ta[edge_weight_attr]
+            w1 = ta.get(edge_weight_attr, 1)
 
             for n2, a2 in bipartite_graph[token].items():
 
@@ -230,21 +162,15 @@ def monopartite_projection(
                 if n1 > n2:
                     continue
 
-                w2 = 1
-
-                if metric == "cosine":
-                    w2 = a2[edge_weight_attr]
-
-                intersection[n2] += w1 * w2
+                w2 = a2.get(edge_weight_attr, 1)
+                online_metric.intersect(n2, w1, w2)
 
         # Finalizing metrics
-        for n2, i in intersection.items():
-            norm2 = norms[n2]
-            weight = compute_metric(metric, norm1, norm2, i)
+        for n2, similarity in online_metric.neighbors():
 
-            if weight_threshold is not None and weight < weight_threshold:
+            if weight_threshold is not None and similarity < weight_threshold:
                 continue
 
-            monopartite_graph.add_edge(n1, n2, weight=weight)
+            monopartite_graph.add_edge(n1, n2, weight=similarity)
 
     return monopartite_graph
