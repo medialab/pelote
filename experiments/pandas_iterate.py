@@ -10,7 +10,9 @@ iter with itertuples and get tuples: 111ms, 277µs
 iter with zip and get tuples: 34ms, 987µs
 """
 
-diamonds = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/master/diamonds.csv')
+diamonds = pd.read_csv(
+    "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/diamonds.csv"
+)
 
 data = ["carat", "cut", "color", "clarity", "price"]
 
@@ -51,7 +53,9 @@ def iter_dict_itertuples(df, columns):
 
 def iter_dict_zip(df, columns):
     rows = []
-    table = (dict(zip(columns, row)) for row in zip(*(df[col].values for col in columns)))
+    table = (
+        dict(zip(columns, row)) for row in zip(*(df[col].values for col in columns))
+    )
     for row in table:
         rows.append([row[col] for col in columns])
     return rows

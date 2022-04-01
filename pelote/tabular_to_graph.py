@@ -17,9 +17,8 @@ from typing import (
     Iterable,
 )
 
-from pelote.utils import check_node_exists
+from pelote.utils import check_node_exists, iterator_from_dataframe
 from pelote.classes import IncrementalIdRegister
-from pelote.shim import is_dataframe
 from pelote.types import AnyGraph, Tabular, Indexable
 
 RowDataSpec = Union[Sequence[Hashable], Callable[[Indexable], Dict[Any, Any]]]
@@ -111,8 +110,7 @@ def table_to_bipartite_graph(
     if second_part_name is None:
         second_part_name = second_part_col
 
-    if is_dataframe(table):
-        table = (row for _, row in table.iterrows())
+    table = iterator_from_dataframe(table)
 
     graph = nx.Graph()
     node_id = IncrementalIdRegister[Tuple[Hashable, Any]]()
@@ -221,8 +219,9 @@ def edges_table_to_graph(
         nx.AnyGraph: the resulting graph.
     """
 
-    if is_dataframe(edge_table):
-        edge_table = (row for _, row in edge_table.iterrows())
+    edge_table = iterator_from_dataframe(
+        edge_table, [edge_source_col, edge_target_col] + list(edge_data)
+    )
 
     graph: AnyGraph
 
@@ -302,12 +301,11 @@ def tables_to_graph(
         )
     """
 
-    if is_dataframe(edges_table):
-        columns = [edge_source_col, edge_target_col] + list(edge_data)
-        edges_table = (dict(zip(columns, row)) for row in zip(*(edges_table[col].values for col in columns))
+    nodes_table = iterator_from_dataframe(nodes_table, [node_col] + list(node_data))
 
-    if is_dataframe(nodes_table):
-        nodes_table = (row for _, row in nodes_table.iterrows())
+    edges_table = iterator_from_dataframe(
+        edges_table, [edge_source_col, edge_target_col] + list(edge_data)
+    )
 
     graph: AnyGraph
 
