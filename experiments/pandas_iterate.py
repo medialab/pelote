@@ -9,23 +9,26 @@ data = ["carat", "cut", "color", "clarity", "price"]
 
 def iter_iterrows(df, columns):
     rows = []
-    for i, row in df[columns].iterrows():
+    table = (row for _, row in df[columns].iterrows())
+    for row in table:
+        rows.append([row[col] for col in columns])
+    return rows
+
+def iter_itertuples(df, columns):
+    rows = []
+    table = df[columns].itertuples(index=False)
+    columns = range(len(columns))
+    for row in table:
         rows.append([row[col] for col in columns])
     return rows
 
 
 def iter_zip(df, columns):
     rows = []
-    for row in zip(*(df[col].values for col in columns)):
-        rows.append(list(row))
-    return rows
-
-
-def iter_itertuples(df, columns):
-    rows = []
-    indices = {col: i for i, col in enumerate(df[columns].columns)}
-    for row in df[columns].itertuples(index=False):
-        rows.append([row[indices[col]] for col in columns])
+    table = zip(*(df[col].values for col in columns))
+    columns = range(len(columns))
+    for row in table:
+        rows.append([row[col] for col in columns])
     return rows
 
 

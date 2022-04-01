@@ -303,7 +303,8 @@ def tables_to_graph(
     """
 
     if is_dataframe(edges_table):
-        edges_table = (row for _, row in edges_table.iterrows())
+        columns = [edge_source_col, edge_target_col] + list(edge_data)
+        edges_table = (dict(zip(columns, row)) for row in zip(*(edges_table[col].values for col in columns))
 
     if is_dataframe(nodes_table):
         nodes_table = (row for _, row in nodes_table.iterrows())
