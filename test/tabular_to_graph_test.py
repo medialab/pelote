@@ -244,6 +244,32 @@ class TestTablesToGraph(object):
 
         assert are_same_graphs(g, expected, check_attributes=True)
 
+    def test_count_rows_as_weight(self):
+        table_nodes = [
+            {"key": "john", "color": "blue"},
+            {"key": "jack", "color": "green"},
+            {"key": "lisa", "color": "green"},
+        ]
+
+        table_edges = [
+            {"source": "john", "target": "jack"},
+            {"source": "jack", "target": "lisa"},
+            {"source": "jack", "target": "lisa"},
+        ]
+
+        g = tables_to_graph(
+            table_nodes, table_edges, node_data=["color"], count_rows_as_weight=True
+        )
+
+        expected = nx.Graph()
+        expected.add_node("john", color="blue")
+        expected.add_node("jack", color="green")
+        expected.add_node("lisa", color="green")
+        expected.add_edge("john", "jack", weight=1)
+        expected.add_edge("jack", "lisa", weight=2)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
     # TODO: test callable spec also
     # def test_renamed_part_data(self):
     #     table = [{"person": "john", "color": "red", "light": "high", "age": 45}]

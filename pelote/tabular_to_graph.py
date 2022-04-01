@@ -164,24 +164,28 @@ def _edges_table_to_graph(
     edge_source_col: Hashable,
     edge_target_col: Hashable,
     edge_data: Sequence[Hashable],
+    count_rows_as_weight: bool,
+    edge_weight_attr: str,
     add_missing_nodes: bool = True,
 ) -> AnyGraph:
 
-    if add_missing_nodes:
-        for row in edge_table:
-            graph.add_edge(
-                row[edge_source_col],
-                row[edge_target_col],
-                **{str(attr): row[attr] for attr in edge_data},
-            )
+    for row in edge_table:
 
-    else:
-        for row in edge_table:
-            graph.add_edge(
-                check_node_exists(graph, row[edge_source_col]),
-                check_node_exists(graph, row[edge_target_col]),
-                **{str(attr): row[attr] for attr in edge_data},
-            )
+        n1, n2 = row[edge_source_col], row[edge_target_col]
+
+        if not add_missing_nodes:
+            n1 = check_node_exists(graph, row[edge_source_col])
+            n2 = check_node_exists(graph, row[edge_target_col])
+
+        data = {str(attr): row[attr] for attr in edge_data}
+
+        if count_rows_as_weight:
+            if graph.has_edge(n1, n2):
+                graph[n1][n2][edge_weight_attr] += 1
+                continue
+            else:
+                data[edge_weight_attr] = 1
+        graph.add_edge(n1, n2, **data)
 
     return graph
 
@@ -192,6 +196,8 @@ def edges_table_to_graph(
     edge_target_col: Hashable = "target",
     *,
     edge_data: Sequence[Hashable] = [],
+    count_rows_as_weight: bool = False,
+    edge_weight_attr: str = "weight",
     directed: bool = False,
 ) -> AnyGraph:
     """
@@ -212,6 +218,16 @@ def edges_table_to_graph(
         edge_data (Sequence, optional): sequence (i.e. list, tuple etc.) of columns' names
             from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
             Defaults to [].
+        count_rows_as_weight (bool, optional): set this to True to compute a weight
+            attribute for each edge, corresponding to the number of times it was
+            found in the table. The name of this attribute is defined by the
+            `edge_weight_attr` parameter. If set to False, only the last occurrence of
+            each edge will be kept in the graph.
+            Defaults to False.
+        edge_weight_attr (str, optional): name of the edge attribute containing
+            its weight, i.e. the number of times it was found in the table, if
+            `count_rows_as_weight` is set to True.
+            Defaults to "weight".
         directed (bool, optional): whether the resulting graph must be directed.
             Defaults to False.
 
@@ -231,7 +247,13 @@ def edges_table_to_graph(
         graph = nx.Graph()
 
     return _edges_table_to_graph(
-        graph, edge_table, edge_source_col, edge_target_col, edge_data
+        graph,
+        edge_table,
+        edge_source_col,
+        edge_target_col,
+        edge_data,
+        count_rows_as_weight,
+        edge_weight_attr,
     )
 
 
@@ -244,6 +266,8 @@ def tables_to_graph(
     *,
     node_data: Sequence[Hashable] = [],
     edge_data: Sequence[Hashable] = [],
+    count_rows_as_weight: bool = False,
+    edge_weight_attr: str = "weight",
     add_missing_nodes: bool = False,
     directed: bool = False,
 ) -> AnyGraph:
@@ -274,6 +298,16 @@ def tables_to_graph(
         edge_data (Sequence, optional): sequence (i.e. list, tuple etc.) of columns' names
             from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
             Defaults to [].
+        count_rows_as_weight (bool, optional): set this to True to compute a weight
+            attribute for each edge, corresponding to the number of times it was
+            found in the table. The name of this attribute is defined by the
+            `edge_weight_attr` parameter. If set to False, only the last occurrence of
+            each edge will be kept in the graph.
+            Defaults to False.
+        edge_weight_attr (str, optional): name of the edge attribute containing
+            its weight, i.e. the number of times it was found in the table, if
+            `count_rows_as_weight` is set to True.
+            Defaults to "weight".
         add_missing_nodes (bool, optional): set this to True to check that the edges' sources and targets
             in the edges_table are all defined in the nodes_table.
             Defaults to True.
@@ -323,5 +357,7 @@ def tables_to_graph(
         edge_source_col,
         edge_target_col,
         edge_data,
+        count_rows_as_weight,
+        edge_weight_attr,
         add_missing_nodes=add_missing_nodes,
     )
