@@ -40,8 +40,10 @@ class OnlineMetric(Generic[Item]):
             return
 
         norm = self._finalize_norm(self._norm_acc)
-        self._norm_acc = 0
         self._norms[item] = norm
+
+    def reset_norm(self) -> None:
+        self._norm_acc = 0
 
     def finalize(self) -> None:
         pass

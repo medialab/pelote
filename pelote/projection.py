@@ -119,6 +119,7 @@ def monopartite_projection(
                 continue
 
         part_is_empty = False
+        online_metric.reset_norm()
 
         for token, ta in bipartite_graph[n1].items():
             if bipartition_check:
