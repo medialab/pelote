@@ -19,7 +19,7 @@ clean:
 	$(call clean)
 
 ci:
-	pip3 install --user -U pip
+	python -m pip install --upgrade pip setuptools wheel
 	pip3 install -r requirements.txt
 
 deps:
