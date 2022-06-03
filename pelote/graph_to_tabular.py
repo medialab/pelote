@@ -12,7 +12,7 @@ from pelote.graph import check_graph
 
 
 def graph_to_nodes_dataframe(
-    graph: AnyGraph, node_key_col: Optional[str] = "key"
+    graph: AnyGraph, node_key_col: str = "key"
 ) -> "pd.DataFrame":
     """
     Function converting the given networkx graph into a pandas DataFrame of
@@ -61,8 +61,8 @@ NodeDataSpec = Union[Mapping[str, str], Iterable[str]]
 def graph_to_edges_dataframe(
     graph: AnyGraph,
     *,
-    edge_source_col: Optional[str] = "source",
-    edge_target_col: Optional[str] = "target",
+    edge_source_col: str = "source",
+    edge_target_col: str = "target",
     source_node_data: Optional[NodeDataSpec] = None,
     target_node_data: Optional[NodeDataSpec] = None
 ) -> "pd.DataFrame":
@@ -135,9 +135,9 @@ def graph_to_edges_dataframe(
 def graph_to_dataframes(
     graph: AnyGraph,
     *,
-    node_key_col: Optional[str] = "key",
-    edge_source_col: Optional[str] = "source",
-    edge_target_col: Optional[str] = "target",
+    node_key_col: str = "key",
+    edge_source_col: str = "source",
+    edge_target_col: str = "target",
     source_node_data: Optional[NodeDataSpec] = None,
     target_node_data: Optional[NodeDataSpec] = None
 ) -> Tuple["pd.DataFrame", "pd.DataFrame"]:
