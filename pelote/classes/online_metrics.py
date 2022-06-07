@@ -161,4 +161,4 @@ def instantiate_online_metric(metric: Optional[Metric] = None) -> OnlineMetric:
             % (metric, ", ".join('"%s"' % m for m in SUPPORTED_METRICS))
         )
 
-    return SUPPORTED_METRICS[metric]()
+    return SUPPORTED_METRICS[metric]()  # type: ignore

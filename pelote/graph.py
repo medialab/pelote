@@ -226,7 +226,7 @@ def connected_component_orders(
 
     # Wrapping generator to make sure type checking raises on call
     def generator():
-        stack = DFSStack[Any](graph)
+        stack = DFSStack[Any, Any](graph)
 
         for node in stack.nodes_yet_unseen():
             stack.append(node)
