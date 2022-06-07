@@ -2,7 +2,7 @@
 # Pelote DFS Stack Class
 # =============================================================================
 #
-from typing import Generic, List, Set, TypeVar, Optional
+from typing import Generic, List, Set, TypeVar, Optional, Generator
 
 from pelote.types import AnyGraph
 
@@ -16,7 +16,7 @@ class DFSStack(Generic[V]):
     """
 
     def __init__(self, graph: AnyGraph):
-        self.__order = graph.order()
+        self.__graph = graph
         self.__stack: List[V] = []
         self.__seen: Set[V] = set()
 
@@ -26,8 +26,18 @@ class DFSStack(Generic[V]):
     def __contains__(self, node: V) -> bool:
         return node in self.__seen
 
-    def has_seen_everything(self) -> bool:
-        return len(self.__seen) == self.__order
+    def has_already_seen_everything(self) -> bool:
+        return len(self.__seen) == len(self.__graph)
+
+    def nodes_yet_unseen(self) -> Generator[V, None, None]:
+        for node in self.__graph:
+            if len(self.__seen) == len(self.__graph):
+                break
+
+            if node in self.__seen:
+                continue
+
+            yield node
 
     def append(self, node: V) -> bool:
         size_before = len(self.__seen)

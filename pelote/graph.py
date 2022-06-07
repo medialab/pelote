@@ -228,13 +228,7 @@ def connected_component_orders(
     def generator():
         stack = DFSStack[Any](graph)
 
-        for node in graph:
-            if stack.has_seen_everything():
-                break
-
-            if node in stack:
-                continue
-
+        for node in stack.nodes_yet_unseen():
             stack.append(node)
             size = 0
 
