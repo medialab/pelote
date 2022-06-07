@@ -158,9 +158,14 @@ def monopartite_projection(
                 if n2 == n1:
                     continue
 
-                # NOTE: since we are dealing with undirected graphs we can
+                # NOTE: since we are producing an undirected graphs we can
                 # avoid doing the same computations twice.
-                if n1 > n2:
+                # NOTE: we could also drop n1 from the graph after we processed
+                # it as this would have the same effect. But this is often less
+                # performant because the graph must be copied to avoid
+                # mutation and dropping a node is at least O(E), E being the
+                # number of its incident edges.
+                elif n1 > n2:
                     continue
 
                 w2 = a2.get(edge_weight_attr, 1)
