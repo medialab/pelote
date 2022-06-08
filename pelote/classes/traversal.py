@@ -2,7 +2,7 @@
 # Pelote DFS Stack Class
 # =============================================================================
 #
-from typing import Generic, List, Set, TypeVar, Generator, Deque, cast
+from typing import Generic, Optional, List, Set, TypeVar, Generator, Deque, cast
 
 from pelote.types import AnyGraph
 
@@ -40,7 +40,7 @@ class DFSStack(Generic[K, V]):
 
             yield node
 
-    def append(self, node: K) -> bool:
+    def append(self, node: K, item: Optional[V] = None) -> bool:
         size_before = len(self.__seen)
 
         self.__seen.add(node)
@@ -48,7 +48,7 @@ class DFSStack(Generic[K, V]):
         if size_before == len(self.__seen):
             return False
 
-        self.__stack.append(cast(V, node))
+        self.__stack.append(cast(V, node) if item is None else item)
 
         return True
 
@@ -86,7 +86,7 @@ class BFSQueue(Generic[K, V]):
 
             yield node
 
-    def append(self, node: K) -> bool:
+    def append(self, node: K, item: Optional[V] = None) -> bool:
         size_before = len(self.__seen)
 
         self.__seen.add(node)
@@ -94,19 +94,7 @@ class BFSQueue(Generic[K, V]):
         if size_before == len(self.__seen):
             return False
 
-        self.__queue.append(cast(V, node))
-
-        return True
-
-    def append_with(self, node: K, item: V) -> bool:
-        size_before = len(self.__seen)
-
-        self.__seen.add(node)
-
-        if size_before == len(self.__seen):
-            return False
-
-        self.__queue.append(item)
+        self.__queue.append(cast(V, node) if item is None else item)
 
         return True
 
