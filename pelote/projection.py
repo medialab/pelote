@@ -20,6 +20,7 @@ from typing import (
 )
 from collections import defaultdict
 
+from pelote.classes import BFSQueue
 from pelote.classes.online_metrics import Metric, instantiate_online_metric
 from pelote.types import AnyGraph
 from pelote.graph import check_graph
@@ -187,9 +188,24 @@ def monopartite_projection(
     return monopartite_graph
 
 
-def self_similarity_projection(
-    graph: AnyGraph,
-) -> AnyGraph:
+def bfs_from_node(graph, source, reverse=False, limit=1):
+    queue = BFSQueue(graph)
+    queue.append(source, (source, 0))
+
+    while len(queue) != 0:
+        node, depth = queue.popleft()
+
+        if depth > 0:
+            yield node, depth
+
+        if depth >= limit:
+            continue
+
+        for neighbor in (graph.predecessors if reverse else graph.successors)(node):
+            queue.append(neighbor, (neighbor, depth + 1))
+
+
+def self_similarity_projection(graph: AnyGraph, depth=1) -> AnyGraph:
     # TODO: raise if multigraph
     check_graph(graph)
 
@@ -207,7 +223,7 @@ def self_similarity_projection(
     projected_graph = nx.Graph()
 
     norms = {}
-    inverted_index: Dict[Tuple[bool, Any], List[Any]] = defaultdict(list)
+    inverted_index: Dict[Tuple[bool, int, Any], List[Any]] = defaultdict(list)
 
     for node, attr in graph.nodes.data():
         projected_graph.add_node(node, **attr)
@@ -216,10 +232,10 @@ def self_similarity_projection(
         candidates: Dict[Any, int] = defaultdict(int)
 
         # TODO: plug BFS strategy here
-        # TODO: directed BFS can only follow one kind of links, supposedly
-        for out_neighbor in graph.successors(node):
+        # TODO: directed BFS can only follow one kind of links, supposedly?
+        for out_neighbor, depth in bfs_from_node(graph, node, limit=depth):
             norm += 1
-            k = (True, out_neighbor)
+            k = (True, depth, out_neighbor)
             container = inverted_index[k]
 
             for candidate in container:
@@ -227,9 +243,9 @@ def self_similarity_projection(
 
             container.append(node)
 
-        for in_neighbor in graph.predecessors(node):
+        for in_neighbor, depth in bfs_from_node(graph, node, reverse=True, limit=depth):
             norm += 1
-            k = (False, in_neighbor)
+            k = (False, depth, in_neighbor)
             container = inverted_index[k]
 
             for candidate in container:
@@ -247,7 +263,8 @@ def self_similarity_projection(
             # TODO: Verify that the bipartite projection conceptual parallelism
             # still holds.
             # NOTE: Decrementing the candidate's norm twice is equivalent
-            # to decrementing both the candidate norm and node's one.
+            # to decrementing both the candidate norm and node's one (only
+            # for Jaccard, will not work for Dice and overlap).
             if graph.has_edge(node, candidate):
                 candidate_norm -= 2
 
