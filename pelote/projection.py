@@ -216,6 +216,7 @@ def self_similarity_projection(
         candidates: Dict[Any, int] = defaultdict(int)
 
         # TODO: plug BFS strategy here
+        # TODO: directed BFS can only follow one kind of links, supposedly
         for out_neighbor in graph.successors(node):
             norm += 1
             k = (True, out_neighbor)
