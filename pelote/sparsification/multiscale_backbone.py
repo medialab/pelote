@@ -43,6 +43,12 @@ def multiscale_backbone(
     disparity = edge_disparity(graph, edge_weight_attr=edge_weight_attr)
 
     def edge_predicate(u, v, a):
-        return disparity[u, v] <= alpha
+        # TODO: I am sure we can do better...
+        score = disparity.get((u, v))
+
+        if score is None:
+            score = disparity[(v, u)]
+
+        return score <= alpha
 
     return filter_edges(graph, edge_predicate)

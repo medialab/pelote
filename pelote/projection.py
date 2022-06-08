@@ -14,9 +14,13 @@ from typing import (
     Collection,
     Union,
     Iterable,
+    Dict,
+    List,
+    Tuple,
 )
-from pelote.classes.online_metrics import Metric, instantiate_online_metric
+from collections import defaultdict
 
+from pelote.classes.online_metrics import Metric, instantiate_online_metric
 from pelote.types import AnyGraph
 from pelote.graph import check_graph
 from pelote.utils import dict_without, has_constant_time_lookup
@@ -84,6 +88,7 @@ def monopartite_projection(
     Returns:
         nx.Graph: the projected monopartite graph.
     """
+    # TODO: raise if multigraph
     check_graph(bipartite_graph)
 
     online_metric = instantiate_online_metric(metric)
@@ -180,3 +185,63 @@ def monopartite_projection(
             monopartite_graph.add_edge(n1, n2, weight=similarity)
 
     return monopartite_graph
+
+
+def self_similarity_projection(
+    graph: AnyGraph,
+) -> AnyGraph:
+    # TODO: raise if multigraph
+    check_graph(graph)
+
+    # NOTE: only Jaccard & only directed version currently implemented
+
+    if not graph.is_directed():
+        raise NotImplementedError
+
+    graph = cast(nx.DiGraph, graph)
+
+    # Null graph early exit
+    if graph.order() == 0:
+        return nx.Graph()
+
+    projected_graph = nx.Graph()
+
+    norms = {}
+    inverted_index: Dict[Tuple[bool, Any], List[Any]] = defaultdict(list)
+
+    for node, attr in graph.nodes.data():
+        projected_graph.add_node(node, **attr)
+
+        norm = 0
+        candidates: Dict[Any, int] = defaultdict(int)
+
+        # TODO: plug BFS strategy here
+        for out_neighbor in graph.successors(node):
+            norm += 1
+            k = (True, out_neighbor)
+            container = inverted_index[k]
+
+            for candidate in container:
+                candidates[candidate] += 1
+
+            container.append(node)
+
+        for in_neighbor in graph.predecessors(node):
+            norm += 1
+            k = (False, in_neighbor)
+            container = inverted_index[k]
+
+            for candidate in container:
+                candidates[candidate] += 1
+
+            container.append(node)
+
+        norms[node] = norm
+
+        for candidate, intersection in candidates.items():
+            candidate_norm = norms[candidate]
+            similarity = intersection / (norm + candidate_norm - intersection)
+
+            projected_graph.add_edge(node, candidate, weight=similarity)
+
+    return projected_graph
