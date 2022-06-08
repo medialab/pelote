@@ -240,6 +240,19 @@ def self_similarity_projection(
 
         for candidate, intersection in candidates.items():
             candidate_norm = norms[candidate]
+
+            # NOTE: We don't consider the edges between node & candidate in
+            # the similarity score.
+            # TODO: Verify that the bipartite projection conceptual parallelism
+            # still holds.
+            # NOTE: Decrementing the candidate's norm twice is equivalent
+            # to decrementing both the candidate norm and node's one.
+            if graph.has_edge(node, candidate):
+                candidate_norm -= 2
+
+            if graph.has_edge(candidate, node):
+                candidate_norm -= 2
+
             similarity = intersection / (norm + candidate_norm - intersection)
 
             projected_graph.add_edge(node, candidate, weight=similarity)

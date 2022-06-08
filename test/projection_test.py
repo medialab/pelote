@@ -4,7 +4,7 @@
 import networkx as nx
 from pytest import raises
 
-from pelote import monopartite_projection
+from pelote.projection import monopartite_projection, self_similarity_projection
 from pelote.graph import are_same_graphs
 
 NODES = [
@@ -126,3 +126,64 @@ class TestMonopartiteProjection(object):
         expected.add_edge("John", "Lucy", weight=2)
 
         assert are_same_graphs(monopartite, expected)
+
+
+class TestSelfSimilarityProjection(object):
+    def test_consistency(self):
+        graph = nx.DiGraph()
+        graph.add_edge(0, 1)
+        graph.add_edge(2, 1)
+
+        projected = self_similarity_projection(graph)
+
+        expected = nx.Graph()
+        expected.add_node(1)
+        expected.add_edge(0, 2, weight=1)
+
+        assert are_same_graphs(projected, expected)
+
+        graph = nx.complete_graph(3, create_using=nx.DiGraph)
+
+        projected = self_similarity_projection(graph)
+
+        expected = nx.Graph()
+        expected.add_edge(0, 1, weight=1)
+        expected.add_edge(0, 2, weight=1)
+        expected.add_edge(1, 2, weight=1)
+
+        assert are_same_graphs(projected, expected)
+
+        graph.remove_edge(2, 0)
+
+        projected = self_similarity_projection(graph)
+
+        expected = nx.Graph()
+        expected.add_edge(0, 1, weight=0.5)
+        expected.add_edge(0, 2, weight=1)
+        expected.add_edge(1, 2, weight=0.5)
+
+        assert are_same_graphs(projected, expected)
+
+        graph = nx.DiGraph()
+        graph.add_edge(0, 1)
+        graph.add_edge(1, 0)
+        graph.add_edge(2, 1)
+        graph.add_edge(1, 2)
+
+        projected = self_similarity_projection(graph)
+
+        expected = nx.Graph()
+        expected.add_node(1)
+        expected.add_edge(0, 2, weight=1)
+
+        assert are_same_graphs(projected, expected)
+
+        graph.remove_edge(1, 0)
+
+        projected = self_similarity_projection(graph)
+
+        expected = nx.Graph()
+        expected.add_node(1)
+        expected.add_edge(0, 2, weight=1)
+
+        assert are_same_graphs(projected, expected)
