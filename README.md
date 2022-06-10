@@ -147,6 +147,14 @@ nodes in the edges_table.
 of columns' names from the nodes_table to keep as node attributes in the resulting graph.
 * **edge_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.) of columns' names
 from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
+* **count_rows_as_weight** *bool, optional* `False` - set this to True to compute a weight
+attribute for each edge, corresponding to the number of times it was
+found in the table. The name of this attribute is defined by the
+`edge_weight_attr` parameter. If set to False, only the last occurrence of
+each edge will be kept in the graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
+its weight, i.e. the number of times it was found in the table, if
+`count_rows_as_weight` is set to True.
 * **add_missing_nodes** *bool, optional* `True` - set this to True to check that the edges' sources and targets
 in the edges_table are all defined in the nodes_table.
 * **directed** *bool, optional* `False` - whether the resulting graph must be directed.
@@ -172,6 +180,14 @@ nodes in the edges_table.
 nodes in the edges_table.
 * **edge_data** *Sequence, optional* `[]` - sequence (i.e. list, tuple etc.) of columns' names
 from the edges_table to keep as edge attributes in the resulting graph, e.g. ["weight"].
+* **count_rows_as_weight** *bool, optional* `False` - set this to True to compute a weight
+attribute for each edge, corresponding to the number of times it was
+found in the table. The name of this attribute is defined by the
+`edge_weight_attr` parameter. If set to False, only the last occurrence of
+each edge will be kept in the graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
+its weight, i.e. the number of times it was found in the table, if
+`count_rows_as_weight` is set to True.
 * **directed** *bool, optional* `False` - whether the resulting graph must be directed.
 
 *Returns*
@@ -188,9 +204,9 @@ Function converting the given networkx graph into a pandas DataFrame of
 its nodes.
 
 ```python
-from pelote import to_nodes_dataframe
+from pelote import graph_to_nodes_dataframe
 
-df = to_nodes_dataframe(graph)
+df = graph_to_nodes_dataframe(graph)
 ```
 
 *Arguments*

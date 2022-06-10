@@ -28,9 +28,9 @@ def graph_to_nodes_dataframe(
         pd.DataFrame: A pandas DataFrame
 
     Example:
-        from pelote import to_nodes_dataframe
+        from pelote import graph_to_nodes_dataframe
 
-        df = to_nodes_dataframe(graph)
+        df = graph_to_nodes_dataframe(graph)
     """
 
     check_pandas()
