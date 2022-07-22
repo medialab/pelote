@@ -3,7 +3,6 @@
 # =============================================================================
 import json
 import networkx as nx
-from typing import cast, Any
 from pytest import raises
 from pathlib import Path
 
@@ -75,7 +74,7 @@ class TestReadGraphologyJson(object):
             ("two", {"age": 34}),
         ]
 
-        def key(x: Any) -> str:
+        def key(x) -> str:
             return str(x[2])
 
         assert sorted(list(g.edges(data=True, keys=True)), key=key) == [
@@ -87,7 +86,7 @@ class TestReadGraphologyJson(object):
 
     def test_read(self):
         with raises(TypeError):
-            read_graphology_json(cast(str, None))
+            read_graphology_json(None)
 
         les_miserables_path = get_resource_path("les_miserables.json")
 

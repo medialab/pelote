@@ -2,21 +2,18 @@
 # Pelote Incremental Id Register Class
 # =============================================================================
 #
-from typing import Generic, TypeVar, Dict
-
-K = TypeVar("K")
 
 
-class IncrementalIdRegister(Generic[K]):
+class IncrementalIdRegister:
     """
     Helper class mapping incremental ids to arbitrary hashable keys.
     """
 
     def __init__(self):
         self.__counter = 0
-        self.__index: Dict[K, int] = {}
+        self.__index = {}
 
-    def __getitem__(self, item: K) -> int:
+    def __getitem__(self, item) -> int:
         item_id = self.__index.get(item)
 
         if item_id is None:

@@ -2,8 +2,6 @@
 # Pelote Sparsification Utilities
 # =============================================================================
 #
-from typing import Generator, Tuple, Any
-
 from pelote.graph import check_graph, filter_edges
 
 

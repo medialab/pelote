@@ -1,4 +1,3 @@
-from typing import Any
 from contextlib import contextmanager
 
 try:
@@ -66,7 +65,7 @@ def check_pandas() -> None:
         )
 
 
-def is_dataframe(value: Any) -> bool:
+def is_dataframe(value) -> bool:
     global pd
 
     if pd is None:
