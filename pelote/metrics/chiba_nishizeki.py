@@ -33,12 +33,13 @@ def triangles(graph):
     if graph.is_directed():
         graph = graph.to_undirected(as_view=True)
 
-    def key(n):
-        return (graph.degree[n], n)
-
     marked_nodes = OrderedDict()
 
-    sorted_nodes = sorted(graph, key=key, reverse=True)
+    # NOTE: a node connected to a single other one cannot be part of a triangle
+    valid_nodes = (n for n in graph if graph.degree[n] > 1)
+
+    # NOTE: this sort can be done in linear time using e.g. bucket sort if required
+    sorted_nodes = sorted(valid_nodes, key=graph.degree, reverse=True)
 
     adjacencies = {}
 
@@ -49,6 +50,10 @@ def triangles(graph):
 
             # NOTE: avoiding self loops
             if neighbor == node:
+                continue
+
+            # NOTE: avoiding leaf nodes
+            if graph.degree[neighbor] < 2:
                 continue
 
             adjacency.append(neighbor)
