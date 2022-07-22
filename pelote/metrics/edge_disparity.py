@@ -99,6 +99,8 @@ def edge_disparity(graph, edge_weight_attr: str = "weight", reverse: bool = Fals
                 source_score = 1.0 - source_score
                 target_score = 1.0 - target_score
 
+            # NOTE: for now we don't deal with directed graphs, so we have
+            # the guarantee we have an undirected edge at this point
             disparities[(source, target)] = (
                 min(source_score, target_score)
                 if not reverse

@@ -40,12 +40,11 @@ def multiscale_backbone(graph, alpha: float = 0.05, edge_weight_attr: str = "wei
     disparity = edge_disparity(graph, edge_weight_attr=edge_weight_attr)
 
     def edge_predicate(u, v, a):
-        # TODO: I am sure we can do better...
-        score = disparity.get((u, v))
+        # NOTE: swapping because we have the guarantee the graph is undirected
+        # and the edge keys are arranged with lower node first
+        if u > v:
+            u, v = v, u
 
-        if score is None:
-            score = disparity[(v, u)]
-
-        return score <= alpha
+        return disparity[(u, v)] <= alpha
 
     return filter_edges(graph, edge_predicate)
