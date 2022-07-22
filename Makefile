@@ -10,9 +10,9 @@ define clean
 endef
 
 # Commands
-all: check test
+all: test
 test: unit
-publish: clean check test upload
+publish: clean test upload
 	$(call clean)
 
 clean:
