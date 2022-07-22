@@ -6,16 +6,13 @@
 #
 import networkx as nx
 from heapq import nlargest
-from typing import Set, Any, Optional, List, Callable, Dict, Generator
-from typing_extensions import TypeGuard
 
-from pelote.types import AnyGraph, Attributes
 from pelote.classes import DFSStack
 
 GRAPH_TYPES = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
 
 
-def is_graph(value: Any) -> TypeGuard[AnyGraph]:
+def is_graph(value) -> bool:
     """
     Function returning whether the given value is a networkx graph.
 
@@ -28,7 +25,7 @@ def is_graph(value: Any) -> TypeGuard[AnyGraph]:
     return isinstance(value, GRAPH_TYPES)
 
 
-def check_graph(value: Any) -> None:
+def check_graph(value) -> None:
     """
     Function raising if the given value is not a networkx graph.
 
@@ -39,7 +36,7 @@ def check_graph(value: Any) -> None:
         raise TypeError("expected a networkx graph but got %s" % type(value).__name__)
 
 
-def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
+def largest_connected_component(graph):
     """
     Function returning the largest connected component of given networkx graph
     as a set of nodes.
@@ -77,7 +74,7 @@ def largest_connected_component(graph: AnyGraph) -> Optional[Set[Any]]:
     return largest
 
 
-def crop_to_largest_connected_component(graph: AnyGraph) -> None:
+def crop_to_largest_connected_component(graph) -> None:
     """
     Function mutating the given networkx graph in order to keep only the
     largest connected component.
@@ -95,7 +92,7 @@ def crop_to_largest_connected_component(graph: AnyGraph) -> None:
     if component is None:
         return
 
-    nodes_to_drop: List[Any] = []
+    nodes_to_drop = []
 
     for node in graph:
         if node not in component:
@@ -105,7 +102,7 @@ def crop_to_largest_connected_component(graph: AnyGraph) -> None:
         graph.remove_node(node)
 
 
-def have_same_nodes(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) -> bool:
+def have_same_nodes(A, B, check_attributes: bool = False) -> bool:
     if A.order() != B.order():
         return False
 
@@ -119,7 +116,7 @@ def have_same_nodes(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) ->
     return True
 
 
-def have_same_edges(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) -> bool:
+def have_same_edges(A, B, check_attributes: bool = False) -> bool:
     if A.size() != B.size():
         return False
 
@@ -133,16 +130,13 @@ def have_same_edges(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) ->
     return True
 
 
-def are_same_graphs(A: AnyGraph, B: AnyGraph, check_attributes: bool = False) -> bool:
+def are_same_graphs(A, B, check_attributes: bool = False) -> bool:
     return have_same_nodes(A, B, check_attributes=check_attributes) and have_same_edges(
         A, B, check_attributes=check_attributes
     )
 
 
-EdgePredictate = Callable[[Any, Any, Dict[Any, Any]], bool]
-
-
-def remove_edges(graph: AnyGraph, predicate: EdgePredictate) -> None:
+def remove_edges(graph, predicate) -> None:
     """
     Function removing all edges that do not pass a predicate function from a
     given networkx graph.
@@ -170,7 +164,7 @@ def remove_edges(graph: AnyGraph, predicate: EdgePredictate) -> None:
         graph.remove_edge(u, v)
 
 
-def filter_edges(graph: AnyGraph, predicate: EdgePredictate) -> AnyGraph:
+def filter_edges(graph, predicate):
     """
     Function returning a copy of the given networkx graph but without the edges
     filtered out by the given predicate function
@@ -198,13 +192,10 @@ def filter_edges(graph: AnyGraph, predicate: EdgePredictate) -> AnyGraph:
     return copy
 
 
-EdgeFilterFunction = Callable[[Any, Any, Attributes], bool]
-
-
 def connected_component_orders(
-    graph: AnyGraph,
-    edge_filter: Optional[EdgeFilterFunction] = None,
-) -> Generator[int, None, None]:
+    graph,
+    edge_filter=None,
+):
     """
     Function yielding the given graph's connected component orders. It is
     faster than calling `len` on sets yielded by nx.connected_components and
@@ -226,7 +217,7 @@ def connected_component_orders(
 
     # Wrapping generator to make sure type checking raises on call
     def generator():
-        stack = DFSStack[Any, Any](graph)
+        stack = DFSStack(graph)
 
         for node in stack.nodes_yet_unseen():
             stack.append(node)
@@ -247,7 +238,7 @@ def connected_component_orders(
     return generator()
 
 
-def largest_connected_component_order(graph: AnyGraph) -> Optional[int]:
+def largest_connected_component_order(graph):
     """
     Function returning the order of the largest connected component of the given
     graph.
@@ -264,9 +255,7 @@ def largest_connected_component_order(graph: AnyGraph) -> Optional[int]:
     return max(connected_component_orders(graph))
 
 
-def second_largest_connected_component_order(
-    graph: AnyGraph, edge_filter: Optional[EdgeFilterFunction] = None
-) -> Optional[int]:
+def second_largest_connected_component_order(graph, edge_filter=None):
     """
     Function returning the order of the second largest connected component
     of the given graph.

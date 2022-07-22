@@ -2,14 +2,11 @@
 # Pelote Multiscale Backbone
 # =============================================================================
 #
-from pelote.types import AnyGraph
 from pelote.graph import filter_edges, check_graph
 from pelote.metrics import edge_disparity
 
 
-def multiscale_backbone(
-    graph: AnyGraph, alpha: float = 0.05, edge_weight_attr: str = "weight"
-) -> AnyGraph:
+def multiscale_backbone(graph, alpha: float = 0.05, edge_weight_attr: str = "weight"):
     """
     Function returning the multiscale backbone of the given graph, i.e. a copy
     of the graph were we only kept "relevant" edges, as defined by a

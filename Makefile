@@ -31,11 +31,6 @@ format:
 	black $(SOURCE) experiments docs test *.py
 	@echo
 
-check:
-	@echo Type checking...
-	mypy -p pelote -p test
-	@echo
-
 unit:
 	@echo Running unit tests...
 	pytest -svvv

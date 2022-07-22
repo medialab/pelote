@@ -2,7 +2,6 @@
 # Pelote Global Threshold Sparsification
 # =============================================================================
 #
-from pelote.types import AnyGraph
 from pelote.sparsification.utils import Sparsifier
 
 
@@ -25,11 +24,11 @@ class GlobalThresholdSparsifier(Sparsifier):
 
 
 def global_threshold_sparsification(
-    graph: AnyGraph,
+    graph,
     weight_threshold: float,
     edge_weight_attr: str = "weight",
     reverse: bool = False,
-) -> AnyGraph:
+):
     """
     Function returning a copy of the given graph without edges whose weight
     is less than a given threshold.

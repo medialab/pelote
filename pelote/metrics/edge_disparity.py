@@ -2,15 +2,10 @@
 # Pelote Edge Disparity Metric
 # =============================================================================
 #
-from typing import Dict, Tuple, Any
-
 from pelote.graph import check_graph
-from pelote.types import AnyGraph
 
 
-def edge_disparity(
-    graph: AnyGraph, edge_weight_attr: str = "weight", reverse: bool = False
-) -> Dict[Any, float]:
+def edge_disparity(graph, edge_weight_attr: str = "weight", reverse: bool = False):
     """
     Function computing the disparity score of each edge in the given graph. This
     score is typically used to extract the multiscale backbone of a weighted
@@ -77,7 +72,7 @@ def edge_disparity(
     if graph.is_directed() or graph.is_multigraph():
         raise TypeError("edge_disparity cannot work on a directed or multi graph")
 
-    disparities: Dict[Tuple[Any, Any], float] = {}
+    disparities = {}
 
     # NOTE: we need to recast as dict to avoid the linear complexity trap
     # of networkx DegreeView...

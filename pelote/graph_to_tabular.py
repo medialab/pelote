@@ -4,16 +4,13 @@
 #
 # Functions able to convert networkx graphs to various tabular data formats.
 #
-from typing import Optional, Tuple, Mapping, Iterable, Union
+from collections.abc import Mapping, Iterable
 
-from pelote.types import AnyGraph
 from pelote.shim import pd, check_pandas
 from pelote.graph import check_graph
 
 
-def graph_to_nodes_dataframe(
-    graph: AnyGraph, node_key_col: str = "key"
-) -> "pd.DataFrame":
+def graph_to_nodes_dataframe(graph, node_key_col: str = "key") -> "pd.DataFrame":
     """
     Function converting the given networkx graph into a pandas DataFrame of
     its nodes.
@@ -55,17 +52,14 @@ def graph_to_nodes_dataframe(
         return pd.DataFrame(data=data_with_key())
 
 
-NodeDataSpec = Union[Mapping[str, str], Iterable[str]]
-
-
 def graph_to_edges_dataframe(
-    graph: AnyGraph,
+    graph,
     *,
     edge_source_col: str = "source",
     edge_target_col: str = "target",
-    source_node_data: Optional[NodeDataSpec] = None,
-    target_node_data: Optional[NodeDataSpec] = None
-) -> "pd.DataFrame":
+    source_node_data=None,
+    target_node_data=None
+):
     """
     Function converting the given networkx graph into a pandas DataFrame of
     its edges.
@@ -133,14 +127,14 @@ def graph_to_edges_dataframe(
 
 
 def graph_to_dataframes(
-    graph: AnyGraph,
+    graph,
     *,
     node_key_col: str = "key",
     edge_source_col: str = "source",
     edge_target_col: str = "target",
-    source_node_data: Optional[NodeDataSpec] = None,
-    target_node_data: Optional[NodeDataSpec] = None
-) -> Tuple["pd.DataFrame", "pd.DataFrame"]:
+    source_node_data=None,
+    target_node_data=None
+):
     """
     Function converting the given networkx graph into two pandas DataFrames:
     one for its nodes, one for its edges.

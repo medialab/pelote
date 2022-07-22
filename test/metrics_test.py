@@ -3,6 +3,7 @@
 # =============================================================================
 import networkx as nx
 from pytest import raises
+from ebbe import with_prev
 
 from pelote.metrics import edge_disparity
 
@@ -18,11 +19,12 @@ class TestEdgeDisparity(object):
             [(0, 1, 1), (0, 2, 1), (0, 3, 1), (1, 2, 1), (1, 3, 1), (2, 3, 1)]
         )
         disparities = edge_disparity(g)
-        for i, disparity in enumerate(disparities.values()):
-            if i == 0:
-                previous_disparity = disparity
-            assert previous_disparity == disparity
-            previous_disparity = disparity
+
+        for previous, current in with_prev(disparities.values()):
+            if previous is None:
+                continue
+
+            assert previous == current
 
     def test_correct_disparities(self):
         g = nx.complete_graph(5)

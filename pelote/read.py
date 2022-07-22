@@ -8,12 +8,9 @@ import json
 import networkx as nx
 from pathlib import Path
 from io import IOBase
-from typing import Union
-
-from pelote.types import GraphologySerializedGraph, AnyGraph, FileHandle
 
 
-def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
+def parse_graphology_json(data):
     if "options" not in data:
         raise TypeError(
             "cannot parse a graphology json that does not record the graph options"
@@ -33,8 +30,6 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
             graph_type = "directed"
 
     is_multi = options["multi"]
-
-    graph: AnyGraph
 
     if graph_type == "directed":
         if is_multi:
@@ -75,9 +70,7 @@ def parse_graphology_json(data: GraphologySerializedGraph) -> AnyGraph:
     return graph
 
 
-def read_graphology_json(
-    target: Union[FileHandle, GraphologySerializedGraph]
-) -> AnyGraph:
+def read_graphology_json(target):
     """
     Function reading and parsing the given json file representing a serialized
     [graphology](https://graphology.github.io/) graph as a networkx graph.
@@ -93,8 +86,6 @@ def read_graphology_json(
     Returns:
         nx.AnyGraph: a networkx graph instance.
     """
-    data: GraphologySerializedGraph
-
     if isinstance(target, (str, Path)):
         with open(target) as f:
             data = json.load(f)

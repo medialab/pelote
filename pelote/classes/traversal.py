@@ -2,35 +2,30 @@
 # Pelote DFS Stack Class
 # =============================================================================
 #
-from typing import Generic, Optional, List, Set, TypeVar, Generator, Deque, cast
-
-from pelote.types import AnyGraph
-
-K = TypeVar("K")
-V = TypeVar("V")
+from collections import deque
 
 
-class DFSStack(Generic[K, V]):
+class DFSStack:
     """
     Specialized stack structure tailored to perform memory-efficient DFS
     traversal in graphs.
     """
 
-    def __init__(self, graph: AnyGraph):
+    def __init__(self, graph):
         self.__graph = graph
-        self.__stack: List[V] = []
-        self.__seen: Set[K] = set()
+        self.__stack = []
+        self.__seen = set()
 
     def __len__(self) -> int:
         return len(self.__stack)
 
-    def __contains__(self, node: K) -> bool:
+    def __contains__(self, node) -> bool:
         return node in self.__seen
 
     def has_already_seen_everything(self) -> bool:
         return len(self.__seen) == len(self.__graph)
 
-    def nodes_yet_unseen(self) -> Generator[K, None, None]:
+    def nodes_yet_unseen(self):
         for node in self.__graph:
             if len(self.__seen) == len(self.__graph):
                 break
@@ -40,7 +35,7 @@ class DFSStack(Generic[K, V]):
 
             yield node
 
-    def append(self, node: K, item: Optional[V] = None) -> bool:
+    def append(self, node, item=None) -> bool:
         size_before = len(self.__seen)
 
         self.__seen.add(node)
@@ -48,35 +43,35 @@ class DFSStack(Generic[K, V]):
         if size_before == len(self.__seen):
             return False
 
-        self.__stack.append(cast(V, node) if item is None else item)
+        self.__stack.append(node if item is None else item)
 
         return True
 
-    def pop(self) -> V:
+    def pop(self):
         return self.__stack.pop()
 
 
-class BFSQueue(Generic[K, V]):
+class BFSQueue:
     """
     Specialized queue structure tailored to perform memory-efficient BFS
     traversal in graphs.
     """
 
-    def __init__(self, graph: AnyGraph):
+    def __init__(self, graph):
         self.__graph = graph
-        self.__queue: Deque[V] = Deque()
-        self.__seen: Set[K] = set()
+        self.__queue = deque()
+        self.__seen = set()
 
     def __len__(self) -> int:
         return len(self.__queue)
 
-    def __contains__(self, node: K) -> bool:
+    def __contains__(self, node) -> bool:
         return node in self.__seen
 
     def has_already_seen_everything(self) -> bool:
         return len(self.__seen) == len(self.__graph)
 
-    def nodes_yet_unseen(self) -> Generator[K, None, None]:
+    def nodes_yet_unseen(self):
         for node in self.__graph:
             if len(self.__seen) == len(self.__graph):
                 break
@@ -86,7 +81,7 @@ class BFSQueue(Generic[K, V]):
 
             yield node
 
-    def append(self, node: K, item: Optional[V] = None) -> bool:
+    def append(self, node, item=None) -> bool:
         size_before = len(self.__seen)
 
         self.__seen.add(node)
@@ -94,9 +89,9 @@ class BFSQueue(Generic[K, V]):
         if size_before == len(self.__seen):
             return False
 
-        self.__queue.append(cast(V, node) if item is None else item)
+        self.__queue.append(node if item is None else item)
 
         return True
 
-    def popleft(self) -> V:
+    def popleft(self):
         return self.__queue.popleft()

@@ -9,14 +9,13 @@ from pathlib import Path
 
 from test.utils import get_resource_path
 
-from pelote.types import GraphologySerializedGraph, AnyGraph
 from pelote.read import parse_graphology_json, read_graphology_json
 
 
 class TestReadGraphologyJson(object):
     def test_parsing_errors(self):
         with raises(TypeError):
-            parse_graphology_json(cast(GraphologySerializedGraph, {}))
+            parse_graphology_json({})
 
         with raises(TypeError, match="mixed"):
             data = {
@@ -92,7 +91,7 @@ class TestReadGraphologyJson(object):
 
         les_miserables_path = get_resource_path("les_miserables.json")
 
-        def check_graph(g: AnyGraph) -> None:
+        def check_graph(g) -> None:
             assert g.order() == 77
             assert g.size() == 254
             assert isinstance(g, nx.DiGraph)

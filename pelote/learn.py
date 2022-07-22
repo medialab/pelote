@@ -5,10 +5,8 @@
 # Collection of learning function related to graph sparsification mostly.
 #
 import math
-from typing import Optional, Callable
 from collections import namedtuple
 
-from pelote.types import AnyGraph
 from pelote.graph import (
     largest_connected_component_order,
     second_largest_connected_component_order,
@@ -21,12 +19,12 @@ FloatsamEpoch = namedtuple(
 
 
 def floatsam_threshold_learner(
-    graph: AnyGraph,
+    graph,
     starting_threshold: float = 0.0,
     learning_rate: float = 0.01,
-    max_drifter_order: Optional[int] = None,
+    max_drifter_order=None,
     edge_weight_attr: str = "weight",
-    on_epoch: Optional[Callable[[FloatsamEpoch], None]] = None,
+    on_epoch=None,
 ):
     """
     Function using an iterative algorithm to try and find the best weight

@@ -5,26 +5,12 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
-from typing import (
-    Sequence,
-    Union,
-    Callable,
-    Dict,
-    Tuple,
-    Any,
-    Optional,
-    Hashable,
-    Iterable,
-)
 
 from pelote.utils import check_node_exists, iterator_from_dataframe
 from pelote.classes import IncrementalIdRegister
-from pelote.types import AnyGraph, Tabular, Indexable
-
-RowDataSpec = Union[Sequence[Hashable], Callable[[Indexable], Dict[Any, Any]]]
 
 
-def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
+def collect_row_data(spec, row):
     if callable(spec):
         attr = spec(row)
 
@@ -40,18 +26,18 @@ def collect_row_data(spec: RowDataSpec, row: Indexable) -> Dict[Any, Any]:
 
 
 def table_to_bipartite_graph(
-    table: Tabular,
-    first_part_col: Hashable,
-    second_part_col: Hashable,
+    table,
+    first_part_col,
+    second_part_col,
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
-    first_part_data: Optional[RowDataSpec] = None,
-    second_part_data: Optional[RowDataSpec] = None,
-    first_part_name: Optional[Hashable] = None,
-    second_part_name: Optional[Hashable] = None,
+    first_part_data=None,
+    second_part_data=None,
+    first_part_name=None,
+    second_part_name=None,
     disjoint_keys: bool = False,
-) -> AnyGraph:
+):
     """
     Function creating a bipartite graph from the given tabular data.
 
@@ -113,7 +99,7 @@ def table_to_bipartite_graph(
     table = iterator_from_dataframe(table)
 
     graph = nx.Graph()
-    node_id = IncrementalIdRegister[Tuple[Hashable, Any]]()
+    node_id = IncrementalIdRegister()
 
     for i, row in enumerate(table):
         try:
@@ -159,15 +145,15 @@ def table_to_bipartite_graph(
 
 
 def _edges_table_to_graph(
-    graph: AnyGraph,
-    edge_table: Tabular,
-    edge_source_col: Hashable,
-    edge_target_col: Hashable,
-    edge_data: Sequence[Hashable],
+    graph,
+    edge_table,
+    edge_source_col,
+    edge_target_col,
+    edge_data,
     count_rows_as_weight: bool,
     edge_weight_attr: str,
     add_missing_nodes: bool = True,
-) -> AnyGraph:
+):
 
     for row in edge_table:
 
@@ -191,15 +177,15 @@ def _edges_table_to_graph(
 
 
 def edges_table_to_graph(
-    edge_table: Tabular,
-    edge_source_col: Hashable = "source",
-    edge_target_col: Hashable = "target",
+    edge_table,
+    edge_source_col="source",
+    edge_target_col="target",
     *,
-    edge_data: Sequence[Hashable] = [],
+    edge_data=[],
     count_rows_as_weight: bool = False,
     edge_weight_attr: str = "weight",
     directed: bool = False,
-) -> AnyGraph:
+):
     """
     Function creating a graph from a table of edges.
 
@@ -239,8 +225,6 @@ def edges_table_to_graph(
         edge_table, [edge_source_col, edge_target_col] + list(edge_data)
     )
 
-    graph: AnyGraph
-
     if directed:
         graph = nx.DiGraph()
     else:
@@ -258,19 +242,19 @@ def edges_table_to_graph(
 
 
 def tables_to_graph(
-    nodes_table: Tabular,
-    edges_table: Tabular,
-    node_col: Hashable = "key",
-    edge_source_col: Hashable = "source",
-    edge_target_col: Hashable = "target",
+    nodes_table,
+    edges_table,
+    node_col="key",
+    edge_source_col="source",
+    edge_target_col="target",
     *,
-    node_data: Sequence[Hashable] = [],
-    edge_data: Sequence[Hashable] = [],
+    node_data=[],
+    edge_data=[],
     count_rows_as_weight: bool = False,
     edge_weight_attr: str = "weight",
     add_missing_nodes: bool = False,
     directed: bool = False,
-) -> AnyGraph:
+):
     """
     Function creating a graph from two tables: a table of nodes and a table of edges.
 
@@ -340,8 +324,6 @@ def tables_to_graph(
     edges_table = iterator_from_dataframe(
         edges_table, [edge_source_col, edge_target_col] + list(edge_data)
     )
-
-    graph: AnyGraph
 
     if directed:
         graph = nx.DiGraph()

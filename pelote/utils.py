@@ -5,17 +5,11 @@
 # Miscellaneous utility functions used throughout the library.
 #
 from collections import Counter, defaultdict, OrderedDict
-from typing import Iterable, Any, Dict, TypeVar, Hashable, Sequence, Optional
 
 from pelote.shim import is_dataframe
-from pelote.types import AnyGraph, Tabular
-
-K = TypeVar("K")
-V = TypeVar("V")
-NodeKey = TypeVar("NodeKey")
 
 
-def has_mixed_types(iterable: Iterable[Any]) -> bool:
+def has_mixed_types(iterable) -> bool:
     iterator = iter(iterable)
 
     main_type = None
@@ -31,14 +25,14 @@ def has_mixed_types(iterable: Iterable[Any]) -> bool:
     return False
 
 
-def check_node_exists(g: AnyGraph, n: NodeKey) -> NodeKey:
+def check_node_exists(g, n):
     if n not in g:
         raise KeyError("Node {} does not exist. {}".format(n, g.nodes))
 
     return n
 
 
-def dict_without(d: Dict[K, V], k: str) -> Dict[K, V]:
+def dict_without(d, k: str):
     o = {}
 
     for n, v in d.items():
@@ -53,13 +47,11 @@ def dict_without(d: Dict[K, V], k: str) -> Dict[K, V]:
 CONSTANT_TIME_LOOKUP = (set, frozenset, dict, Counter, defaultdict, OrderedDict)
 
 
-def has_constant_time_lookup(v: Any) -> bool:
+def has_constant_time_lookup(v) -> bool:
     return isinstance(v, CONSTANT_TIME_LOOKUP)
 
 
-def iterator_from_dataframe(
-    table: Tabular, columns: Optional[Sequence[Hashable]] = None
-) -> Tabular:
+def iterator_from_dataframe(table, columns=None):
     if is_dataframe(table):
         if columns is None:
             columns = table.columns

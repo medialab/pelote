@@ -6,39 +6,25 @@
 # to monopartite, for instance.
 #
 import networkx as nx
-from typing import (
-    cast,
-    Hashable,
-    Optional,
-    Any,
-    Collection,
-    Union,
-    Iterable,
-    Dict,
-    List,
-    Tuple,
-)
 from collections import defaultdict
+from collections.abc import Hashable
 
 from pelote.classes import BFSQueue
-from pelote.classes.online_metrics import Metric, instantiate_online_metric
-from pelote.types import AnyGraph
+from pelote.classes.online_metrics import instantiate_online_metric
 from pelote.graph import check_graph
 from pelote.utils import dict_without, has_constant_time_lookup
 
-Part = Union[Hashable, Collection[Any]]
-
 
 def monopartite_projection(
-    bipartite_graph: AnyGraph,
-    part_to_keep: Part,
+    bipartite_graph,
+    part_to_keep,
     *,
     node_part_attr: str = "part",
     edge_weight_attr: str = "weight",
-    metric: Optional[Metric] = None,
+    metric=None,
     bipartition_check: bool = True,
-    weight_threshold: Optional[float] = None
-) -> AnyGraph:
+    weight_threshold=None
+):
     """
     Function returning the monopartite projection of a given bipartite graph
     wrt one of both partitions of the graph.
@@ -109,7 +95,7 @@ def monopartite_projection(
 
     if part_to_keep_as_set:
         if not has_constant_time_lookup(part_to_keep):
-            part_to_keep = set(cast(Iterable[Any], part_to_keep))
+            part_to_keep = set(part_to_keep)
 
     # Computing norms
     part_is_empty = True
@@ -205,7 +191,7 @@ def bfs_from_node(graph, source, reverse=False, limit=1):
             queue.append(neighbor, (neighbor, depth + 1))
 
 
-def self_similarity_projection(graph: AnyGraph, depth=1) -> AnyGraph:
+def self_similarity_projection(graph, depth=1):
     # TODO: raise if multigraph
     check_graph(graph)
 
@@ -214,8 +200,6 @@ def self_similarity_projection(graph: AnyGraph, depth=1) -> AnyGraph:
     if not graph.is_directed():
         raise NotImplementedError
 
-    graph = cast(nx.DiGraph, graph)
-
     # Null graph early exit
     if graph.order() == 0:
         return nx.Graph()
@@ -223,13 +207,13 @@ def self_similarity_projection(graph: AnyGraph, depth=1) -> AnyGraph:
     projected_graph = nx.Graph()
 
     norms = {}
-    inverted_index: Dict[Tuple[bool, int, Any], List[Any]] = defaultdict(list)
+    inverted_index = defaultdict(list)
 
     for node, attr in graph.nodes.data():
         projected_graph.add_node(node, **attr)
 
         norm = 0
-        candidates: Dict[Any, int] = defaultdict(int)
+        candidates = defaultdict(int)
 
         # TODO: plug BFS strategy here
         # TODO: directed BFS can only follow one kind of links, supposedly?
