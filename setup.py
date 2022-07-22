@@ -17,6 +17,6 @@ setup(
     python_requires=">=3.6",
     packages=find_packages(exclude=["docs", "experiments", "test"]),
     package_data={"docs": ["README.md"], "pelote": ["*.pyi"]},
-    install_requires=["networkx>=2,<3"],
+    install_requires=["llist", "networkx>=2,<3"],
     zip_safe=True,
 )

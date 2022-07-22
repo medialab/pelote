@@ -1,5 +1,5 @@
 # =============================================================================
-# Pelote Metrics Unit Tests
+# Pelote Edge Disparity Unit Tests
 # =============================================================================
 import networkx as nx
 from pytest import raises
