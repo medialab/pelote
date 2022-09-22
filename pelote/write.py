@@ -17,8 +17,7 @@ def write_graphology_json(graph):
         graph (nx.AnyGraph): graph to read and parse.
 
     Returns:
-        dict: dict with the graph represented in the structure of a json file representing a serialized
-    [graphology] graph.
+        dict: parsed JSON data.
     """
     edges = []
     nodes = []
