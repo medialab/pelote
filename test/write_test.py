@@ -32,7 +32,7 @@ class TestReadGraphologyJson(object):
             "edges": [{"source": "one", "target": "two", "attributes": {"weight": 35}}],
         }
 
-        assert data == write_graphology_json(G)
+        assert write_graphology_json(G) == data
 
     def test_write_multi(self):
         G = nx.MultiGraph()
@@ -65,7 +65,7 @@ class TestReadGraphologyJson(object):
             ],
         }
 
-        assert data == write_graphology_json(G)
+        assert write_graphology_json(G) == data
 
     def test_write_read_basic(self):
 

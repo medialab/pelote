@@ -9,61 +9,52 @@ import networkx as nx
 
 
 def write_graphology_json(graph):
+    """
+    Function reading and parsing the given a networkx graph as a json file representing a serialized
+    [graphology](https://graphology.github.io/) graph.
 
-    attr_nodes = {}
-    attr_edges = {}
+    Args:
+        graph (nx.AnyGraph): graph to read and parse.
+
+    Returns:
+        dict: dict with the graph represented in the structure of a json file representing a serialized
+    [graphology] graph.
+    """
     edges = []
     nodes = []
-    total = {}
-    if nx.number_of_selfloops(graph):
-        allowSelfLoops = False
-    else:
-        allowSelfLoops = True
     attributes = graph.graph
-    if type(graph) == nx.classes.graph.Graph:  # graphe non dirigé, simple
-        multi = False
-        type_options = "undirected"
-    elif type(graph) == nx.classes.digraph.DiGraph:  # graphe dirigé, simple
-        multi = False
+    if nx.is_directed(graph):
         type_options = "directed"
-    elif type(graph) == nx.classes.multigraph.MultiGraph:  # non dirigé multi
-        multi = True
+    else:
         type_options = "undirected"
-    else:  # nx.classes.multidigraph.MultiDiGraph, dirigé, multi
+    if graph.is_multigraph():
         multi = True
-        type_options = "directed"
-    options = {"allowSelfLoops": allowSelfLoops, "multi": multi, "type": type_options}
+    else:
+        multi = False
+    options = {"allowSelfLoops": True, "multi": multi, "type": type_options}
     for n, attr in graph.nodes.data():
         if attr:
             for i, g in attr.items():
-                attr_nodes[n] = {str(i): g}
+                nodes.append({"key": str(n), "attributes": {str(i): g}})
         else:
-            attr_nodes[n] = attr
-    for e, attr in graph.edges.items():
+            nodes.append({"key": str(n)})
+    for source, target, attr in graph.edges.data():
         if attr:
             for i, g in attr.items():
-                attr_edges[e] = {str(i): g}
+                edges.append(
+                    {
+                        "source": str(source),
+                        "target": str(target),
+                        "attributes": {str(i): g},
+                    }
+                )
         else:
-            attr_edges[e] = attr
-    for key, edge in attr_edges.items():
-        if edge:
-            edges.append(
-                {
-                    "source": str(list(key)[0]),
-                    "target": str(list(key)[1]),
-                    "attributes": edge,
-                }
-            )
-        else:
-            edges.append({"source": str(list(key)[0]), "target": str(list(key)[1])})
-    for key, node in attr_nodes.items():
-        if node:
-            nodes.append({"key": str(key), "attributes": node})
-        else:
-            nodes.append({"key": str(key)})
+            edges.append({"source": str(source), "target": str(target)})
     if attributes:
-        total["attributes"] = attributes
-    total["options"] = options
-    total["nodes"] = nodes
-    total["edges"] = edges
-    return total
+        return {
+            "attributes": attributes,
+            "options": options,
+            "nodes": nodes,
+            "edges": edges,
+        }
+    return {"options": options, "nodes": nodes, "edges": edges}
