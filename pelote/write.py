@@ -45,5 +45,5 @@ def write_graphology_json(graph):
         edges.append(edge_data)
     result = {"options": options, "nodes": nodes, "edges": edges}
     if attributes:
-        return result.update({"attributes": attributes})
+        result["attributes"] = attributes
     return result
