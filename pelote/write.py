@@ -10,50 +10,40 @@ import networkx as nx
 
 def write_graphology_json(graph):
     """
-    Function reading and parsing the given a networkx graph as a json file representing a serialized
-    [graphology](https://graphology.github.io/) graph.
+    Function writing a json file representing a serialized
+    [graphology](https://graphology.github.io/) graph corresponding to the given networkx graph.
 
     Args:
-        graph (nx.AnyGraph): graph to read and parse.
+        graph (nx.AnyGraph): graph to be represented as serialized
+    [graphology](https://graphology.github.io/) graph in json file.
 
     Returns:
         dict: parsed JSON data.
     """
     edges = []
     nodes = []
-    attributes = graph.graph
-    if nx.is_directed(graph):
-        type_options = "directed"
-    else:
-        type_options = "undirected"
-    if graph.is_multigraph():
-        multi = True
-    else:
-        multi = False
-    options = {"allowSelfLoops": True, "multi": multi, "type": type_options}
+    attributes = graph.graph.copy()
+    options = {
+        "allowSelfLoops": True,
+        "multi": graph.is_multigraph(),
+        "type": "directed" if graph.is_directed() else "undirected",
+    }
     for n, attr in graph.nodes.data():
+        node_data = {"key": str(n)}
+
         if attr:
-            for i, g in attr.items():
-                nodes.append({"key": str(n), "attributes": {str(i): g}})
-        else:
-            nodes.append({"key": str(n)})
+            node_data["attributes"] = {str(k): v for k, v in attr.items()}
+
+        nodes.append(node_data)
+
     for source, target, attr in graph.edges.data():
+        edge_data = {"source": str(source), "target": str(target)}
+
         if attr:
-            for i, g in attr.items():
-                edges.append(
-                    {
-                        "source": str(source),
-                        "target": str(target),
-                        "attributes": {str(i): g},
-                    }
-                )
-        else:
-            edges.append({"source": str(source), "target": str(target)})
+            edge_data["attributes"] = {str(k): v for k, v in attr.items()}
+
+        edges.append(edge_data)
+    result = {"options": options, "nodes": nodes, "edges": edges}
     if attributes:
-        return {
-            "attributes": attributes,
-            "options": options,
-            "nodes": nodes,
-            "edges": edges,
-        }
-    return {"options": options, "nodes": nodes, "edges": edges}
+        return result.update({"attributes": attributes})
+    return result

@@ -13,7 +13,7 @@ class TestReadGraphologyJson(object):
         G = nx.DiGraph()
         G.add_nodes_from(
             [
-                ("one", {"hello": "world"}),
+                ("one", {"hello": "world", "hey": "how are you?"}),
                 ("two", {"age": 34}),
             ]
         )
@@ -26,7 +26,7 @@ class TestReadGraphologyJson(object):
         data = {
             "options": {"type": "directed", "multi": False, "allowSelfLoops": True},
             "nodes": [
-                {"key": "one", "attributes": {"hello": "world"}},
+                {"key": "one", "attributes": {"hello": "world", "hey": "how are you?"}},
                 {"key": "two", "attributes": {"age": 34}},
             ],
             "edges": [{"source": "one", "target": "two", "attributes": {"weight": 35}}],
