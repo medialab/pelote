@@ -17,6 +17,7 @@ from pelote.learn import floatsam_threshold_learner
 from pelote.metrics import edge_disparity
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
+from pelote.write import write_graphology_json
 from pelote.sparsification import global_threshold_sparsification, multiscale_backbone
 from pelote.tabular_to_graph import (
     table_to_bipartite_graph,
@@ -76,5 +77,8 @@ __toc__ = [
         ],
     },
     {"title": "Learning", "fns": [floatsam_threshold_learner]},
-    {"title": "Reading & Writing", "fns": [read_graphology_json]},
+    {
+        "title": "Reading & Writing",
+        "fns": [read_graphology_json, write_graphology_json],
+    },
 ]

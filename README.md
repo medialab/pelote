@@ -55,6 +55,7 @@ pip install pandas
   * [floatsam_threshold_learner](#floatsam_threshold_learner)
 * [Reading & Writing](#reading-&-writing)
   * [read_graphology_json](#read_graphology_json)
+  * [write_graphology_json](#write_graphology_json)
 
 ---
 
@@ -566,3 +567,16 @@ parsed JSON data as a dict.
 *Returns*
 
 *nx.AnyGraph* - a networkx graph instance.
+
+#### write_graphology_json
+
+Function writing a json file representing a serialized
+[graphology](https://graphology.github.io/) graph corresponding to the given networkx graph.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - graph to be represented as serialized
+
+*Returns*
+
+*dict* - parsed JSON data.
