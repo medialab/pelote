@@ -19,6 +19,7 @@ def parse_graphology_json(data):
     options = data["options"]
     graph_type = options["type"]
 
+    graph_attributes = data.get("attributes", {})
     nodes = data.get("nodes")
     edges = data.get("edges")
     must_check_mixed = graph_type == "mixed"
@@ -33,14 +34,14 @@ def parse_graphology_json(data):
 
     if graph_type == "directed":
         if is_multi:
-            graph = nx.MultiDiGraph()
+            graph = nx.MultiDiGraph(**graph_attributes)
         else:
-            graph = nx.DiGraph()
+            graph = nx.DiGraph(**graph_attributes)
     else:
         if is_multi:
-            graph = nx.MultiGraph()
+            graph = nx.MultiGraph(**graph_attributes)
         else:
-            graph = nx.Graph()
+            graph = nx.Graph(**graph_attributes)
 
     if nodes is not None:
         for serialized_node in nodes:

@@ -8,7 +8,7 @@ from pelote.write import write_graphology_json
 from pelote.graph import are_same_graphs
 
 
-class TestReadGraphologyJson(object):
+class TestWriteGraphologyJson(object):
     def test_write_basic(self):
         G = nx.DiGraph()
         G.add_nodes_from(

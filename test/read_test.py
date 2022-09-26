@@ -49,6 +49,18 @@ class TestReadGraphologyJson(object):
 
         assert isinstance(g, nx.DiGraph)
 
+    def test_parsing_graph_attributes(self):
+        data = {
+            "options": {"type": "mixed", "multi": False, "allowSelfLoops": True},
+            "attributes": {"name": "Test Graph", "year": 2022},
+            "nodes": [{"key": "one"}, {"key": "two"}],
+            "edges": [{"source": "one", "target": "two"}],
+        }
+
+        g = parse_graphology_json(data)
+
+        assert g.graph == {"name": "Test Graph", "year": 2022}
+
     def test_parsing_multi(self):
         data = {
             "options": {"type": "undirected", "multi": True, "allowSelfLoops": True},
