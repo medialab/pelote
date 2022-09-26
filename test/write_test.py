@@ -136,9 +136,20 @@ class TestWriteGraphologyJson(object):
 
         assert are_same_graphs(read_graphology_json(write_graphology_json(g)), g)
 
-    def test_unserializable_keys(self):
+    def test_unserializable_node_keys(self):
         g = nx.Graph()
         g.add_node((1, 2))
 
         with raises(TypeError, match="key"):
             write_graphology_json(g)
+
+    def test_mixed_node_keys(self):
+        g = nx.Graph()
+        g.add_edge(1, "2")
+
+        with raises(TypeError, match="mixed"):
+            write_graphology_json(g)
+
+        data = write_graphology_json(g, allow_mixed_keys=True)
+
+        assert data["nodes"] == [{"key": "1"}, {"key": "2"}]

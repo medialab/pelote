@@ -573,9 +573,16 @@ parsed JSON data as a dict.
 Function serializing the given networkx graph as JSON, using the
 [graphology](https://graphology.github.io/) format.
 
+Note that both node keys and attribute names will be cast to string so
+they can safely be represented in JSON.
+
 *Arguments*
 
 * **graph** *nx.AnyGraph* - graph to serialize.
+* **allow_mixed_keys** *bool, optional* - whether to allow graph with mixed
+node key types to be serialized nonetheless. Keys will always be
+cast to string so keys might clash and produce an invalid
+serialization. Only use this if you know what you are doing.
 
 *Returns*
 
