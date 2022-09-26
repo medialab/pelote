@@ -570,13 +570,13 @@ parsed JSON data as a dict.
 
 #### write_graphology_json
 
-Function writing a json file representing a serialized
-[graphology](https://graphology.github.io/) graph corresponding to the given networkx graph.
+Function serializing the given networkx graph as JSON, using the
+[graphology](https://graphology.github.io/) format.
 
 *Arguments*
 
-* **graph** *nx.AnyGraph* - graph to be represented as serialized
+* **graph** *nx.AnyGraph* - graph to serialize.
 
 *Returns*
 
-*dict* - parsed JSON data.
+*dict* - JSON data
