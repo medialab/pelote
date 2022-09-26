@@ -2,7 +2,7 @@ llist==0.7.1
 networkx==2.5.1
 
 # Dev Dependencies
-black==22.1.0
+black
 docstring-parser==0.13
 ebbe==1.8.0
 pandas==1.1.5
