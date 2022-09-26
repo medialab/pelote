@@ -5,6 +5,7 @@
 from pelote.graph import (
     largest_connected_component,
     crop_to_largest_connected_component,
+    largest_connected_component_subgraph,
     remove_edges,
     filter_edges,
 )
@@ -28,6 +29,7 @@ from pelote.tabular_to_graph import (
 __all__ = [
     "largest_connected_component",
     "crop_to_largest_connected_component",
+    "largest_connected_component_subgraph",
     "remove_edges",
     "filter_edges",
     "graph_to_nodes_dataframe",
@@ -72,6 +74,7 @@ __toc__ = [
         "fns": [
             largest_connected_component,
             crop_to_largest_connected_component,
+            largest_connected_component_subgraph,
             remove_edges,
             filter_edges,
         ],

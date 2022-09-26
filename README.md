@@ -49,6 +49,7 @@ pip install pandas
 * [Graph utilities](#graph-utilities)
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
+  * [largest_connected_component_subgraph](#largest_connected_component_subgraph)
   * [remove_edges](#remove_edges)
   * [filter_edges](#filter_edges)
 * [Learning](#learning)
@@ -474,6 +475,23 @@ will therefore work with weakly connected components in the directed case.
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
+
+#### largest_connected_component_subgraph
+
+Function returning the largest connected component subgraph of the given
+networkx graph.
+
+Note that this function will consider any given graph as undirected and
+will therefore work with weakly connected components in the directed case.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **as_view** *bool, optional* `False` - whether to return the subgraph as a view.
+
+*Returns*
+
+*nx.AnyGraph* - the subgraph.
 
 #### remove_edges
 

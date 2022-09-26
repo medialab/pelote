@@ -98,8 +98,50 @@ def crop_to_largest_connected_component(graph) -> None:
         if node not in component:
             nodes_to_drop.append(node)
 
-    for node in nodes_to_drop:
-        graph.remove_node(node)
+    graph.remove_nodes_from(nodes_to_drop)
+
+
+def largest_connected_component_subgraph(graph, as_view=False):
+    """
+    Function returning the largest connected component subgraph of the given
+    networkx graph.
+
+    Note that this function will consider any given graph as undirected and
+    will therefore work with weakly connected components in the directed case.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+        as_view (bool, optional): whether to return the subgraph as a view.
+            Defaults to False.
+
+    Returns:
+        nx.AnyGraph: the subgraph.
+    """
+    check_graph(graph)
+
+    component = largest_connected_component(graph) or set()
+
+    if as_view:
+        return graph.subgraph(component)
+
+    subgraph = nx.create_empty_copy(graph)
+
+    for node, attr in graph.nodes.data():
+        subgraph.add_node(node, **attr)
+
+    if not component:
+        return subgraph
+
+    for source, target, attr in graph.edges.data():
+
+        # NOTE: we don't need to test target because we are dealing with
+        # a connected component here
+        if source not in component:
+            continue
+
+        subgraph.add_edge(source, target, **attr)
+
+    return subgraph
 
 
 def have_same_nodes(A, B, check_attributes: bool = False) -> bool:
