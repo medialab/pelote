@@ -10,9 +10,9 @@ define clean
 endef
 
 # Commands
-all: test
+all: lint test
 test: unit
-publish: clean test upload
+publish: clean lint test upload
 	$(call clean)
 
 clean:
@@ -25,6 +25,12 @@ ci:
 deps:
 	pip3 install -U pip
 	pip3 install -r requirements.txt
+
+lint:
+	@echo Searching for unused imports...
+	importchecker $(SOURCE) | grep -v __init__ || true
+	importchecker test | grep -v __init__ || true
+	@echo
 
 format:
 	@echo Formatting code...
