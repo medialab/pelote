@@ -153,3 +153,16 @@ class TestWriteGraphologyJson(object):
         data = write_graphology_json(g, allow_mixed_keys=True)
 
         assert data["nodes"] == [{"key": "1"}, {"key": "2"}]
+
+    def test_invalid_attribute_names(self):
+        g = nx.Graph()
+
+        g.add_node("test")
+        g.nodes["test"][45] = "ok"
+
+        with raises(TypeError, match="attr"):
+            write_graphology_json(g)
+
+        data = write_graphology_json(g, allow_invalid_attr_names=True)
+
+        assert data["nodes"] == [{"key": "test", "attributes": {"45": "ok"}}]

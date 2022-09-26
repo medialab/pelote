@@ -7,13 +7,34 @@
 VALID_KEY_TYPES = (int, str)
 
 
-def write_graphology_json(graph, allow_mixed_keys: bool = False):
+def coerce_attributes(attr, allow_invalid_names=False):
+    copy = {}
+
+    for k, v in attr.items():
+        if not isinstance(k, str):
+            if allow_invalid_names:
+                k = str(k)
+            else:
+                raise TypeError(
+                    "some attributes contain non-string name: %s" % type(k).__name__
+                )
+
+        copy[k] = v
+
+    return copy
+
+
+def write_graphology_json(
+    graph, allow_mixed_keys: bool = False, allow_invalid_attr_names: bool = False
+):
     """
     Function serializing the given networkx graph as JSON, using the
     [graphology](https://graphology.github.io/) format.
 
     Note that both node keys and attribute names will be cast to string so
-    they can safely be represented in JSON.
+    they can safely be represented in JSON. As such in some cases (where
+    your node keys and/or attribute names are not strings), this function
+    will not be bijective when used with `read_graphology_json`.
 
     Args:
         graph (nx.AnyGraph): graph to serialize.
@@ -21,6 +42,12 @@ def write_graphology_json(graph, allow_mixed_keys: bool = False):
             node key types to be serialized nonetheless. Keys will always be
             cast to string so keys might clash and produce an invalid
             serialization. Only use this if you know what you are doing.
+            Defaults to False.
+        allow_invalid_attr_names (bool, optional): whether to allow non-string
+            attribute names. Note that if you chose to allow them, some might
+            clash and produce an invalid serialization. Only use this if you
+            know what you are doing.
+            Defaults to False.
 
     Returns:
         dict: JSON data
@@ -42,7 +69,7 @@ def write_graphology_json(graph, allow_mixed_keys: bool = False):
     for n, attr in graph.nodes.data():
         if not isinstance(n, VALID_KEY_TYPES):
             raise TypeError(
-                "graph has node keys that cannot be represented in JSON, such as: %s"
+                "graph has node keys that cannot be represented in JSON, such as: %s. Use allow_mixed_keys=True if you know what you are doing."
                 % type(n).__name__
             )
 
@@ -58,7 +85,9 @@ def write_graphology_json(graph, allow_mixed_keys: bool = False):
         node_data = {"key": str(n)}
 
         if attr:
-            node_data["attributes"] = {str(k): v for k, v in attr.items()}
+            node_data["attributes"] = coerce_attributes(
+                attr, allow_invalid_names=allow_invalid_attr_names
+            )
 
         nodes.append(node_data)
 
@@ -66,7 +95,9 @@ def write_graphology_json(graph, allow_mixed_keys: bool = False):
         edge_data = {"source": str(source), "target": str(target)}
 
         if attr:
-            edge_data["attributes"] = {str(k): v for k, v in attr.items()}
+            edge_data["attributes"] = coerce_attributes(
+                attr, allow_invalid_names=allow_invalid_attr_names
+            )
 
         edges.append(edge_data)
 
