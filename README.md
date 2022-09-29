@@ -516,7 +516,7 @@ Note that this function mutates the given graph.
 *Arguments*
 
 * **graph** *nx.AnyGraph* - a networkx graph.
-* **predicate** *callable* - a function taking each edge attributes and
+* **predicate** *callable* - a function taking each node attributes and
 returning True if you want to keep the node or False if you want
 to remove it.
 

@@ -201,7 +201,7 @@ def remove_nodes(graph, predicate) -> None:
 
     Args:
         graph (nx.AnyGraph): a networkx graph.
-        predicate (callable): a function taking each edge attributes and
+        predicate (callable): a function taking each node attributes and
             returning True if you want to keep the node or False if you want
             to remove it.
     """
