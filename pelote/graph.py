@@ -234,6 +234,83 @@ def filter_edges(graph, predicate):
     return copy
 
 
+def remove_nodes(graph, predicate) -> None:
+    """
+    Function removing all nodes that do not pass a predicate function from a
+    given networkx graph.
+
+    Note that this function mutates the given graph.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each node and node attributes
+            and returning True if you want to keep the node or False if you want
+            to remove it.
+
+    Example:
+        from pelote import remove_nodes
+
+        g = nx.Graph()
+        g.add_node(1, weight=22)
+        g.add_node(2, weight=4)
+        g.add_edge(1, 2)
+
+        remove_nodes(g, lambda n, a: a["weight"] >= 10)
+    """
+    check_graph(graph)
+
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    nodes_to_drop = []
+
+    for n, a in graph.nodes.data():
+        if not predicate(n, a):
+            nodes_to_drop.append(n)
+
+    for n in nodes_to_drop:
+        graph.remove_node(n)
+
+
+def filter_nodes(graph, predicate):
+    """
+    Function returning a copy of the given networkx graph but without the nodes
+    filtered out by the given predicate function
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each node and node attributes
+            and returning True if you want to keep the node or False if you want
+            to remove it.
+
+    Returns:
+        nx.AnyGraph: the filtered graph.
+
+    Example:
+        from pelote import filter_nodes
+
+        g = nx.Graph()
+        g.add_node(1, weight=22)
+        g.add_node(2, weight=4)
+        g.add_edge(1, 2)
+
+        h = filter_nodes(g, lambda n, a: a["weight"] >= 10)
+    """
+
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    copy = graph.__class__()
+
+    for n, a in graph.nodes.data():
+        if predicate(n, a):
+            copy.add_node(n, **a)
+    for u, v, a in graph.edges.data():
+        if u in copy.nodes.data() and v in copy.nodes.data():
+            copy.add_edge(u, v, **a)
+    return copy
+
+
 def connected_component_orders(
     graph,
     edge_filter=None,

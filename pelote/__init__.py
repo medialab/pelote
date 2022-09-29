@@ -8,6 +8,8 @@ from pelote.graph import (
     largest_connected_component_subgraph,
     remove_edges,
     filter_edges,
+    remove_nodes,
+    filter_nodes,
 )
 from pelote.graph_to_tabular import (
     graph_to_nodes_dataframe,
@@ -32,6 +34,8 @@ __all__ = [
     "largest_connected_component_subgraph",
     "remove_edges",
     "filter_edges",
+    "remove_nodes",
+    "filter_nodes",
     "graph_to_nodes_dataframe",
     "graph_to_edges_dataframe",
     "graph_to_dataframes",
@@ -77,6 +81,8 @@ __toc__ = [
             largest_connected_component_subgraph,
             remove_edges,
             filter_edges,
+            remove_nodes,
+            filter_nodes,
         ],
     },
     {"title": "Learning", "fns": [floatsam_threshold_learner]},
