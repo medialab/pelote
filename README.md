@@ -513,11 +513,22 @@ given networkx graph.
 
 Note that this function mutates the given graph.
 
+```python
+from pelote import remove_nodes
+
+g = nx.Graph()
+g.add_node(1, weight=22)
+g.add_node(2, weight=4)
+g.add_edge(1, 2)
+
+remove_nodes(g, lambda n, a: a["weight"] >= 10)
+```
+
 *Arguments*
 
 * **graph** *nx.AnyGraph* - a networkx graph.
-* **predicate** *callable* - a function taking each node attributes and
-returning True if you want to keep the node or False if you want
+* **predicate** *callable* - a function taking each node and node attributes
+and returning True if you want to keep the node or False if you want
 to remove it.
 
 #### filter_nodes
@@ -525,11 +536,22 @@ to remove it.
 Function returning a copy of the given networkx graph but without the nodes
 filtered out by the given predicate function
 
+```python
+from pelote import filter_nodes
+
+g = nx.Graph()
+g.add_node(1, weight=22)
+g.add_node(2, weight=4)
+g.add_edge(1, 2)
+
+h = filter_nodes(g, lambda n, a: a["weight"] >= 10)
+```
+
 *Arguments*
 
 * **graph** *nx.AnyGraph* - a networkx graph.
-* **predicate** *callable* - a function taking each node attributes and
-returning True if you want to keep the node or False if you want
+* **predicate** *callable* - a function taking each node and node attributes
+and returning True if you want to keep the node or False if you want
 to remove it.
 
 *Returns*

@@ -201,9 +201,19 @@ def remove_nodes(graph, predicate) -> None:
 
     Args:
         graph (nx.AnyGraph): a networkx graph.
-        predicate (callable): a function taking each node attributes and
-            returning True if you want to keep the node or False if you want
+        predicate (callable): a function taking each node and node attributes
+            and returning True if you want to keep the node or False if you want
             to remove it.
+
+    Example:
+        from pelote import remove_nodes
+
+        g = nx.Graph()
+        g.add_node(1, weight=22)
+        g.add_node(2, weight=4)
+        g.add_edge(1, 2)
+
+        remove_nodes(g, lambda n, a: a["weight"] >= 10)
     """
     check_graph(graph)
 
@@ -227,12 +237,22 @@ def filter_nodes(graph, predicate):
 
     Args:
         graph (nx.AnyGraph): a networkx graph.
-        predicate (callable): a function taking each node attributes and
-            returning True if you want to keep the node or False if you want
+        predicate (callable): a function taking each node and node attributes
+            and returning True if you want to keep the node or False if you want
             to remove it.
 
     Returns:
         nx.AnyGraph: the filtered graph.
+
+    Example:
+        from pelote import filter_nodes
+
+        g = nx.Graph()
+        g.add_node(1, weight=22)
+        g.add_node(2, weight=4)
+        g.add_edge(1, 2)
+
+        h = filter_nodes(g, lambda n, a: a["weight"] >= 10)
     """
 
     if not callable(predicate):
