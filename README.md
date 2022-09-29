@@ -51,6 +51,8 @@ pip install pandas
   * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
   * [remove_edges](#remove_edges)
   * [filter_edges](#filter_edges)
+  * [remove_nodes](#remove_nodes)
+  * [filter_nodes](#filter_nodes)
 * [Learning](#learning)
   * [floatsam_threshold_learner](#floatsam_threshold_learner)
 * [Reading & Writing](#reading-&-writing)
@@ -499,6 +501,36 @@ filtered out by the given predicate function
 * **predicate** *callable* - a function taking each edge source, target and
 attributes and returning True if you want to keep the edge or False
 if you want to remove it.
+
+*Returns*
+
+*nx.AnyGraph* - the filtered graph.
+
+#### remove_nodes
+
+Function removing all nodes that do not pass a predicate function from a
+given networkx graph.
+
+Note that this function mutates the given graph.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
+* **predicate** *callable* - a function taking each edge attributes and
+returning True if you want to keep the node or False if you want
+to remove it.
+
+#### filter_nodes
+
+Function returning a copy of the given networkx graph but without the nodes
+filtered out by the given predicate function
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
+* **predicate** *callable* - a function taking each node attributes and
+returning True if you want to keep the node or False if you want
+to remove it.
 
 *Returns*
 

@@ -192,6 +192,63 @@ def filter_edges(graph, predicate):
     return copy
 
 
+def remove_nodes(graph, predicate) -> None:
+    """
+    Function removing all nodes that do not pass a predicate function from a
+    given networkx graph.
+
+    Note that this function mutates the given graph.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each edge attributes and
+            returning True if you want to keep the node or False if you want
+            to remove it.
+    """
+    check_graph(graph)
+
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    nodes_to_drop = []
+
+    for n, a in graph.nodes.data():
+        if not predicate(n, a):
+            nodes_to_drop.append(n)
+
+    for n in nodes_to_drop:
+        graph.remove_node(n)
+
+
+def filter_nodes(graph, predicate):
+    """
+    Function returning a copy of the given networkx graph but without the nodes
+    filtered out by the given predicate function
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+        predicate (callable): a function taking each node attributes and
+            returning True if you want to keep the node or False if you want
+            to remove it.
+
+    Returns:
+        nx.AnyGraph: the filtered graph.
+    """
+
+    if not callable(predicate):
+        raise TypeError("expecting a callable predicate (i.e. a function etc.)")
+
+    copy = graph.__class__()
+
+    for n, a in graph.nodes.data():
+        if predicate(n, a):
+            copy.add_node(n, **a)
+    for u, v, a in graph.edges.data():
+        if u in copy.nodes.data() and v in copy.nodes.data():
+            copy.add_edge(u, v, **a)
+    return copy
+
+
 def connected_component_orders(
     graph,
     edge_filter=None,

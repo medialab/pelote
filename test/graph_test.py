@@ -11,6 +11,7 @@ from pelote.graph import (
     crop_to_largest_connected_component,
     connected_component_orders,
     filter_edges,
+    filter_nodes,
 )
 
 
@@ -98,5 +99,28 @@ class TestFilterEdges(object):
         expected = nx.Graph()
         expected.add_nodes_from(range(4))
         expected.add_edge(0, 1, weight=10)
+
+        assert are_same_graphs(h, expected, check_attributes=True)
+
+
+class TestFilterNodes(object):
+    def test_basics(self):
+        g = nx.Graph()
+        g.add_node(1, weight=42)
+        g.add_node(2, weight=4)
+        g.add_node(3, weight=3)
+        g.add_node(4, weight=22)
+        g.add_node(5, weight=24)
+        g.add_edge(4, 5)
+        g.add_edge(3, 2)
+        g.add_edge(3, 5)
+
+        h = filter_nodes(g, lambda n, a: a["weight"] >= 10)
+
+        expected = nx.Graph()
+        expected.add_node(1, weight=42)
+        expected.add_node(4, weight=22)
+        expected.add_node(5, weight=24)
+        expected.add_edge(4, 5)
 
         assert are_same_graphs(h, expected, check_attributes=True)
