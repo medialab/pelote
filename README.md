@@ -47,6 +47,7 @@ pip install pandas
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
+  * [union_maximum_spanning_tree](#union_maximum_spanning_tree)
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
   * [largest_connected_component_subgraph](#largest_connected_component_subgraph)
@@ -449,6 +450,20 @@ means more relevant edges.
 ---
 
 ### Graph utilities
+
+#### union_maximum_spanning_tree
+
+Function returning the edges belonging to any Maximum Spanning Tree.
+Note that this function will consider any given graph as undirected,
+and will give to each edge with no weight the default weight 1.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+
+*Returns*
+
+*list* - list of edges belonging to any Maximum Spanning Tree.
 
 #### largest_connected_component
 

@@ -4,6 +4,7 @@
 #
 # Miscellaneous helper functions to deal with networkx graphs.
 #
+from collections import defaultdict
 import networkx as nx
 from heapq import nlargest
 
@@ -395,3 +396,45 @@ def second_largest_connected_component_order(graph, edge_filter=None):
         return None
 
     return top2[1]
+
+
+def union_maximum_spanning_tree(graph):
+    """
+    Function returning the edges belonging to any Maximum Spanning Tree.
+
+    Note that this function will consider any given graph as undirected,
+    and will give to each edge with no weight the default weight 1.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+
+    Returns:
+        list: list of edges belonging to any Maximum Spanning Tree.
+    """
+    check_graph(graph)
+
+    edges_union = []
+    buckets = defaultdict(list)
+    dict_nodes = {}
+
+    for n in graph.nodes:
+        dict_nodes[n] = {n}
+
+    for edge in graph.edges.data("weight", default=1):
+        buckets[edge[2]].append(edge)
+    buckets = {
+        k: v for k, v in sorted(buckets.items(), key=lambda item: item[0], reverse=True)
+    }
+
+    for bucket in buckets.values():
+        M = []
+        for e in bucket:
+            if dict_nodes[e[0]] != dict_nodes[e[1]]:
+                M.append(e)
+
+        for e in M:
+            union = dict_nodes[e[0]].union(dict_nodes[e[1]])
+            for edge in union:
+                dict_nodes[edge] = union
+        edges_union.append(M)
+    return edges_union
