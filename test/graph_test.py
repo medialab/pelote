@@ -12,7 +12,7 @@ from pelote.graph import (
     connected_component_orders,
     filter_edges,
     filter_nodes,
-    union_maximum_spanning_tree,
+    union_maximum_spanning_trees,
 )
 
 
@@ -139,7 +139,7 @@ class TestUMST(object):
         g.add_edge(2, 4, weight=7)
         g.add_edge(1, 2, weight=3)
 
-        edges_union = union_maximum_spanning_tree(g)
+        edges_union = union_maximum_spanning_trees(g)
 
         expected = [
             [(3, 4, 9)],

@@ -398,7 +398,7 @@ def second_largest_connected_component_order(graph, edge_filter=None):
     return top2[1]
 
 
-def union_maximum_spanning_tree(graph):
+def union_maximum_spanning_trees(graph):
     """
     Function returning the edges belonging to any Maximum Spanning Tree.
 
