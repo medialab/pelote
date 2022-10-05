@@ -263,26 +263,27 @@ def filter_nodes(graph, predicate):
     multi = graph.is_multigraph()
 
     for n, a in graph.nodes.data():
-        if predicate(n, a):
-            copy.add_node(n, **a)
-            if directed:
-                if multi:
-                    for u, v, k, a_edge in graph.out_edges(n, keys=True, data=True):
-                        if predicate(v, graph.nodes[v]):
-                            copy.add_edge(u, v, key=k, **a_edge)
-                else:
-                    for u, v in graph.out_edges(n):
-                        if predicate(v, graph.nodes[v]):
-                            copy.add_edge(u, v, **graph.out_edges[u, v])
+        if not predicate(n, a):
+            continue
+        copy.add_node(n, **a)
+        if directed:
+            if multi:
+                for u, v, k, a_edge in graph.out_edges(n, keys=True, data=True):
+                    if predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, key=k, **a_edge)
             else:
-                if multi:
-                    for u, v, k, a_edge in graph.edges(n, keys=True, data=True):
-                        if u > v and predicate(v, graph.nodes[v]):
-                            copy.add_edge(u, v, key=k, **a_edge)
-                else:
-                    for u, v in graph.edges(n):
-                        if u > v and predicate(v, graph.nodes[v]):
-                            copy.add_edge(u, v, **graph.edges[u, v])
+                for u, v, a_edge in graph.out_edges(n, data=True):
+                    if predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, **a_edge)
+        else:
+            if multi:
+                for u, v, k, a_edge in graph.edges(n, keys=True, data=True):
+                    if u > v and predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, key=k, **a_edge)
+            else:
+                for u, v, a_edge in graph.edges(n, data=True):
+                    if u > v and predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, **a_edge)
     return copy
 
 
