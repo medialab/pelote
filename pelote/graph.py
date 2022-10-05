@@ -202,8 +202,7 @@ def remove_edges(graph, predicate) -> None:
         if not predicate(u, v, a):
             edges_to_drop.append((u, v))
 
-    for u, v in edges_to_drop:
-        graph.remove_edge(u, v)
+    graph.remove_edges_from(edges_to_drop)
 
 
 def filter_edges(graph, predicate):
@@ -268,8 +267,7 @@ def remove_nodes(graph, predicate) -> None:
         if not predicate(n, a):
             nodes_to_drop.append(n)
 
-    for n in nodes_to_drop:
-        graph.remove_node(n)
+    graph.remove_nodes_from(nodes_to_drop)
 
 
 def filter_nodes(graph, predicate):
