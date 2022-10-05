@@ -301,13 +301,17 @@ def filter_nodes(graph, predicate):
         raise TypeError("expecting a callable predicate (i.e. a function etc.)")
 
     copy = graph.__class__()
+
     directed = graph.is_directed()
     multi = graph.is_multigraph()
 
     for n, a in graph.nodes.data():
+
         if not predicate(n, a):
             continue
+
         copy.add_node(n, **a)
+
         if directed:
             if multi:
                 for u, v, k, a_edge in graph.out_edges(n, keys=True, data=True):
@@ -326,6 +330,7 @@ def filter_nodes(graph, predicate):
                 for u, v, a_edge in graph.edges(n, data=True):
                     if u > v and predicate(v, graph.nodes[v]):
                         copy.add_edge(u, v, **a_edge)
+
     return copy
 
 
