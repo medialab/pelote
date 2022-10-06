@@ -414,27 +414,34 @@ def union_maximum_spanning_trees(graph):
     check_graph(graph)
 
     edges_union = []
-    buckets = defaultdict(list)
-    dict_nodes = {}
+    nodes_component_friends = {}
 
     for n in graph.nodes:
-        dict_nodes[n] = {n}
+        nodes_component_friends[n] = {n}
 
-    for edge in graph.edges.data("weight", default=1):
-        buckets[edge[2]].append(edge)
-    buckets = {
-        k: v for k, v in sorted(buckets.items(), key=lambda item: item[0], reverse=True)
-    }
+    list_edges = sorted(
+        [edge for edge in graph.edges.data("weight", default=1)],
+        key=lambda edge: edge[2],
+    )
 
-    for bucket in buckets.values():
+    weight = list_edges[len(list_edges) - 1][2]
+    index = len(list_edges) - 1
+    while index >= 0:
         M = []
-        for e in bucket:
-            if dict_nodes[e[0]] != dict_nodes[e[1]]:
-                M.append(e)
+        while index >= 0 and weight == list_edges[index][2]:
+            if (
+                nodes_component_friends[list_edges[index][0]]
+                != nodes_component_friends[list_edges[index][1]]
+            ):
+                M.append(list_edges[index])
+            index -= 1
 
         for e in M:
-            union = dict_nodes[e[0]].union(dict_nodes[e[1]])
-            for edge in union:
-                dict_nodes[edge] = union
+            union = nodes_component_friends[e[0]].union(nodes_component_friends[e[1]])
+            for node in union:
+                nodes_component_friends[node] = union
         edges_union.append(M)
+
+        weight = list_edges[index][2]
+
     return edges_union
