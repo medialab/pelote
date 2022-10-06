@@ -12,6 +12,7 @@ from pelote.graph import (
     connected_component_orders,
     filter_edges,
     filter_nodes,
+    filter_leaves,
 )
 
 
@@ -124,3 +125,17 @@ class TestFilterNodes(object):
         expected.add_edge(4, 5)
 
         assert are_same_graphs(h, expected, check_attributes=True)
+
+
+class TestFilterLeaves(object):
+    def test_basics(self):
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        h = filter_leaves(g)
+
+        expected = nx.Graph()
+        expected.add_node(2)
+
+        assert are_same_graphs(h, expected)

@@ -332,6 +332,58 @@ def filter_nodes(graph, predicate):
     return copy
 
 
+def remove_leaves(graph) -> None:
+    """
+    Function removing all leaves of the graph, i.e. the nodes incident to a
+    single edge, i.e. the nodes with degree 1.
+
+    This function is not recursive and will only remove one layer of leaves.
+
+    Note that this function mutates the given graph.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+
+    Example:
+        from pelote import remove_leaves
+
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        remove_leaves(g)
+
+        list(g.nodes)
+        >>> [2]
+    """
+    remove_nodes(graph, lambda n, _: graph.degree(n) != 1)
+
+
+def filter_leaves(graph) -> None:
+    """
+    Function returning a copy of the given networkx graph but without its leaves,
+    i.e. the nodes incident to a single edge, i.e. the nodes with degree 1.
+
+    This function is not recursive and will only filter only one layer of leaves.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+
+    Example:
+        from pelote import remove_leaves
+
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        h = filter_leaves(g)
+
+        list(h.nodes)
+        >>> [2]
+    """
+    return filter_nodes(graph, lambda n, _: graph.degree(n) != 1)
+
+
 def connected_component_orders(
     graph,
     edge_filter=None,

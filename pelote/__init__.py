@@ -10,6 +10,8 @@ from pelote.graph import (
     filter_edges,
     remove_nodes,
     filter_nodes,
+    remove_leaves,
+    filter_leaves,
 )
 from pelote.graph_to_tabular import (
     graph_to_nodes_dataframe,
@@ -36,6 +38,8 @@ __all__ = [
     "filter_edges",
     "remove_nodes",
     "filter_nodes",
+    "remove_leaves",
+    "filter_leaves",
     "graph_to_nodes_dataframe",
     "graph_to_edges_dataframe",
     "graph_to_dataframes",
@@ -83,6 +87,8 @@ __toc__ = [
             filter_edges,
             remove_nodes,
             filter_nodes,
+            remove_leaves,
+            filter_leaves,
         ],
     },
     {"title": "Learning", "fns": [floatsam_threshold_learner]},
