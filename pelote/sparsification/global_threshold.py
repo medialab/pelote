@@ -12,10 +12,6 @@ class GlobalThresholdSparsifier(Sparsifier):
         edge_weight_attr: str = "weight",
         reverse: bool = False,
     ):
-        self.weight_threshold = weight_threshold
-        self.edge_weight_attr = edge_weight_attr
-        self.reverse = reverse
-
         def edge_predicate_factory(_):
             if reverse:
                 return lambda _u, _v, a: a[edge_weight_attr] <= weight_threshold
