@@ -23,7 +23,11 @@ from pelote.metrics import edge_disparity
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.write import write_graphology_json
-from pelote.sparsification import global_threshold_sparsification, multiscale_backbone
+from pelote.sparsification import (
+    global_threshold_sparsification,
+    GlobalThresholdSparsifier,
+    multiscale_backbone,
+)
 from pelote.tabular_to_graph import (
     table_to_bipartite_graph,
     tables_to_graph,
@@ -48,6 +52,7 @@ __all__ = [
     "monopartite_projection",
     "read_graphology_json",
     "global_threshold_sparsification",
+    "GlobalThresholdSparsifier",
     "multiscale_backbone",
     "table_to_bipartite_graph",
     "tables_to_graph",
