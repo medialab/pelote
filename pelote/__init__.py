@@ -27,6 +27,7 @@ from pelote.sparsification import (
     global_threshold_sparsification,
     GlobalThresholdSparsifier,
     multiscale_backbone,
+    MultiscaleBackboneSparsifier,
 )
 from pelote.tabular_to_graph import (
     table_to_bipartite_graph,
@@ -54,6 +55,7 @@ __all__ = [
     "global_threshold_sparsification",
     "GlobalThresholdSparsifier",
     "multiscale_backbone",
+    "MultiscaleBackboneSparsifier",
     "table_to_bipartite_graph",
     "tables_to_graph",
     "edges_table_to_graph",
