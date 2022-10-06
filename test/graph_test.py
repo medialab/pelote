@@ -7,6 +7,7 @@ from collections import Counter
 
 from pelote.graph import (
     are_same_graphs,
+    create_null_copy,
     largest_connected_component,
     crop_to_largest_connected_component,
     connected_component_orders,
@@ -139,3 +140,13 @@ class TestFilterLeaves(object):
         expected.add_node(2)
 
         assert are_same_graphs(h, expected)
+
+
+class TestCreateNullCopy(object):
+    def test_basics(self):
+        g = nx.Graph(hello="world")
+        h = create_null_copy(g)
+
+        assert h.order() == 0
+        assert h.size() == 0
+        assert h.graph == {"hello": "world"}

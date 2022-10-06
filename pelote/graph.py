@@ -36,6 +36,12 @@ def check_graph(value) -> None:
         raise TypeError("expected a networkx graph but got %s" % type(value).__name__)
 
 
+def create_null_copy(graph):
+    check_graph(graph)
+
+    return graph.__class__(**graph.graph)
+
+
 def largest_connected_component(graph):
     """
     Function returning the largest connected component of given networkx graph
@@ -298,7 +304,7 @@ def filter_nodes(graph, predicate):
     if not callable(predicate):
         raise TypeError("expecting a callable predicate (i.e. a function etc.)")
 
-    copy = graph.__class__()
+    copy = create_null_copy(graph)
 
     directed = graph.is_directed()
     multi = graph.is_multigraph()
