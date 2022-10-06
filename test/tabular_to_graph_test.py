@@ -93,6 +93,7 @@ class TestToBipartiteGraph(object):
     def test_part_data(self):
         table = [{"person": "john", "color": "red", "light": "high", "age": 45}]
 
+        # Basics
         g = table_to_bipartite_graph(
             table,
             "person",
@@ -105,6 +106,39 @@ class TestToBipartiteGraph(object):
         expected = nx.Graph()
         expected.add_node("john", part="person", label="john", age=45)
         expected.add_node("red", part="color", label="red", light="high")
+        expected.add_edge("john", "red", weight=1)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+        # Using a lambda
+        g = table_to_bipartite_graph(
+            table,
+            "person",
+            "color",
+            first_part_data=lambda row: {"age": row["age"] * 2},
+            disjoint_keys=True,
+        )
+
+        expected = nx.Graph()
+        expected.add_node("john", part="person", label="john", age=90)
+        expected.add_node("red", part="color", label="red")
+        expected.add_edge("john", "red", weight=1)
+
+        assert are_same_graphs(g, expected, check_attributes=True)
+
+        # Using a mapping
+        g = table_to_bipartite_graph(
+            table,
+            "person",
+            "color",
+            first_part_data={"age": "label"},
+            second_part_data={"light": "dark"},
+            disjoint_keys=True,
+        )
+
+        expected = nx.Graph()
+        expected.add_node("john", part="person", label=45)
+        expected.add_node("red", part="color", label="red", dark="high")
         expected.add_edge("john", "red", weight=1)
 
         assert are_same_graphs(g, expected, check_attributes=True)

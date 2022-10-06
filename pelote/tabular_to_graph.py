@@ -5,6 +5,7 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
+from collections.abc import Sequence, Mapping
 
 from pelote.utils import check_node_exists, iterator_from_dataframe
 from pelote.classes import IncrementalIdRegister
@@ -22,7 +23,31 @@ def collect_row_data(spec, row):
 
         return attr
 
-    return {k: row[k] for k in spec}
+    if isinstance(spec, Mapping):
+        attr = {}
+
+        for col_name, attr_name in spec.items():
+            v = row.get(col_name)
+
+            if v is not None:
+                attr[attr_name] = v
+
+        return attr
+
+    if isinstance(spec, Sequence):
+        attr = {}
+
+        for col_name in spec:
+            v = row.get(col_name)
+
+            if v is not None:
+                attr[col_name] = v
+
+        return attr
+
+    raise TypeError(
+        "could not collect part data. expecting a callable, a mapping or a sequence"
+    )
 
 
 def table_to_bipartite_graph(
