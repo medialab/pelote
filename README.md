@@ -89,13 +89,17 @@ are dicts instead.
 the part it belongs to.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 its weight, i.e. the number of times it was found in the table.
-* **first_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
+* **first_part_data** *Sequence or Callable or Mapping, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's first part.
+Can also be a mapping (i.e. dict) from row column to node attribute
+name to create.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
-* **second_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
+* **second_part_data** *Sequence or Callable or Mapping, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's second part.
+Can also be a mapping (i.e. dict) from row column to node attribute
+name to create.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
@@ -346,6 +350,7 @@ is less than a given threshold.
 
 * **graph** *nx.AnyGraph* - target graph.
 * **weight_threshold** *float* - weight threshold.
+* **edge_weight_attr** *str, optional* - name of the edge weight attribute.
 * **reverse** *bool, optional* - whether to reverse the threshold condition.
 That is to say an edge would be removed if its weight is greater
 than the threshold.

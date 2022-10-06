@@ -85,14 +85,18 @@ def table_to_bipartite_graph(
         edge_weight_attr (str, optional): name of the edge attribute containing
             its weight, i.e. the number of times it was found in the table.
             Defaults to "weight".
-        first_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+        first_part_data (Sequence or Callable or Mapping, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's first part.
+            Can also be a mapping (i.e. dict) from row column to node attribute
+            name to create.
             Can also be a function returning a dict of those attributes.
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
             Defaults to None.
-        second_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+        second_part_data (Sequence or Callable or Mapping, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's second part.
+            Can also be a mapping (i.e. dict) from row column to node attribute
+            name to create.
             Can also be a function returning a dict of those attributes.
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
