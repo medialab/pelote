@@ -4,11 +4,10 @@
 #
 # Miscellaneous helper functions to deal with networkx graphs.
 #
-from collections import defaultdict
 import networkx as nx
 from heapq import nlargest
 
-from pelote.classes import DFSStack
+from pelote.classes import DFSStack, DisjointSet
 
 GRAPH_TYPES = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
 
@@ -484,7 +483,7 @@ def second_largest_connected_component_order(graph, edge_filter=None):
     return top2[1]
 
 
-def union_maximum_spanning_trees(graph):
+def union_maximum_spanning_trees_old(graph):
     """
     Function returning the edges belonging to any Maximum Spanning Tree.
 
@@ -506,7 +505,7 @@ def union_maximum_spanning_trees(graph):
         nodes_component_friends[n] = {n}
 
     list_edges = sorted(
-        [edge for edge in graph.edges.data("weight", default=1)],
+        graph.edges.data("weight", default=1),
         key=lambda edge: edge[2],
     )
 
@@ -531,3 +530,68 @@ def union_maximum_spanning_trees(graph):
         weight = list_edges[index][2]
 
     return edges_union
+
+
+WEIGHT_EPSILON = 1e-8
+
+
+def union_of_maximum_spanning_trees(graph, edge_weight_attr: str = "weight"):
+    """
+    Generator yielding the edges belonging to any Maximum Spanning Tree (MST) of
+    the given networkx graph.
+
+    Note that this function will give to each edge with no weight a default
+    weight of 1.
+
+    Args:
+        graph (nx.AnyGraph): target graph.
+        edge_weight_attr (str, optional): name of the edge weight attribute.
+            Defaults to "weight".
+
+    Yields:
+        tuple: source, target, attributes
+    """
+    check_graph(graph)
+
+    def generator():
+
+        # Early exit
+        if graph.size() == 0:
+            return
+
+        edges_sorted_by_decreasing_weight = sorted(
+            graph.edges.data(),
+            key=lambda edge: edge[2].get(edge_weight_attr, 1),
+            reverse=True,
+        )
+
+        disjoint_set = DisjointSet(graph.order())
+        current_bucket_weight = None
+        relevant_bucket_edges = None
+
+        for edge in edges_sorted_by_decreasing_weight:
+            u, v, a = edge
+
+            current_weight = a.get(edge_weight_attr, 1)
+
+            # Do we change bucket?
+            if (
+                current_bucket_weight is None
+                or current_bucket_weight - current_weight > WEIGHT_EPSILON
+            ):
+                if relevant_bucket_edges:
+                    for relevant_edge in relevant_bucket_edges:
+                        yield relevant_edge
+                        disjoint_set.union(relevant_edge[0], relevant_edge[1])
+
+                relevant_bucket_edges = []
+
+                current_bucket_weight = current_weight
+
+            if not disjoint_set.are_in_same_set(u, v):
+                relevant_bucket_edges.append(edge)
+
+        if relevant_bucket_edges:
+            yield from relevant_bucket_edges
+
+    return generator()

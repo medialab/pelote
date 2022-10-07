@@ -3,7 +3,7 @@
 # =============================================================================
 #
 from pelote.graph import (
-    union_maximum_spanning_trees,
+    union_of_maximum_spanning_trees,
     largest_connected_component,
     crop_to_largest_connected_component,
     largest_connected_component_subgraph,
@@ -37,7 +37,7 @@ from pelote.tabular_to_graph import (
 )
 
 __all__ = [
-    "union_maximum_spanning_trees",
+    "union_of_maximum_spanning_trees",
     "largest_connected_component",
     "crop_to_largest_connected_component",
     "largest_connected_component_subgraph",
@@ -89,7 +89,7 @@ __toc__ = [
     {
         "title": "Graph utilities",
         "fns": [
-            union_maximum_spanning_trees,
+            union_of_maximum_spanning_trees,
             largest_connected_component,
             crop_to_largest_connected_component,
             largest_connected_component_subgraph,

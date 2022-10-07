@@ -47,7 +47,7 @@ pip install pandas
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
 * [Graph utilities](#graph-utilities)
-  * [union_maximum_spanning_trees](#union_maximum_spanning_trees)
+  * [union_of_maximum_spanning_trees](#union_of_maximum_spanning_trees)
   * [largest_connected_component](#largest_connected_component)
   * [crop_to_largest_connected_component](#crop_to_largest_connected_component)
   * [largest_connected_component_subgraph](#largest_connected_component_subgraph)
@@ -458,19 +458,22 @@ means more relevant edges.
 
 ### Graph utilities
 
-#### union_maximum_spanning_trees
+#### union_of_maximum_spanning_trees
 
-Function returning the edges belonging to any Maximum Spanning Tree.
-Note that this function will consider any given graph as undirected,
-and will give to each edge with no weight the default weight 1.
+Generator yielding the edges belonging to any Maximum Spanning Tree (MST) of
+the given networkx graph.
+
+Note that this function will give to each edge with no weight a default
+weight of 1.
 
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge weight attribute.
 
-*Returns*
+*Yields*
 
-*list* - list of edges belonging to any Maximum Spanning Tree.
+*tuple* - source, target, attributes
 
 #### largest_connected_component
 

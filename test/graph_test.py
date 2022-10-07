@@ -13,7 +13,7 @@ from pelote.graph import (
     connected_component_orders,
     filter_edges,
     filter_nodes,
-    union_maximum_spanning_trees,
+    union_of_maximum_spanning_trees,
     filter_leaves,
 )
 
@@ -129,21 +129,36 @@ class TestFilterNodes(object):
         assert are_same_graphs(h, expected, check_attributes=True)
 
 
-class TestUMST(object):
+class TestUnionOfMaximumSpanningTrees(object):
+    def compare(self, a, b):
+        def map(t):
+            if t[0] > t[1]:
+                return t[1], t[0], t[2]
+
+            return t
+
+        def key(t):
+            return t[0], t[1], t[2].get("weight", 1)
+
+        a = sorted((map(t) for t in a), key=key)
+        b = sorted((map(t) for t in b), key=key)
+
+        assert len(a) == len(b)
+
+        for i in range(len(a)):
+            assert a[i] == b[i]
+
     def test_two_nodes(self):
         g = nx.Graph()
-        g.add_nodes_from(range(2))
-        g.add_edge(0, 1, weight=1)
+        g.add_edge(0, 1)
 
-        edges_union = union_maximum_spanning_trees(g)
+        expected = [(0, 1, {})]
 
-        expected = [[(0, 1, 1)]]
-
-        assert edges_union == expected
+        assert list(union_of_maximum_spanning_trees(g)) == expected
 
     def test_basics(self):
         g = nx.Graph()
-        g.add_nodes_from(range(5))
+
         g.add_edge(0, 3, weight=6)
         g.add_edge(0, 1, weight=6)
         g.add_edge(1, 3, weight=8)
@@ -152,22 +167,19 @@ class TestUMST(object):
         g.add_edge(2, 4, weight=7)
         g.add_edge(1, 2, weight=3)
 
-        edges_union = union_maximum_spanning_trees(g)
-
         expected = [
-            [(3, 4, 9)],
-            [(1, 3, 8)],
-            [(2, 4, 7)],
-            [(0, 1, 6), (0, 3, 6)],
-            [],
-            [],
+            (3, 4, {"weight": 9}),
+            (1, 3, {"weight": 8}),
+            (2, 4, {"weight": 7}),
+            (0, 1, {"weight": 6}),
+            (0, 3, {"weight": 6}),
         ]
 
-        assert edges_union == expected
+        self.compare(union_of_maximum_spanning_trees(g), expected)
 
     def test_no_weight(self):
         g = nx.Graph()
-        g.add_nodes_from(range(5))
+
         g.add_edge(0, 3)
         g.add_edge(0, 1)
         g.add_edge(1, 2)
@@ -176,25 +188,13 @@ class TestUMST(object):
         g.add_edge(2, 4)
         g.add_edge(3, 4)
 
-        edges_union = union_maximum_spanning_trees(g)
+        edges_union = union_of_maximum_spanning_trees(g)
 
-        expected = [
-            [
-                (3, 4, 1),
-                (2, 4, 1),
-                (1, 4, 1),
-                (1, 3, 1),
-                (1, 2, 1),
-                (0, 1, 1),
-                (0, 3, 1),
-            ]
-        ]
-
-        assert edges_union == expected
+        self.compare(edges_union, g.edges.data())
 
     def test_connected_components(self):
         g = nx.Graph()
-        g.add_nodes_from(range(10))
+
         g.add_edge(0, 3, weight=6)
         g.add_edge(0, 1, weight=6)
         g.add_edge(1, 3, weight=8)
@@ -202,6 +202,7 @@ class TestUMST(object):
         g.add_edge(3, 4, weight=9)
         g.add_edge(2, 4, weight=7)
         g.add_edge(1, 2, weight=3)
+
         g.add_edge(5, 8, weight=6)
         g.add_edge(5, 6, weight=6)
         g.add_edge(6, 8, weight=8)
@@ -210,18 +211,20 @@ class TestUMST(object):
         g.add_edge(7, 9, weight=7)
         g.add_edge(6, 7, weight=3)
 
-        edges_union = union_maximum_spanning_trees(g)
-
         expected = [
-            [(8, 9, 9), (3, 4, 9)],
-            [(6, 8, 8), (1, 3, 8)],
-            [(7, 9, 7), (2, 4, 7)],
-            [(5, 6, 6), (5, 8, 6), (0, 1, 6), (0, 3, 6)],
-            [],
-            [],
+            (8, 9, {"weight": 9}),
+            (3, 4, {"weight": 9}),
+            (6, 8, {"weight": 8}),
+            (1, 3, {"weight": 8}),
+            (7, 9, {"weight": 7}),
+            (2, 4, {"weight": 7}),
+            (5, 6, {"weight": 6}),
+            (5, 8, {"weight": 6}),
+            (0, 1, {"weight": 6}),
+            (0, 3, {"weight": 6}),
         ]
 
-        assert edges_union == expected
+        self.compare(union_of_maximum_spanning_trees(g), expected)
 
 
 class TestFilterLeaves(object):
