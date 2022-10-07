@@ -148,6 +148,18 @@ class TestUnionOfMaximumSpanningTrees(object):
         for i in range(len(a)):
             assert a[i] == b[i]
 
+    def compare_directed(self, a, b):
+        def key(t):
+            return t[0], t[1], t[2].get("weight", 1)
+
+        a = sorted(a, key=key)
+        b = sorted(b, key=key)
+
+        assert len(a) == len(b)
+
+        for i in range(len(a)):
+            assert a[i] == b[i]
+
     def test_two_nodes(self):
         g = nx.Graph()
         g.add_edge(0, 1)
@@ -222,6 +234,64 @@ class TestUnionOfMaximumSpanningTrees(object):
             (5, 8, {"weight": 6}),
             (0, 1, {"weight": 6}),
             (0, 3, {"weight": 6}),
+        ]
+
+        self.compare(union_of_maximum_spanning_trees(g), expected)
+
+    def test_directed_different_weight(self):
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1, weight=2)
+        g.add_edge(1, 2, weight=1)
+        g.add_edge(2, 1, weight=2)
+
+        expected = [
+            (0, 1, {"weight": 2}),
+            (2, 1, {"weight": 2}),
+        ]
+
+        self.compare_directed(union_of_maximum_spanning_trees(g), expected)
+
+    def test_directed_same_weight(self):
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1, weight=2)
+        g.add_edge(1, 2, weight=2)
+        g.add_edge(2, 1, weight=2)
+
+        expected = [
+            (0, 1, {"weight": 2}),
+            (1, 2, {"weight": 2}),
+            (2, 1, {"weight": 2}),
+        ]
+
+        self.compare_directed(union_of_maximum_spanning_trees(g), expected)
+
+    def test_multi_different_weight(self):
+        g = nx.MultiGraph()
+
+        g.add_edge(0, 1, weight=2)
+        g.add_edge(1, 2, weight=1)
+        g.add_edge(2, 1, weight=2)
+
+        expected = [
+            (0, 1, {"weight": 2}),
+            (2, 1, {"weight": 2}),
+        ]
+
+        self.compare(union_of_maximum_spanning_trees(g), expected)
+
+    def test_multi_same_weight(self):
+        g = nx.MultiGraph()
+
+        g.add_edge(0, 1, weight=2)
+        g.add_edge(1, 2, weight=2)
+        g.add_edge(2, 1, weight=2)
+
+        expected = [
+            (0, 1, {"weight": 2}),
+            (1, 2, {"weight": 2}),
+            (2, 1, {"weight": 2}),
         ]
 
         self.compare(union_of_maximum_spanning_trees(g), expected)
