@@ -1,10 +1,11 @@
+# Dependencies
+ebbe==1.9.0
 llist==0.7.1
 networkx==2.5.1
 
 # Dev Dependencies
 black
 docstring-parser==0.13
-ebbe==1.8.0
 importchecker==2.0
 pandas==1.1.5
 pytest==7.0.1

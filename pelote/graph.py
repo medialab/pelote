@@ -37,6 +37,19 @@ def check_graph(value) -> None:
         raise TypeError("expected a networkx graph but got %s" % type(value).__name__)
 
 
+def check_node_exists(g, n):
+    if n not in g:
+        raise KeyError("Node {} does not exist. {}".format(n, g.nodes))
+
+    return n
+
+
+def create_null_copy(graph):
+    check_graph(graph)
+
+    return graph.__class__(**graph.graph)
+
+
 def largest_connected_component(graph):
     """
     Function returning the largest connected component of given networkx graph
@@ -203,8 +216,7 @@ def remove_edges(graph, predicate) -> None:
         if not predicate(u, v, a):
             edges_to_drop.append((u, v))
 
-    for u, v in edges_to_drop:
-        graph.remove_edge(u, v)
+    graph.remove_edges_from(edges_to_drop)
 
 
 def filter_edges(graph, predicate):
@@ -269,8 +281,7 @@ def remove_nodes(graph, predicate) -> None:
         if not predicate(n, a):
             nodes_to_drop.append(n)
 
-    for n in nodes_to_drop:
-        graph.remove_node(n)
+    graph.remove_nodes_from(nodes_to_drop)
 
 
 def filter_nodes(graph, predicate):
@@ -301,15 +312,90 @@ def filter_nodes(graph, predicate):
     if not callable(predicate):
         raise TypeError("expecting a callable predicate (i.e. a function etc.)")
 
-    copy = graph.__class__()
+    copy = create_null_copy(graph)
+
+    directed = graph.is_directed()
+    multi = graph.is_multigraph()
 
     for n, a in graph.nodes.data():
-        if predicate(n, a):
-            copy.add_node(n, **a)
-    for u, v, a in graph.edges.data():
-        if u in copy.nodes.data() and v in copy.nodes.data():
-            copy.add_edge(u, v, **a)
+
+        if not predicate(n, a):
+            continue
+
+        copy.add_node(n, **a)
+
+        if directed:
+            if multi:
+                for u, v, k, a_edge in graph.out_edges(n, keys=True, data=True):
+                    if predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, key=k, **a_edge)
+            else:
+                for u, v, a_edge in graph.out_edges(n, data=True):
+                    if predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, **a_edge)
+        else:
+            if multi:
+                for u, v, k, a_edge in graph.edges(n, keys=True, data=True):
+                    if u > v and predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, key=k, **a_edge)
+            else:
+                for u, v, a_edge in graph.edges(n, data=True):
+                    if u > v and predicate(v, graph.nodes[v]):
+                        copy.add_edge(u, v, **a_edge)
+
     return copy
+
+
+def remove_leaves(graph) -> None:
+    """
+    Function removing all leaves of the graph, i.e. the nodes incident to a
+    single edge, i.e. the nodes with degree 1.
+
+    This function is not recursive and will only remove one layer of leaves.
+
+    Note that this function mutates the given graph.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+
+    Example:
+        from pelote import remove_leaves
+
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        remove_leaves(g)
+
+        list(g.nodes)
+        >>> [2]
+    """
+    remove_nodes(graph, lambda n, _: graph.degree(n) != 1)
+
+
+def filter_leaves(graph) -> None:
+    """
+    Function returning a copy of the given networkx graph but without its leaves,
+    i.e. the nodes incident to a single edge, i.e. the nodes with degree 1.
+
+    This function is not recursive and will only filter only one layer of leaves.
+
+    Args:
+        graph (nx.AnyGraph): a networkx graph.
+
+    Example:
+        from pelote import remove_leaves
+
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        h = filter_leaves(g)
+
+        list(h.nodes)
+        >>> [2]
+    """
+    return filter_nodes(graph, lambda n, _: graph.degree(n) != 1)
 
 
 def connected_component_orders(

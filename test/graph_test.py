@@ -7,12 +7,14 @@ from collections import Counter
 
 from pelote.graph import (
     are_same_graphs,
+    create_null_copy,
     largest_connected_component,
     crop_to_largest_connected_component,
     connected_component_orders,
     filter_edges,
     filter_nodes,
     union_maximum_spanning_trees,
+    filter_leaves,
 )
 
 
@@ -220,3 +222,27 @@ class TestUMST(object):
         ]
 
         assert edges_union == expected
+
+
+class TestFilterLeaves(object):
+    def test_basics(self):
+        g = nx.Graph()
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+
+        h = filter_leaves(g)
+
+        expected = nx.Graph()
+        expected.add_node(2)
+
+        assert are_same_graphs(h, expected)
+
+
+class TestCreateNullCopy(object):
+    def test_basics(self):
+        g = nx.Graph(hello="world")
+        h = create_null_copy(g)
+
+        assert h.order() == 0
+        assert h.size() == 0
+        assert h.graph == {"hello": "world"}

@@ -5,9 +5,11 @@
 # Functions able to convert tabular data to networkx graphs.
 #
 import networkx as nx
+from collections.abc import Sequence, Mapping
 
-from pelote.utils import check_node_exists, iterator_from_dataframe
+from pelote.utils import iterator_from_dataframe
 from pelote.classes import IncrementalIdRegister
+from pelote.graph import check_node_exists
 
 
 def collect_row_data(spec, row):
@@ -22,7 +24,31 @@ def collect_row_data(spec, row):
 
         return attr
 
-    return {k: row[k] for k in spec}
+    if isinstance(spec, Mapping):
+        attr = {}
+
+        for col_name, attr_name in spec.items():
+            v = row.get(col_name)
+
+            if v is not None:
+                attr[attr_name] = v
+
+        return attr
+
+    if isinstance(spec, Sequence):
+        attr = {}
+
+        for col_name in spec:
+            v = row.get(col_name)
+
+            if v is not None:
+                attr[col_name] = v
+
+        return attr
+
+    raise TypeError(
+        "could not collect part data. expecting a callable, a mapping or a sequence"
+    )
 
 
 def table_to_bipartite_graph(
@@ -60,14 +86,18 @@ def table_to_bipartite_graph(
         edge_weight_attr (str, optional): name of the edge attribute containing
             its weight, i.e. the number of times it was found in the table.
             Defaults to "weight".
-        first_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+        first_part_data (Sequence or Callable or Mapping, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's first part.
+            Can also be a mapping (i.e. dict) from row column to node attribute
+            name to create.
             Can also be a function returning a dict of those attributes.
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.
             Defaults to None.
-        second_part_data (Sequence or Callable, optional): sequence (i.e. list, tuple etc.)
+        second_part_data (Sequence or Callable or Mapping, optional): sequence (i.e. list, tuple etc.)
             of column from rows to keep as node attributes for the graph's second part.
+            Can also be a mapping (i.e. dict) from row column to node attribute
+            name to create.
             Can also be a function returning a dict of those attributes.
             Note that the first row containing a given node will take precedence over
             subsequent ones regarding data to include.

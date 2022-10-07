@@ -2,8 +2,21 @@
 # Pelote Multiscale Backbone
 # =============================================================================
 #
-from pelote.graph import filter_edges, check_graph
 from pelote.metrics import edge_disparity
+from pelote.sparsification.utils import Sparsifier
+
+
+class MultiscaleBackboneSparsifier(Sparsifier):
+    def __init__(self, alpha: float = 0.05, edge_weight_attr: str = "weight"):
+        def edge_predicate_factory(graph):
+            disparity = edge_disparity(graph, edge_weight_attr=edge_weight_attr)
+
+            def predicate(u, v, a):
+                return disparity[(u, v)] <= alpha
+
+            return predicate
+
+        super().__init__(edge_predicate_factory=edge_predicate_factory)
 
 
 def multiscale_backbone(graph, alpha: float = 0.05, edge_weight_attr: str = "weight"):
@@ -33,18 +46,6 @@ def multiscale_backbone(graph, alpha: float = 0.05, edge_weight_attr: str = "wei
     Returns:
         nx.AnyGraph: the sparse graph.
     """
-    check_graph(graph)
-
-    # TODO: check directedness and constant weights
-
-    disparity = edge_disparity(graph, edge_weight_attr=edge_weight_attr)
-
-    def edge_predicate(u, v, a):
-        # NOTE: swapping because we have the guarantee the graph is undirected
-        # and the edge keys are arranged with lower node first
-        if u > v:
-            u, v = v, u
-
-        return disparity[(u, v)] <= alpha
-
-    return filter_edges(graph, edge_predicate)
+    return MultiscaleBackboneSparsifier(alpha=alpha, edge_weight_attr=edge_weight_attr)(
+        graph
+    )

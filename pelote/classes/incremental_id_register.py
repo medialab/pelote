@@ -9,6 +9,8 @@ class IncrementalIdRegister:
     Helper class mapping incremental ids to arbitrary hashable keys.
     """
 
+    __slots__ = ("__counter", "__index")
+
     def __init__(self):
         self.__counter = 0
         self.__index = {}
@@ -22,3 +24,7 @@ class IncrementalIdRegister:
             self.__index[item] = item_id
 
         return item_id
+
+    def clear(self) -> None:
+        self.__counter = 0
+        self.__index.clear()

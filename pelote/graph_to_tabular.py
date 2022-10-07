@@ -39,7 +39,7 @@ def graph_to_nodes_dataframe(graph, node_key_col: str = "key") -> "pd.DataFrame"
             for _, a in graph.nodes(data=True):
                 yield a
 
-        return pd.DataFrame(data=raw_data(), index=list(graph.nodes))
+        return pd.DataFrame(data=raw_data(), index=graph.nodes)
 
     else:
 

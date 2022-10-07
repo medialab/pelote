@@ -11,6 +11,8 @@ from pelote.graph import (
     filter_edges,
     remove_nodes,
     filter_nodes,
+    remove_leaves,
+    filter_leaves,
 )
 from pelote.graph_to_tabular import (
     graph_to_nodes_dataframe,
@@ -22,7 +24,12 @@ from pelote.metrics import edge_disparity
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.write import write_graphology_json
-from pelote.sparsification import global_threshold_sparsification, multiscale_backbone
+from pelote.sparsification import (
+    global_threshold_sparsification,
+    GlobalThresholdSparsifier,
+    multiscale_backbone,
+    MultiscaleBackboneSparsifier,
+)
 from pelote.tabular_to_graph import (
     table_to_bipartite_graph,
     tables_to_graph,
@@ -38,6 +45,8 @@ __all__ = [
     "filter_edges",
     "remove_nodes",
     "filter_nodes",
+    "remove_leaves",
+    "filter_leaves",
     "graph_to_nodes_dataframe",
     "graph_to_edges_dataframe",
     "graph_to_dataframes",
@@ -46,7 +55,9 @@ __all__ = [
     "monopartite_projection",
     "read_graphology_json",
     "global_threshold_sparsification",
+    "GlobalThresholdSparsifier",
     "multiscale_backbone",
+    "MultiscaleBackboneSparsifier",
     "table_to_bipartite_graph",
     "tables_to_graph",
     "edges_table_to_graph",
@@ -86,6 +97,8 @@ __toc__ = [
             filter_edges,
             remove_nodes,
             filter_nodes,
+            remove_leaves,
+            filter_leaves,
         ],
     },
     {"title": "Learning", "fns": [floatsam_threshold_learner]},

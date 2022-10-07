@@ -55,6 +55,8 @@ pip install pandas
   * [filter_edges](#filter_edges)
   * [remove_nodes](#remove_nodes)
   * [filter_nodes](#filter_nodes)
+  * [remove_leaves](#remove_leaves)
+  * [filter_leaves](#filter_leaves)
 * [Learning](#learning)
   * [floatsam_threshold_learner](#floatsam_threshold_learner)
 * [Reading & Writing](#reading-&-writing)
@@ -88,13 +90,17 @@ are dicts instead.
 the part it belongs to.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute containing
 its weight, i.e. the number of times it was found in the table.
-* **first_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
+* **first_part_data** *Sequence or Callable or Mapping, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's first part.
+Can also be a mapping (i.e. dict) from row column to node attribute
+name to create.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
-* **second_part_data** *Sequence or Callable, optional* `None` - sequence (i.e. list, tuple etc.)
+* **second_part_data** *Sequence or Callable or Mapping, optional* `None` - sequence (i.e. list, tuple etc.)
 of column from rows to keep as node attributes for the graph's second part.
+Can also be a mapping (i.e. dict) from row column to node attribute
+name to create.
 Can also be a function returning a dict of those attributes.
 Note that the first row containing a given node will take precedence over
 subsequent ones regarding data to include.
@@ -345,6 +351,7 @@ is less than a given threshold.
 
 * **graph** *nx.AnyGraph* - target graph.
 * **weight_threshold** *float* - weight threshold.
+* **edge_weight_attr** *str, optional* - name of the edge weight attribute.
 * **reverse** *bool, optional* - whether to reverse the threshold condition.
 That is to say an edge would be removed if its weight is greater
 than the threshold.
@@ -591,6 +598,56 @@ to remove it.
 *Returns*
 
 *nx.AnyGraph* - the filtered graph.
+
+#### remove_leaves
+
+Function removing all leaves of the graph, i.e. the nodes incident to a
+single edge, i.e. the nodes with degree 1.
+
+This function is not recursive and will only remove one layer of leaves.
+
+Note that this function mutates the given graph.
+
+```python
+from pelote import remove_leaves
+
+g = nx.Graph()
+g.add_edge(1, 2)
+g.add_edge(2, 3)
+
+remove_leaves(g)
+
+list(g.nodes)
+>>> [2]
+```
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
+
+#### filter_leaves
+
+Function returning a copy of the given networkx graph but without its leaves,
+i.e. the nodes incident to a single edge, i.e. the nodes with degree 1.
+
+This function is not recursive and will only filter only one layer of leaves.
+
+```python
+from pelote import remove_leaves
+
+g = nx.Graph()
+g.add_edge(1, 2)
+g.add_edge(2, 3)
+
+h = filter_leaves(g)
+
+list(h.nodes)
+>>> [2]
+```
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - a networkx graph.
 
 ---
 

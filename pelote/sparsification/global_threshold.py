@@ -12,15 +12,13 @@ class GlobalThresholdSparsifier(Sparsifier):
         edge_weight_attr: str = "weight",
         reverse: bool = False,
     ):
-        self.weight_threshold = weight_threshold
-        self.edge_weight_attr = edge_weight_attr
-        self.reverse = reverse
+        def edge_predicate_factory(_):
+            if reverse:
+                return lambda _u, _v, a: a[edge_weight_attr] <= weight_threshold
 
-    def _get_edge_predicate(self):
-        if self.reverse:
-            return lambda _u, _v, a: a[self.edge_weight_attr] <= self.weight_threshold
+            return lambda _u, _v, a: a[edge_weight_attr] >= weight_threshold
 
-        return lambda _u, _v, a: a[self.edge_weight_attr] >= self.weight_threshold
+        super().__init__(edge_predicate_factory=edge_predicate_factory)
 
 
 def global_threshold_sparsification(
@@ -36,6 +34,7 @@ def global_threshold_sparsification(
     Args:
         graph (nx.AnyGraph): target graph.
         weight_threshold (float): weight threshold.
+        edge_weight_attr (str, optional): name of the edge weight attribute.
         reverse (bool, optional): whether to reverse the threshold condition.
             That is to say an edge would be removed if its weight is greater
             than the threshold.
@@ -47,4 +46,4 @@ def global_threshold_sparsification(
         weight_threshold=weight_threshold,
         edge_weight_attr=edge_weight_attr,
         reverse=reverse,
-    ).filter(graph)
+    )(graph)
