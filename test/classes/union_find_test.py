@@ -8,6 +8,8 @@ class TestUnionFind(object):
     def test_basics(self):
         u = UnionFind(5)
 
+        assert u.capacity == 5
+
         assert len(u) == 5
 
         for i in range(len(u)):
@@ -39,3 +41,8 @@ class TestUnionFind(object):
 
         for i in range(len(u)):
             assert u.cardinality(i) == 5
+
+        u.clear()
+
+        assert len(u) == 5
+        assert not u.are_in_same_set(0, 1)

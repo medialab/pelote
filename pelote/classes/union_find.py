@@ -12,21 +12,33 @@ class UnionFind(object):
     def __init__(self, capacity: int) -> None:
         self.__count = capacity
         self.capacity = capacity
-        self.representation = uint_representation_for_capacity(capacity)
-
-        self.parents = array(self.representation, range(capacity))
-        self.ranks = array(self.representation, repeat(0, capacity))
-        self.cardinalities = array(self.representation, repeat(1, capacity))
+        self.allocate(capacity)
 
     def __repr__(self):
         return "<UnionFind representation={representation!r} capacity={capacity!r} count={count!r}>".format(
-            representation=self.representation,
+            representation=self.representation.code,
             capacity=self.capacity,
             count=self.__count,
         )
 
     def __len__(self):
         return self.__count
+
+    def allocate(self, capacity):
+        self.capacity = capacity
+        self.representation = uint_representation_for_capacity(capacity)
+
+        self.parents = array(self.representation.code, range(capacity))
+        self.ranks = array(self.representation.code, repeat(0, capacity))
+        self.cardinalities = array(self.representation.code, repeat(1, capacity))
+
+    def clear(self):
+        self.__count = self.capacity
+
+        for i in range(self.capacity):
+            self.parents[i] = i
+            self.ranks[i] = 0
+            self.cardinalities[i] = 1
 
     def find(self, x):
         y = x

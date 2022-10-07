@@ -21,7 +21,7 @@ class TestUtils(object):
         assert has_mixed_types(g)
 
     def test_uint_representation_for_capacity(self):
-        assert uint_representation_for_capacity(34) == "B"
-        assert uint_representation_for_capacity(345) == "H"
-        assert uint_representation_for_capacity(486462) == "L"
-        assert uint_representation_for_capacity(847586358646854) == "Q"
+        assert uint_representation_for_capacity(34).code == "B"
+        assert uint_representation_for_capacity(345).code == "H"
+        assert uint_representation_for_capacity(486462).code == "L"
+        assert uint_representation_for_capacity(847586358646854).code == "Q"

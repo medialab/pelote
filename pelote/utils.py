@@ -4,7 +4,7 @@
 #
 # Miscellaneous utility functions used throughout the library.
 #
-from collections import Counter, defaultdict, OrderedDict
+from collections import Counter, defaultdict, OrderedDict, namedtuple
 
 from pelote.shim import is_dataframe
 
@@ -44,19 +44,21 @@ def iterator_from_dataframe(table, columns=None):
         return table
 
 
+Representation = namedtuple("Representation", ("max", "code"))
+
 UINT_REPRESENTATIONS = [
-    (2**8 - 1, "B"),
-    (2**16 - 1, "H"),
-    (2**32 - 1, "L"),
-    (2**64 - 1, "Q"),
+    Representation(2**8 - 1, "B"),
+    Representation(2**16 - 1, "H"),
+    Representation(2**32 - 1, "L"),
+    Representation(2**64 - 1, "Q"),
 ]
 
 
 def uint_representation_for_capacity(capacity):
     max_int = capacity - 1
 
-    for max_representable, representation in UINT_REPRESENTATIONS:
-        if max_int <= max_representable:
-            return representation
+    for r in UINT_REPRESENTATIONS:
+        if max_int <= r.max:
+            return r
 
     raise TypeError("capacity is over 64 bits")
