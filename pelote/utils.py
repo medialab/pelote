@@ -25,25 +25,6 @@ def has_mixed_types(iterable) -> bool:
     return False
 
 
-def check_node_exists(g, n):
-    if n not in g:
-        raise KeyError("Node {} does not exist. {}".format(n, g.nodes))
-
-    return n
-
-
-def dict_without(d, k: str):
-    o = {}
-
-    for n, v in d.items():
-        if n == k:
-            continue
-
-        o[n] = v
-
-    return o
-
-
 CONSTANT_TIME_LOOKUP = (set, frozenset, dict, Counter, defaultdict, OrderedDict)
 
 

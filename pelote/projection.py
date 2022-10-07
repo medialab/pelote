@@ -8,11 +8,12 @@
 import networkx as nx
 from collections import defaultdict
 from collections.abc import Hashable
+from ebbe import omit
 
 from pelote.classes import BFSQueue
 from pelote.classes.online_metrics import instantiate_online_metric
 from pelote.graph import check_graph
-from pelote.utils import dict_without, has_constant_time_lookup
+from pelote.utils import has_constant_time_lookup
 
 
 def monopartite_projection(
@@ -127,7 +128,7 @@ def monopartite_projection(
             online_metric.accumulate_norm(weight)
 
         online_metric.add_norm(n1)
-        monopartite_graph.add_node(n1, **dict_without(a1, node_part_attr))
+        monopartite_graph.add_node(n1, **omit(a1, [node_part_attr]))
 
     if part_is_empty:
         raise TypeError(

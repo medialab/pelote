@@ -7,8 +7,9 @@
 import networkx as nx
 from collections.abc import Sequence, Mapping
 
-from pelote.utils import check_node_exists, iterator_from_dataframe
+from pelote.utils import iterator_from_dataframe
 from pelote.classes import IncrementalIdRegister
+from pelote.graph import check_node_exists
 
 
 def collect_row_data(spec, row):

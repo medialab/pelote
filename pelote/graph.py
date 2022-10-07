@@ -36,6 +36,13 @@ def check_graph(value) -> None:
         raise TypeError("expected a networkx graph but got %s" % type(value).__name__)
 
 
+def check_node_exists(g, n):
+    if n not in g:
+        raise KeyError("Node {} does not exist. {}".format(n, g.nodes))
+
+    return n
+
+
 def create_null_copy(graph):
     check_graph(graph)
 
