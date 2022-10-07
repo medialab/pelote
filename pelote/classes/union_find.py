@@ -5,26 +5,36 @@
 from array import array
 from itertools import repeat
 
+from pelote.classes import IncrementalIdRegister
 from pelote.utils import uint_representation_for_capacity
 
 
 class UnionFind(object):
+    __slots__ = (
+        "__count",
+        "capacity",
+        "representation",
+        "parents",
+        "ranks",
+        "cardinalities",
+    )
+
     def __init__(self, capacity: int) -> None:
         self.__count = capacity
         self.capacity = capacity
         self.allocate(capacity)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<UnionFind representation={representation!r} capacity={capacity!r} count={count!r}>".format(
             representation=self.representation.code,
             capacity=self.capacity,
             count=self.__count,
         )
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.__count
 
-    def allocate(self, capacity):
+    def allocate(self, capacity: int) -> None:
         self.capacity = capacity
         self.representation = uint_representation_for_capacity(capacity)
 
@@ -32,7 +42,7 @@ class UnionFind(object):
         self.ranks = array(self.representation.code, repeat(0, capacity))
         self.cardinalities = array(self.representation.code, repeat(1, capacity))
 
-    def clear(self):
+    def clear(self) -> None:
         self.__count = self.capacity
 
         for i in range(self.capacity):
@@ -40,7 +50,7 @@ class UnionFind(object):
             self.ranks[i] = 0
             self.cardinalities[i] = 1
 
-    def find(self, x):
+    def find(self, x: int):
         y = x
         parents = self.parents
 
@@ -63,10 +73,10 @@ class UnionFind(object):
 
         return y
 
-    def cardinality(self, x):
+    def cardinality(self, x: int) -> int:
         return self.cardinalities[self.find(x)]
 
-    def union(self, x, y):
+    def union(self, x: int, y: int) -> bool:
         x_root = self.find(x)
         y_root = self.find(y)
 
@@ -76,7 +86,7 @@ class UnionFind(object):
 
         # x & y are already in the same set
         if x_root == y_root:
-            return
+            return False
 
         self.__count -= 1
 
@@ -95,5 +105,42 @@ class UnionFind(object):
             parents[y_root] = x_root
             ranks[x_root] += 1
 
-    def are_in_same_set(self, x, y):
+        return True
+
+    def are_in_same_set(self, x: int, y: int) -> bool:
+        return self.find(x) == self.find(y)
+
+
+class DisjointSet(object):
+    __slots__ = ("__union_find", "__register")
+
+    def __init__(self, capacity: int):
+        self.__union_find = UnionFind(capacity)
+        self.__register = IncrementalIdRegister()
+
+    def clear(self) -> None:
+        self.__union_find.clear()
+        self.__register.clear()
+
+    @property
+    def capacity(self) -> int:
+        return self.__union_find.capacity
+
+    def __len__(self) -> int:
+        return len(self.__union_find)
+
+    def find(self, x) -> int:
+        x = self.__register[x]
+        return self.__union_find.find(x)
+
+    def union(self, x, y) -> bool:
+        x = self.__register[x]
+        y = self.__register[y]
+        return self.__union_find.union(x, y)
+
+    def cardinality(self, x) -> int:
+        x = self.__register[x]
+        return self.__union_find.cardinality(x)
+
+    def are_in_same_set(self, x, y) -> bool:
         return self.find(x) == self.find(y)
