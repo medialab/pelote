@@ -17,7 +17,10 @@ class MultiscaleBackboneSparsifier(Sparsifier):
             disparity = edge_disparity(graph, edge_weight_attr=edge_weight_attr)
 
             def predicate(u, v, a):
-                return disparity[(u, v)] <= alpha
+                if u > v:
+                    u, v = v, u
+
+                return disparity[u, v] <= alpha
 
             return predicate
 
