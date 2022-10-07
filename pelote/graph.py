@@ -483,55 +483,6 @@ def second_largest_connected_component_order(graph, edge_filter=None):
     return top2[1]
 
 
-def union_maximum_spanning_trees_old(graph):
-    """
-    Function returning the edges belonging to any Maximum Spanning Tree.
-
-    Note that this function will consider any given graph as undirected,
-    and will give to each edge with no weight the default weight 1.
-
-    Args:
-        graph (nx.AnyGraph): target graph.
-
-    Returns:
-        list: list of edges belonging to any Maximum Spanning Tree.
-    """
-    check_graph(graph)
-
-    edges_union = []
-    nodes_component_friends = {}
-
-    for n in graph.nodes:
-        nodes_component_friends[n] = {n}
-
-    list_edges = sorted(
-        graph.edges.data("weight", default=1),
-        key=lambda edge: edge[2],
-    )
-
-    weight = list_edges[len(list_edges) - 1][2]
-    index = len(list_edges) - 1
-    while index >= 0:
-        M = []
-        while index >= 0 and weight == list_edges[index][2]:
-            if (
-                nodes_component_friends[list_edges[index][0]]
-                != nodes_component_friends[list_edges[index][1]]
-            ):
-                M.append(list_edges[index])
-            index -= 1
-
-        for e in M:
-            union = nodes_component_friends[e[0]].union(nodes_component_friends[e[1]])
-            for node in union:
-                nodes_component_friends[node] = union
-        edges_union.append(M)
-
-        weight = list_edges[index][2]
-
-    return edges_union
-
-
 WEIGHT_EPSILON = 1e-8
 
 
