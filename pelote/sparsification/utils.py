@@ -4,7 +4,20 @@
 #
 import networkx as nx
 
-from pelote.graph import check_graph
+from pelote.graph import check_graph, union_of_maximum_spanning_trees
+
+
+def decorate_predicate_factory_with_umst(predicate_factory):
+    def decorated_factory(graph):
+        predicate = predicate_factory(graph)
+        umst = set((u, v) for u, v, _ in union_of_maximum_spanning_trees(graph))
+
+        def decorated_predicate(u, v, a):
+            return predicate(u, v, a) or (u, v) in umst
+
+        return decorated_predicate
+
+    return decorated_factory
 
 
 class Sparsifier(object):
@@ -81,11 +94,14 @@ class Sparsifier(object):
                     if not edge_predicate(u, v, a):
                         yield u, v, a
 
+        if keep_connected:
+            edge_predicate_factory = decorate_predicate_factory_with_umst(
+                edge_predicate_factory
+            )
+
         self.edge_predicate_factory = edge_predicate_factory
         self.relevant_edges_generator = relevant_edges_generator
         self.redundant_edges_generator = redundant_edges_generator
-
-        self.keep_connected = keep_connected
 
     def filter(self, graph):
         check_graph(graph)

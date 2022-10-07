@@ -11,6 +11,7 @@ class GlobalThresholdSparsifier(Sparsifier):
         weight_threshold: float,
         edge_weight_attr: str = "weight",
         reverse: bool = False,
+        keep_connected: bool = False,
     ):
         def edge_predicate_factory(_):
             if reverse:
@@ -18,7 +19,9 @@ class GlobalThresholdSparsifier(Sparsifier):
 
             return lambda _u, _v, a: a[edge_weight_attr] >= weight_threshold
 
-        super().__init__(edge_predicate_factory=edge_predicate_factory)
+        super().__init__(
+            edge_predicate_factory=edge_predicate_factory, keep_connected=keep_connected
+        )
 
 
 def global_threshold_sparsification(
@@ -26,6 +29,7 @@ def global_threshold_sparsification(
     weight_threshold: float,
     edge_weight_attr: str = "weight",
     reverse: bool = False,
+    keep_connected: bool = False,
 ):
     """
     Function returning a copy of the given graph without edges whose weight
@@ -38,6 +42,8 @@ def global_threshold_sparsification(
         reverse (bool, optional): whether to reverse the threshold condition.
             That is to say an edge would be removed if its weight is greater
             than the threshold.
+        keep_connected (bool, optional): whether to keep the graph connected
+            as it is using the UMST method. Defaults to False.
 
     Returns:
         nx.AnyGraph: the sparse graph.
@@ -46,4 +52,5 @@ def global_threshold_sparsification(
         weight_threshold=weight_threshold,
         edge_weight_attr=edge_weight_attr,
         reverse=reverse,
+        keep_connected=keep_connected,
     )(graph)

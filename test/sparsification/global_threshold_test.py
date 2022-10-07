@@ -129,3 +129,15 @@ class TestGlobalThresholdSparsifier(object):
             (1, 2, {"weight": 5, "redundant": True}),
             (2, 3, {"weight": 5, "redundant": True}),
         ]
+
+    def test_keep_connected(self):
+        dense = nx.Graph()
+        dense.add_edge(0, 1, weight=5)
+
+        sparsifier = GlobalThresholdSparsifier(10, keep_connected=True)
+
+        sparse = sparsifier(dense)
+
+        assert list(sparse.edges) == [(0, 1)]
+        assert list(sparsifier.relevant_edges(dense)) == [(0, 1, {"weight": 5})]
+        assert list(sparsifier.redundant_edges(dense)) == []

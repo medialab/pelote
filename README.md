@@ -356,6 +356,8 @@ is less than a given threshold.
 * **reverse** *bool, optional* - whether to reverse the threshold condition.
 That is to say an edge would be removed if its weight is greater
 than the threshold.
+* **keep_connected** *bool, optional* `False` - whether to keep the graph connected
+as it is using the UMST method.
 
 *Returns*
 
@@ -384,6 +386,8 @@ be intuitively thought of as a p-value score for an edge to be
 kept in the resulting graph.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute holding
 the edge's weight.
+* **keep_connected** *bool, optional* `False` - whether to keep the graph connected
+as it is using the UMST method.
 
 *Returns*
 
