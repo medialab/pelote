@@ -46,6 +46,7 @@ pip install pandas
   * [multiscale_backbone](#multiscale_backbone)
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
+  * [triangular_strength](#triangular_strength)
 * [Graph utilities](#graph-utilities)
   * [union_of_maximum_spanning_trees](#union_of_maximum_spanning_trees)
   * [largest_connected_component](#largest_connected_component)
@@ -453,6 +454,21 @@ means more relevant edges.
 *Returns*
 
 *dict* - Dictionnary with edges - (source, target) tuples - as keys and the disparity scores as values
+
+#### triangular_strength
+
+Function returning a graph edges triangular strength, sometimes also called
+Simmelian strength, i.e. the number of triangles each edge is a part of.
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **full** *bool, optional* `False` - whether to return strength for every edge,
+including those with strength = 0.
+
+*Returns*
+
+*dict* - mapping of edges to their triangular strength.
 
 ---
 

@@ -20,7 +20,7 @@ from pelote.graph_to_tabular import (
     graph_to_dataframes,
 )
 from pelote.learn import floatsam_threshold_learner
-from pelote.metrics import edge_disparity
+from pelote.metrics import edge_disparity, triangular_strength
 from pelote.projection import monopartite_projection
 from pelote.read import read_graphology_json
 from pelote.write import write_graphology_json
@@ -52,6 +52,7 @@ __all__ = [
     "graph_to_dataframes",
     "floatsam_threshold_learner",
     "edge_disparity",
+    "triangular_strength",
     "monopartite_projection",
     "read_graphology_json",
     "global_threshold_sparsification",
@@ -85,7 +86,10 @@ __toc__ = [
         "title": "Graph sparsification",
         "fns": [global_threshold_sparsification, multiscale_backbone],
     },
-    {"title": "Miscellaneous graph-related metrics", "fns": [edge_disparity]},
+    {
+        "title": "Miscellaneous graph-related metrics",
+        "fns": [edge_disparity, triangular_strength],
+    },
     {
         "title": "Graph utilities",
         "fns": [
