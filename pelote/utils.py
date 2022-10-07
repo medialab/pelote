@@ -42,3 +42,21 @@ def iterator_from_dataframe(table, columns=None):
         )
     else:
         return table
+
+
+UINT_REPRESENTATIONS = [
+    (2**8 - 1, "B"),
+    (2**16 - 1, "H"),
+    (2**32 - 1, "L"),
+    (2**64 - 1, "Q"),
+]
+
+
+def uint_representation_for_capacity(capacity):
+    max_int = capacity - 1
+
+    for max_representable, representation in UINT_REPRESENTATIONS:
+        if max_int <= max_representable:
+            return representation
+
+    raise TypeError("capacity is over 64 bits")
