@@ -482,6 +482,13 @@ the given networkx graph.
 Note that this function will give to each edge with no weight a default
 weight of 1.
 
+*Article*
+> Arlind Nocaj, Mark Ortmann, and Ulrik Brandes "Untangling Hairballs. From 3 to 14 Degrees of Separation." Computer & Information Science, University of Konstanz, Germany, 2014, https://dx.doi.org/10.1007/978-3-662-45803-7_9.
+
+*References*
+
+- https://kops.uni-konstanz.de/bitstream/handle/123456789/30583/Nocaj_0-284485.pdf
+
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
