@@ -120,23 +120,14 @@ def triangular_strength(graph, full: bool = False):
             strengths[u, v] = 0
 
     for u, v, w in triangles(graph):
+        if u > v:
+            u, v = v, u
 
-        # First edge
-        if u < v:
-            strengths[u, v] += 1
-        else:
-            strengths[v, u] += 1
+        if v > w:
+            v, w = w, v
 
-        # Second edge
-        if v < w:
-            strengths[v, w] += 1
-        else:
-            strengths[w, v] += 1
-
-        # Third edge
-        if w < u:
-            strengths[w, u] += 1
-        else:
-            strengths[u, w] += 1
+        strengths[u, v] += 1
+        strengths[u, w] += 1
+        strengths[v, w] += 1
 
     return strengths
