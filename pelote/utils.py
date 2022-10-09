@@ -54,11 +54,13 @@ UINT_REPRESENTATIONS = [
 ]
 
 
-def uint_representation_for_capacity(capacity):
-    max_int = capacity - 1
-
+def uint_representation_for_max(max_int):
     for r in UINT_REPRESENTATIONS:
         if max_int <= r.max:
             return r
 
     raise TypeError("capacity is over 64 bits")
+
+
+def uint_representation_for_capacity(capacity):
+    return uint_representation_for_max(capacity - 1)
