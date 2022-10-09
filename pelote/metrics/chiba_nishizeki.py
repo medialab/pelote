@@ -65,8 +65,11 @@ def triangles(graph):
 
             adjacencies[node] = adjacency
 
-        # TODO: we can skip last two nodes
-        for node in sorted_nodes:
+        # NOTE: last two nodes are not important because we already
+        # iterated over every possible triangle when we reach them
+        for i in range(0, len(sorted_nodes) - 2):
+            node = sorted_nodes[i]
+
             for neighbor in adjacencies[node]:
                 marked_nodes[neighbor] = True
 
