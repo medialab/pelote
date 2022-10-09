@@ -78,7 +78,7 @@ def counting_sort(items, *, key=None, reverse=False):
     # 1. Computing bounds
     keys = []
 
-    lower_bound = 0
+    lower_bound = None
     upper_bound = None
 
     l = len(items)
@@ -90,7 +90,7 @@ def counting_sort(items, *, key=None, reverse=False):
         # if not isinstance(item, int) or k < 0:
         #     raise TypeError("sorted items should be int >= 0")
 
-        if k < lower_bound:
+        if lower_bound is None or k < lower_bound:
             lower_bound = k
 
         if upper_bound is None or k > upper_bound:
