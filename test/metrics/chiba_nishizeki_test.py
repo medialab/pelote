@@ -53,3 +53,28 @@ class TestChibaNishizeki(object):
         strengths = triangular_strength(graph, full=True)
 
         assert strengths == {(1, 2): 1, (2, 3): 1, (1, 3): 1, (0, 1): 0}
+
+        graph.add_edge(4, 2)
+        graph.add_edge(4, 3)
+
+        strengths = triangular_strength(graph, full=True)
+
+        assert strengths == {
+            (1, 2): 1,
+            (2, 3): 2,
+            (1, 3): 1,
+            (0, 1): 0,
+            (2, 4): 1,
+            (3, 4): 1,
+        }
+
+        # Complete graphs
+        for n in range(3, 10):
+            k = nx.complete_graph(n)
+
+            assert len(list(triangles(k))) == (n * (n - 1) * (n - 2)) / 6
+
+            strengths = triangular_strength(k)
+
+            assert len(strengths) == n * (n - 1) // 2
+            assert all(x == n - 2 for x in strengths.values())

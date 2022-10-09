@@ -43,7 +43,7 @@ def triangles(graph):
         # NOTE: a node connected to a single other one cannot be part of a triangle
         valid_nodes = (n for n in graph if graph.degree[n] > 1)
 
-        # NOTE: this sort can be done in linear time using e.g. bucket sort if required
+        # TODO: this sort can be done in linear time using e.g. bucket sort if required
         sorted_nodes = sorted(valid_nodes, key=graph.degree, reverse=True)
 
         adjacencies = {}
@@ -65,6 +65,7 @@ def triangles(graph):
 
             adjacencies[node] = adjacency
 
+        # TODO: we can skip last two nodes
         for node in sorted_nodes:
             for neighbor in adjacencies[node]:
                 marked_nodes[neighbor] = True
@@ -73,16 +74,25 @@ def triangles(graph):
                 neighbor, _ = marked_nodes.popitem()
                 neighbor_adjacency = adjacencies[neighbor]
 
+                self_dllist_node = None
+
                 for dllist_node in neighbor_adjacency.iternodes():
                     neighbor_of_neighbor = dllist_node.value
 
-                    # NOTE: Handling deletion of current node in the graph
                     if neighbor_of_neighbor == node:
-                        neighbor_adjacency.remove(dllist_node)
+                        self_dllist_node = dllist_node
                         continue
 
                     if neighbor_of_neighbor in marked_nodes:
                         yield (node, neighbor, neighbor_of_neighbor)
+
+                # NOTE: Handling deletion of current node in the graph. We only
+                # need to delete it from the neighbor's side, because we will
+                # never iterate over current node later on.
+                # NOTE: we remove the dllist_node here because removing it
+                # from the loop can cause the iteration to skip some items,
+                # at least in this implementation of dllist.
+                neighbor_adjacency.remove(self_dllist_node)
 
     return generator()
 
