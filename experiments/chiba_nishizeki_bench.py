@@ -15,7 +15,11 @@ with Timer("triangles"):
         ...
 
 with Timer("triangular_strength"):
-    triangular_strength(g)
+    S = triangular_strength(g)
+
+print(len(S), sum(S.values()))
 
 with Timer("naive_triangular_strength"):
-    naive_triangular_strength(g)
+    S = naive_triangular_strength(g)
+
+print(len(S), sum(S.values()))
