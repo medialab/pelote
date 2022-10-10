@@ -3,7 +3,11 @@
 # =============================================================================
 import networkx as nx
 
-from pelote.metrics.chiba_nishizeki import triangles, triangular_strength
+from pelote.metrics.chiba_nishizeki import (
+    triangles,
+    triangular_strength,
+    naive_triangular_strength,
+)
 
 
 class TestChibaNishizeki(object):
@@ -49,10 +53,12 @@ class TestChibaNishizeki(object):
         strengths = triangular_strength(graph)
 
         assert strengths == {(1, 2): 1, (2, 3): 1, (1, 3): 1}
+        assert strengths == naive_triangular_strength(graph)
 
         strengths = triangular_strength(graph, full=True)
 
         assert strengths == {(1, 2): 1, (2, 3): 1, (1, 3): 1, (0, 1): 0}
+        assert strengths == naive_triangular_strength(graph, full=True)
 
         graph.add_edge(4, 2)
         graph.add_edge(4, 3)
@@ -67,6 +73,7 @@ class TestChibaNishizeki(object):
             (2, 4): 1,
             (3, 4): 1,
         }
+        assert strengths == naive_triangular_strength(graph, full=True)
 
         # Complete graphs
         for n in range(3, 10):
@@ -78,3 +85,5 @@ class TestChibaNishizeki(object):
 
             assert len(strengths) == n * (n - 1) // 2
             assert all(x == n - 2 for x in strengths.values())
+
+            assert strengths == naive_triangular_strength(k)

@@ -10,6 +10,7 @@
 from collections import OrderedDict, Counter
 from llist import dllist
 
+from pelote.utils import fast_intersection_size
 from pelote.graph import check_graph
 
 
@@ -101,6 +102,59 @@ def triangles(graph):
                 neighbor_adjacency.remove(self_dllist_node)
 
     return generator()
+
+
+def naive_triangular_strength(graph, full=False):
+    """
+    Naive algorithm to compute edge triangular strength. We keep it mostly to
+    benchmark against the Chiba-Nishizeki method.
+
+    Arguments:
+        graph (nx.AnyGraph): target graph.
+        full (bool, optional): whether to return strength for every edge,
+            including those with strength = 0. Defaults to False.
+
+    Returns:
+        dict: mapping of edges to their triangular strength.
+    """
+    check_graph(graph)
+
+    if graph.is_directed():
+        graph = graph.to_undirected(as_view=True)
+
+    neighborhoods = {}
+
+    for node in graph:
+        neighborhood = set()
+
+        for neighbor in graph.neighbors(node):
+            if node == neighbor:
+                continue
+
+            neighborhood.add(neighbor)
+
+        if len(neighborhood) > 1:
+            neighborhoods[node] = neighborhood
+
+    strengths = {}
+
+    for u, v in graph.edges():
+        if u > v:
+            u, v = v, u
+
+        n1 = neighborhoods.get(u)
+        n2 = neighborhoods.get(v)
+
+        if n1 is None or n2 is None:
+
+            if full:
+                strengths[u, v] = 0
+
+            continue
+
+        strengths[u, v] = fast_intersection_size(n1, n2)
+
+    return strengths
 
 
 def triangular_strength(graph, full: bool = False):

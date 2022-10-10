@@ -123,3 +123,22 @@ def counting_sort(items, *, key=None, reverse=False):
         output[i] = item
 
     return output
+
+
+def fast_intersection_size(A, B) -> int:
+    if len(A) > len(B):
+        A, B = B, A
+
+    if not A:
+        return 0
+
+    if A is B:
+        return len(A)
+
+    I = 0
+
+    for item in A:
+        if item in B:
+            I += 1
+
+    return I
