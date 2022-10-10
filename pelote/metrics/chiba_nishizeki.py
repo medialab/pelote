@@ -48,6 +48,10 @@ def triangles(graph):
         # up the sorting step, but as it turns out, I cannot design a faster function
         # in python than the builtin `sorted` for this use case. Numpy does not
         # speed this up either.
+        # NOTE: sorting is not necessary to produce a correct result but
+        # minimizes the number of operations to perform by ensuring we
+        # traverse the graph less. But it is quite tricky to assess whether
+        # the induced O(n log n) or linear sort is worth it in most cases.
         sorted_nodes = sorted(valid_nodes, key=graph.degree, reverse=True)
 
         adjacencies = {}
