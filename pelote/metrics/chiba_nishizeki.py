@@ -43,7 +43,10 @@ def triangles(graph):
         # NOTE: a node connected to a single other one cannot be part of a triangle
         valid_nodes = (n for n in graph if graph.degree[n] > 1)
 
-        # TODO: this sort can be done in linear time using e.g. bucket sort if required
+        # NOTE: theoretically, using a linear time such as counting sort count speed
+        # up the sorting step, but as it turns out, I cannot design a faster function
+        # in python than the builtin `sorted` for this use case. Numpy does not
+        # speed this up either.
         sorted_nodes = sorted(valid_nodes, key=graph.degree, reverse=True)
 
         adjacencies = {}
