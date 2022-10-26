@@ -44,6 +44,7 @@ pip install pandas
 * [Graph sparsification](#graph-sparsification)
   * [global_threshold_sparsification](#global_threshold_sparsification)
   * [multiscale_backbone](#multiscale_backbone)
+  * [simmelian_backbone](#simmelian_backbone)
 * [Miscellaneous graph-related metrics](#miscellaneous-graph-related-metrics)
   * [edge_disparity](#edge_disparity)
   * [triangular_strength](#triangular_strength)
@@ -384,6 +385,33 @@ vs. the null model.
 * **alpha** *float, optional* `0.05` - alpha value for the statistical test. It can
 be intuitively thought of as a p-value score for an edge to be
 kept in the resulting graph.
+* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute holding
+the edge's weight.
+* **keep_connected** *bool, optional* `False` - whether to keep the graph connected
+as it is using the UMST method.
+
+*Returns*
+
+*nx.AnyGraph* - the sparse graph.
+
+#### simmelian_backbone
+
+Function returning the simmelian backbone of the given graph, i.e. a copy
+of the graph were we only kept strong and redundant edges.
+
+*Article*
+> Bobo Nick, Conrad Lee, Pádraig Cunningham, Ulrik Brandes. "Simmelian Backbones: Amplifying Hidden Homophily in Facebook Networks." Proceedings of the 2013 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining (ASONAM 2013), 2013, pp. 525-532, doi: 10.1145/2492517.2492569.
+
+*References*
+
+- https://kops.uni-konstanz.de/bitstream/handle/123456789/25994/Nick_259941.pdf;jsessionid=1BBC287934DAD4BDC586594A487E7CD8?sequence=1
+- https://hal.archives-ouvertes.fr/tel-02339047/
+
+*Arguments*
+
+* **graph** *nx.AnyGraph* - target graph.
+* **edge_strength_ranking_threshold** *int* - strength ranking threshold.
+* **edge_redundancy_threshold** *float* - redundancy threshold.
 * **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute holding
 the edge's weight.
 * **keep_connected** *bool, optional* `False` - whether to keep the graph connected
