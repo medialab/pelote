@@ -410,12 +410,15 @@ of the graph were we only kept strong and redundant edges.
 *Arguments*
 
 * **graph** *nx.AnyGraph* - target graph.
-* **edge_strength_ranking_threshold** *int* - strength ranking threshold.
-* **edge_redundancy_threshold** *float* - redundancy threshold.
-* **edge_weight_attr** *str, optional* `"weight"` - name of the edge attribute holding
+* **edge_strength_ranking_threshold** *int, optional* `1` - strength ranking threshold.
+* **edge_redundancy_threshold** *int, optional* `1` - redundancy threshold.
+* **edge_weight_attr** *str, optional* `"triangular_strength"` - name of the edge attribute holding
 the edge's weight.
 * **keep_connected** *bool, optional* `False` - whether to keep the graph connected
 as it is using the UMST method.
+* **in_or_out_edge** *str, optional* `both` - whether to consider ingoing edges, or outgoing edges,
+or both.
+* **reciprocity** *bool, optional* `False` - wether reciprocity within top ranks is counted as overlap.
 
 *Returns*
 

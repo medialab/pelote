@@ -35,6 +35,33 @@ class TestSimmelianBackboneSparsifier(object):
 
         assert are_same_graphs(sparse, expected, check_attributes=True)
 
+    def test_reciprocity(self):
+        graph = nx.Graph()
+
+        graph.add_edge(0, 1)
+        graph.add_edge(1, 2)
+        graph.add_edge(2, 3)
+        graph.add_edge(3, 1)
+        graph.add_edge(4, 2)
+        graph.add_edge(4, 3)
+
+        sparse = simmelian_backbone(
+            graph,
+            edge_strength_ranking_threshold=1,
+            edge_redundancy_threshold=1,
+            reciprocity=True,
+        )
+
+        expected = nx.Graph()
+        expected.add_node(0)
+        expected.add_edge(1, 2)
+        expected.add_edge(3, 1)
+        expected.add_edge(3, 2)
+        expected.add_edge(2, 4)
+        expected.add_edge(3, 4)
+
+        assert are_same_graphs(sparse, expected, check_attributes=True)
+
     def test_digraph(self):
         graph = nx.DiGraph()
 
@@ -55,6 +82,50 @@ class TestSimmelianBackboneSparsifier(object):
         expected.add_edge(3, 1)
         expected.add_edge(4, 2)
         expected.add_edge(4, 3)
+
+        assert are_same_graphs(sparse, expected, check_attributes=True)
+
+        graph = nx.DiGraph()
+
+        graph.add_edge(0, 1)
+        graph.add_edge(1, 2)
+        graph.add_edge(2, 3)
+        graph.add_edge(3, 1)
+        graph.add_edge(4, 2)
+        graph.add_edge(4, 3)
+
+        sparse = simmelian_backbone(
+            graph,
+            edge_strength_ranking_threshold=1,
+            edge_redundancy_threshold=1,
+            in_or_out_edge="out",
+        )
+
+        expected = nx.DiGraph()
+        expected.add_nodes_from(range(5))
+        expected.add_edge(4, 2)
+
+        assert are_same_graphs(sparse, expected, check_attributes=True)
+
+        graph = nx.DiGraph()
+
+        graph.add_edge(0, 1)
+        graph.add_edge(1, 2)
+        graph.add_edge(2, 3)
+        graph.add_edge(3, 1)
+        graph.add_edge(4, 2)
+        graph.add_edge(4, 3)
+
+        sparse = simmelian_backbone(
+            graph,
+            edge_strength_ranking_threshold=1,
+            edge_redundancy_threshold=1,
+            in_or_out_edge="out",
+        )
+
+        expected = nx.DiGraph()
+        expected.add_nodes_from(range(5))
+        expected.add_edge(4, 2)
 
         assert are_same_graphs(sparse, expected, check_attributes=True)
 

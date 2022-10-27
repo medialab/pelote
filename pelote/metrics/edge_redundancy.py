@@ -13,6 +13,8 @@ def edge_redundancy(
     graph,
     edge_strength_ranking_threshold: int = 0,
     edge_weight_attr: str = "triangular_strength",
+    in_or_out_edge: str = "both",
+    reciprocity: bool = False,
 ):
     """
     Function computing the redundancy of each edge in the given graph. This
@@ -20,9 +22,14 @@ def edge_redundancy(
 
     Args:
         graph(nx.AnyGraph): target graph.
-        edge_weight_attr (str, optional): name of the edge attribute containing
-            the measure to use to calculate redundancy.
-            Defaults to "triangular_strength".
+        edge_strength_ranking_threshold (int, optional): strength ranking threshold.
+            Defaults to 1.
+        edge_weight_attr (str, optional): name of the edge attribute holding
+            the edge's weight. Defaults to "triangular_strength".
+        in_or_out_edge (str, optional): whether to consider ingoing edges, or outgoing edges,
+            or both. Defaults to both.
+        reciprocity (bool, optional): wether reciprocity within top ranks is counted as overlap.
+            Defaults to False.
 
     Returns:
         dict: Dictionnary with edges - (source, target) tuples - as keys and the redundancy as values
@@ -35,7 +42,8 @@ def edge_redundancy(
     redundancies = {}
 
     undirected_graph = graph
-    if graph.is_directed():
+    is_directed = graph.is_directed()
+    if is_directed:
         undirected_graph = graph.to_undirected(as_view=True)
 
     if edge_weight_attr == "triangular_strength":
@@ -55,15 +63,41 @@ def edge_redundancy(
             if edge_strength_ranking_threshold == 0:
                 return set()
 
-            if undirected_graph.degree[node] <= edge_strength_ranking_threshold:
-                return set(nx.neighbors(undirected_graph, node))
+            if (
+                not is_directed or in_or_out_edge == "both"
+            ) and undirected_graph.degree[node] <= edge_strength_ranking_threshold:
+                return set(undirected_graph.neighbors(node))
+
+            if is_directed:
+                if (
+                    in_or_out_edge == "out"
+                    and graph.out_degree[node] <= edge_strength_ranking_threshold
+                ):
+                    return set(graph.successors(node))
+                elif (
+                    in_or_out_edge == "in"
+                    and graph.in_degree[node] <= edge_strength_ranking_threshold
+                ):
+                    return set(graph.predecessors(node))
 
             edges = []
 
-            for u, v in nx.edges(undirected_graph, nbunch=node):
-                if u > v:
-                    u, v = v, u
-                edges.append((u, v))
+            if not is_directed or in_or_out_edge == "both":
+                for u, v in nx.edges(undirected_graph, nbunch=node):
+                    if u > v:
+                        u, v = v, u
+                    edges.append((u, v))
+            elif is_directed:
+                if in_or_out_edge == "out":
+                    for u, v in graph.out_edges(node):
+                        if u > v:
+                            u, v = v, u
+                        edges.append((u, v))
+                elif in_or_out_edge == "in":
+                    for u, v in graph.in_edges(node):
+                        if u > v:
+                            u, v = v, u
+                        edges.append((u, v))
 
             edges_sorted_by_decreasing_weight = sorted(
                 edges,
@@ -95,5 +129,11 @@ def edge_redundancy(
         redundancies[u, v] = fast_intersection_size(
             neighbors_strong_edges_nodes[u], neighbors_strong_edges_nodes[v]
         )
+        if (
+            reciprocity
+            and u in neighbors_strong_edges_nodes[v]
+            and v in neighbors_strong_edges_nodes[u]
+        ):
+            redundancies[u, v] += 1
 
     return redundancies
