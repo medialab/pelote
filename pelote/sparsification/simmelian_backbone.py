@@ -14,15 +14,18 @@ class SimmelianBackboneSparsifier(Sparsifier):
         edge_redundancy_threshold: int = 0,
         edge_weight_attr: str = "triangular_strength",
         keep_connected: bool = False,
-        in_or_out_edge: str = "both",
+        in_or_out_edge_ranking: str = "both",
+        in_or_out_edge_redundancy: str = "both",
         reciprocity: bool = False,
+
     ):
         def edge_predicate_factory(graph):
             redundancy = edge_redundancy(
                 graph,
                 edge_strength_ranking_threshold=edge_strength_ranking_threshold,
                 edge_weight_attr=edge_weight_attr,
-                in_or_out_edge=in_or_out_edge,
+                in_or_out_edge_ranking=in_or_out_edge_ranking,
+                in_or_out_edge_redundancy=in_or_out_edge_redundancy,
                 reciprocity=reciprocity,
             )
 
@@ -42,7 +45,8 @@ def simmelian_backbone(
     edge_redundancy_threshold: int = 0,
     edge_weight_attr: str = "triangular_strength",
     keep_connected: bool = False,
-    in_or_out_edge: str = "both",
+    in_or_out_edge_ranking: str = "both",
+    in_or_out_edge_redundancy: str = "both",
     reciprocity: bool = False,
 ):
     """
@@ -69,8 +73,11 @@ def simmelian_backbone(
             the edge's weight. Defaults to "triangular_strength".
         keep_connected (bool, optional): whether to keep the graph connected
             as it is using the UMST method. Defaults to False.
-        in_or_out_edge (str, optional): whether to consider ingoing edges, or outgoing edges,
-            or both. Defaults to both.
+        in_or_out_edge_ranking (str, optional): whether to consider ingoing edges, or outgoing edges,
+            or both when ranking neighbors. Defaults to both.
+        in_or_out_edge_redundancy (str, optional): wether to consider ingoing edges, outgoing edges,
+            both, or in_out, or out_in, or in_out_and_out_in when checking redundancy. Will only be considered if
+            in_or_out_edge_ranking is both. Defaults to both.
         reciprocity (bool, optional): wether reciprocity within top ranks is counted as overlap.
             Defaults to False.
 
@@ -82,6 +89,7 @@ def simmelian_backbone(
         edge_redundancy_threshold=edge_redundancy_threshold,
         edge_weight_attr=edge_weight_attr,
         keep_connected=keep_connected,
-        in_or_out_edge=in_or_out_edge,
+        in_or_out_edge_ranking=in_or_out_edge_ranking,
+        in_or_out_edge_redundancy=in_or_out_edge_redundancy,
         reciprocity=reciprocity,
     )(graph)

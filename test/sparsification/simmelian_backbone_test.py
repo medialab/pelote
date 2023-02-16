@@ -1,7 +1,7 @@
 # =============================================================================
 # Pelote Simmelian Backbone Sparsification Unit Tests
 # =============================================================================
-from cmath import exp
+#
 import networkx as nx
 
 from pelote.graph import are_same_graphs
@@ -98,7 +98,7 @@ class TestSimmelianBackboneSparsifier(object):
             graph,
             edge_strength_ranking_threshold=1,
             edge_redundancy_threshold=1,
-            in_or_out_edge="out",
+            in_or_out_edge_ranking="out",
         )
 
         expected = nx.DiGraph()
@@ -120,12 +120,36 @@ class TestSimmelianBackboneSparsifier(object):
             graph,
             edge_strength_ranking_threshold=1,
             edge_redundancy_threshold=1,
-            in_or_out_edge="out",
+            in_or_out_edge_ranking="both",
+            in_or_out_edge_redundancy="out"
         )
 
         expected = nx.DiGraph()
         expected.add_nodes_from(range(5))
         expected.add_edge(4, 2)
+
+        assert are_same_graphs(sparse, expected, check_attributes=True)
+
+        graph = nx.DiGraph()
+
+        graph.add_edge(0, 1)
+        graph.add_edge(1, 2)
+        graph.add_edge(2, 3)
+        graph.add_edge(3, 1)
+        graph.add_edge(4, 2)
+        graph.add_edge(4, 3)
+
+        sparse = simmelian_backbone(
+            graph,
+            edge_strength_ranking_threshold=1,
+            edge_redundancy_threshold=1,
+            in_or_out_edge_ranking="both",
+            in_or_out_edge_redundancy="out_in"
+        )
+
+        expected = nx.DiGraph()
+        expected.add_nodes_from(range(5))
+        expected.add_edge(4, 3)
 
         assert are_same_graphs(sparse, expected, check_attributes=True)
 

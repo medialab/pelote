@@ -13,7 +13,8 @@ def edge_redundancy(
     graph,
     edge_strength_ranking_threshold: int = 0,
     edge_weight_attr: str = "triangular_strength",
-    in_or_out_edge: str = "both",
+    in_or_out_edge_ranking: str = "both",
+    in_or_out_edge_redundancy : str = "both",
     reciprocity: bool = False,
 ):
     """
@@ -26,8 +27,11 @@ def edge_redundancy(
             Defaults to 1.
         edge_weight_attr (str, optional): name of the edge attribute holding
             the edge's weight. Defaults to "triangular_strength".
-        in_or_out_edge (str, optional): whether to consider ingoing edges, or outgoing edges,
+        in_or_out_edge_ranking (str, optional): whether to consider ingoing edges, or outgoing edges,
             or both. Defaults to both.
+        in_or_out_edge_redundancy (str, optional): wether to consider ingoing edges, outgoing edges,
+            both, or in_out, or out_in, in_out_and_out_in when checking redundancy. Will only be considered if
+            in_or_out_edge_ranking is both. Defaults to both.
         reciprocity (bool, optional): wether reciprocity within top ranks is counted as overlap.
             Defaults to False.
 
@@ -54,46 +58,55 @@ def edge_redundancy(
             if u > v:
                 u, v = v, u
             graph_edge_weight[(u, v)] = w
-    neighbors_strong_edges_nodes = {}
+
+    if in_or_out_edge_ranking!="both":
+        in_or_out_edge_redundancy=in_or_out_edge_ranking
+
+    if in_or_out_edge_redundancy=="in_out" or in_or_out_edge_redundancy=="out_in" or in_or_out_edge_redundancy=="in_out_and_out_in":
+        neighbors_strong_edges_nodes_in = {}
+        neighbors_strong_edges_nodes_out = {}
+
+    else:
+        neighbors_strong_edges_nodes = {}
 
     for node in graph.nodes:
 
-        def get_neighbors_with_strong_edge(node):
+        def get_neighbors_with_strong_edge(node, dict_in_or_out):
 
             if edge_strength_ranking_threshold == 0:
                 return set()
 
             if (
-                not is_directed or in_or_out_edge == "both"
+                not is_directed or dict_in_or_out == "both"
             ) and undirected_graph.degree[node] <= edge_strength_ranking_threshold:
                 return set(undirected_graph.neighbors(node))
 
             if is_directed:
                 if (
-                    in_or_out_edge == "out"
+                    dict_in_or_out == "out"
                     and graph.out_degree[node] <= edge_strength_ranking_threshold
                 ):
                     return set(graph.successors(node))
                 elif (
-                    in_or_out_edge == "in"
+                    dict_in_or_out == "in"
                     and graph.in_degree[node] <= edge_strength_ranking_threshold
                 ):
                     return set(graph.predecessors(node))
 
             edges = []
 
-            if not is_directed or in_or_out_edge == "both":
+            if not is_directed or dict_in_or_out == "both":
                 for u, v in nx.edges(undirected_graph, nbunch=node):
                     if u > v:
                         u, v = v, u
                     edges.append((u, v))
             elif is_directed:
-                if in_or_out_edge == "out":
+                if dict_in_or_out == "out":
                     for u, v in graph.out_edges(node):
                         if u > v:
                             u, v = v, u
                         edges.append((u, v))
-                elif in_or_out_edge == "in":
+                elif dict_in_or_out == "in":
                     for u, v in graph.in_edges(node):
                         if u > v:
                             u, v = v, u
@@ -123,17 +136,39 @@ def edge_redundancy(
 
             return neighbors_strong_edge
 
-        neighbors_strong_edges_nodes[node] = get_neighbors_with_strong_edge(node)
+        if in_or_out_edge_redundancy=="in_out" or in_or_out_edge_redundancy== "out_in" or in_or_out_edge_redundancy=="in_out_and_out_in":
+            neighbors_strong_edges_nodes_in[node] = get_neighbors_with_strong_edge(node, "in")
+            neighbors_strong_edges_nodes_out[node] = get_neighbors_with_strong_edge(node, "out")
+        else:
+            neighbors_strong_edges_nodes[node] = get_neighbors_with_strong_edge(node, in_or_out_edge_redundancy)
 
     for u, v in graph.edges:
-        redundancies[u, v] = fast_intersection_size(
-            neighbors_strong_edges_nodes[u], neighbors_strong_edges_nodes[v]
-        )
-        if (
-            reciprocity
-            and u in neighbors_strong_edges_nodes[v]
-            and v in neighbors_strong_edges_nodes[u]
-        ):
-            redundancies[u, v] += 1
+        if in_or_out_edge_redundancy!="in_out" and in_or_out_edge_redundancy!="out_in" and in_or_out_edge_redundancy!="in_out_and_out_in":
+            redundancies[u, v] = fast_intersection_size(
+                neighbors_strong_edges_nodes[u], neighbors_strong_edges_nodes[v]
+            )
+            if (
+                reciprocity
+                and u in neighbors_strong_edges_nodes[v]
+                and v in neighbors_strong_edges_nodes[u]
+            ):
+                redundancies[u, v] += 1
+        else:
+            if in_or_out_edge_redundancy=="in_out":
+                redundancies[u, v] = fast_intersection_size(
+                    neighbors_strong_edges_nodes_in[u], neighbors_strong_edges_nodes_out[v]
+                )
+            elif in_or_out_edge_redundancy=="out_in":
+                redundancies[u, v] = fast_intersection_size(
+                    neighbors_strong_edges_nodes_out[u], neighbors_strong_edges_nodes_in[v]
+                )
+            else:
+                redundancies[u, v] = fast_intersection_size(
+                    neighbors_strong_edges_nodes_in[u], neighbors_strong_edges_nodes_out[v]
+                )
+                redundancies[u, v] += fast_intersection_size(
+                    neighbors_strong_edges_nodes_out[u], neighbors_strong_edges_nodes_in[v]
+                )
+    print(redundancies)
 
     return redundancies

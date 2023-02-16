@@ -1,6 +1,7 @@
 # =============================================================================
 # Pelote Edge Disparity Unit Tests
 # =============================================================================
+#
 import networkx as nx
 from pytest import raises
 from ebbe import with_prev
@@ -157,6 +158,78 @@ class TestEdgeRedundancy(object):
 
         assert redundancies == correct_result
 
+        g = nx.Graph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (1, 3): 1,
+            (2, 3): 0,
+            (2, 4): 1,
+            (3, 4): 1,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.Graph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="out_in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (1, 3): 1,
+            (2, 3): 0,
+            (2, 4): 1,
+            (3, 4): 1,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.Graph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (1, 3): 1,
+            (2, 3): 0,
+            (2, 4): 1,
+            (3, 4): 1,
+        }
+
+        assert redundancies == correct_result
+
         g = nx.DiGraph()
 
         g.add_edge(0, 1)
@@ -189,7 +262,7 @@ class TestEdgeRedundancy(object):
         g.add_edge(4, 3)
 
         redundancies = edge_redundancy(
-            g, edge_strength_ranking_threshold=1, in_or_out_edge="out"
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="out"
         )
 
         correct_result = {
@@ -213,7 +286,7 @@ class TestEdgeRedundancy(object):
         g.add_edge(4, 3)
 
         redundancies = edge_redundancy(
-            g, edge_strength_ranking_threshold=1, in_or_out_edge="in"
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="in"
         )
 
         correct_result = {
@@ -223,6 +296,198 @@ class TestEdgeRedundancy(object):
             (2, 3): 0,
             (4, 2): 0,
             (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="out", in_or_out_edge_redundancy="in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 0,
+            (3, 1): 0,
+            (2, 3): 0,
+            (4, 2): 1,
+            (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="in", in_or_out_edge_redundancy="in_out"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 0,
+            (3, 1): 0,
+            (2, 3): 0,
+            (4, 2): 0,
+            (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="both"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (3, 1): 1,
+            (2, 3): 0,
+            (4, 2): 1,
+            (4, 3): 1,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 0,
+            (3, 1): 0,
+            (2, 3): 0,
+            (4, 2): 0,
+            (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="out"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 0,
+            (3, 1): 0,
+            (2, 3): 0,
+            (4, 2): 1,
+            (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="in_out"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (3, 1): 1,
+            (2, 3): 1,
+            (4, 2): 0,
+            (4, 3): 0,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="out_in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 0,
+            (3, 1): 0,
+            (2, 3): 0,
+            (4, 2): 0,
+            (4, 3): 1,
+        }
+
+        assert redundancies == correct_result
+
+        g = nx.DiGraph()
+
+        g.add_edge(0, 1)
+        g.add_edge(1, 2)
+        g.add_edge(2, 3)
+        g.add_edge(3, 1)
+        g.add_edge(4, 2)
+        g.add_edge(4, 3)
+
+        redundancies = edge_redundancy(
+            g, edge_strength_ranking_threshold=1, in_or_out_edge_ranking="both", in_or_out_edge_redundancy="in_out_and_out_in"
+        )
+
+        correct_result = {
+            (0, 1): 0,
+            (1, 2): 1,
+            (3, 1): 1,
+            (2, 3): 1,
+            (4, 2): 0,
+            (4, 3): 1,
         }
 
         assert redundancies == correct_result
