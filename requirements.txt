@@ -1,6 +1,7 @@
 # Dependencies
 ebbe==1.9.0
 llist==0.7.1
+pyllist==0.3
 networkx==2.5.1
 
 # Dev Dependencies

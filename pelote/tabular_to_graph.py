@@ -184,9 +184,7 @@ def _edges_table_to_graph(
     edge_weight_attr: str,
     add_missing_nodes: bool = True,
 ):
-
     for row in edge_table:
-
         n1, n2 = row[edge_source_col], row[edge_target_col]
 
         if not add_missing_nodes:

@@ -56,7 +56,6 @@ PEOPLE_MONOPARTITE.add_weighted_edges_from(PEOPLE_MONOPARTITE_EDGES)
 
 class TestMonopartiteProjection(object):
     def test_errors(self):
-
         # Bad graph
         with raises(TypeError, match="graph"):
             monopartite_projection(None, "person")

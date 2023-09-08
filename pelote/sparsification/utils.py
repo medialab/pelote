@@ -28,7 +28,6 @@ class Sparsifier(object):
         redundant_edges_generator=None,
         keep_connected=False,
     ):
-
         if (
             edge_predicate_factory is None
             and relevant_edges_generator is None
@@ -39,7 +38,6 @@ class Sparsifier(object):
             )
 
         if relevant_edges_generator is None:
-
             if not edge_predicate_factory:
 
                 def edge_predicate_factory(graph):
@@ -67,7 +65,6 @@ class Sparsifier(object):
                         yield u, v, a
 
         if redundant_edges_generator is None:
-
             if not edge_predicate_factory:
 
                 def edge_predicate_factory(graph):

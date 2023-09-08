@@ -146,7 +146,6 @@ def largest_connected_component_subgraph(graph, as_view=False):
         return subgraph
 
     for source, target, attr in graph.edges.data():
-
         # NOTE: we don't need to test target because we are dealing with
         # a connected component here
         if source not in component:
@@ -317,7 +316,6 @@ def filter_nodes(graph, predicate):
     multi = graph.is_multigraph()
 
     for n, a in graph.nodes.data():
-
         if not predicate(n, a):
             continue
 
@@ -513,7 +511,6 @@ def union_of_maximum_spanning_trees(graph, edge_weight_attr: str = "weight"):
     check_graph(graph)
 
     def generator():
-
         # Early exit
         if graph.size() == 0:
             return

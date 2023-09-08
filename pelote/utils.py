@@ -70,7 +70,6 @@ def uint_representation_for_capacity(capacity):
 
 
 def counting_sort(items, *, key=None, reverse=False):
-
     # TODO: optimize some cases, precompute keys if needed and add possibility to give bounds
     if not isinstance(items, Iterable):
         raise TypeError("items should be an iterable")

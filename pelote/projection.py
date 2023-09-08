@@ -146,7 +146,6 @@ def monopartite_projection(
             w1 = ta.get(edge_weight_attr, 1)
 
             for n2, a2 in bipartite_graph[token].items():
-
                 # Don't compare to self
                 if n2 == n1:
                     continue
@@ -166,7 +165,6 @@ def monopartite_projection(
 
         # Finalizing metrics
         for n2, similarity in online_metric.neighbors():
-
             if weight_threshold is not None and similarity < weight_threshold:
                 continue
 

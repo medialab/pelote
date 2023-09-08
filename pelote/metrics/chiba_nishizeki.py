@@ -8,7 +8,11 @@
 # http://www.ecei.tohoku.ac.jp/alg/nishizeki/sub/j/DVD/PDF_J/J053.pdf
 #
 from collections import OrderedDict, Counter
-from llist import dllist
+
+try:
+    from llist import dllist
+except ImportError:
+    from pyllist import dllist
 
 from pelote.utils import fast_intersection_size
 from pelote.graph import check_graph
@@ -60,7 +64,6 @@ def triangles(graph):
             adjacency = dllist()
 
             for neighbor in graph.neighbors(node):
-
                 # NOTE: avoiding self loops
                 if neighbor == node:
                     continue
@@ -150,7 +153,6 @@ def naive_triangular_strength(graph, full=False):
         n2 = neighborhoods.get(v)
 
         if n1 is None or n2 is None:
-
             if full:
                 strengths[u, v] = 0
 

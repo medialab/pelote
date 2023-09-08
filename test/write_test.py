@@ -69,7 +69,6 @@ class TestWriteGraphologyJson(object):
         assert write_graphology_json(g) == data
 
     def test_write_read_basic(self):
-
         data = {
             "options": {"type": "directed", "multi": False, "allowSelfLoops": True},
             "nodes": [
@@ -82,7 +81,6 @@ class TestWriteGraphologyJson(object):
         assert write_graphology_json(read_graphology_json(data)) == data
 
     def test_write_read_multi(self):
-
         data = {
             "options": {"type": "undirected", "multi": True, "allowSelfLoops": True},
             "nodes": [
@@ -102,7 +100,6 @@ class TestWriteGraphologyJson(object):
         assert write_graphology_json(read_graphology_json(data)) == data
 
     def test_read_write_basic(self):
-
         g = nx.DiGraph()
         g.add_nodes_from(
             [
@@ -119,7 +116,6 @@ class TestWriteGraphologyJson(object):
         assert are_same_graphs(read_graphology_json(write_graphology_json(g)), g)
 
     def test_read_write_multi(self):
-
         g = nx.MultiGraph()
         g.add_nodes_from(
             [
