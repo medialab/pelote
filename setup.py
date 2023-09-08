@@ -5,7 +5,7 @@ with open("./README.md", "r") as f:
 
 setup(
     name="pelote",
-    version="0.8.1",
+    version="0.8.2",
     description="Collection of network-related utilities for python.",
     long_description=long_description,
     long_description_content_type="text/markdown",
