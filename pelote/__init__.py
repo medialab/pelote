@@ -29,6 +29,8 @@ from pelote.sparsification import (
     GlobalThresholdSparsifier,
     multiscale_backbone,
     MultiscaleBackboneSparsifier,
+    simmelian_backbone,
+    SimmelianBackboneSparsifier,
 )
 from pelote.tabular_to_graph import (
     table_to_bipartite_graph,
@@ -59,6 +61,8 @@ __all__ = [
     "GlobalThresholdSparsifier",
     "multiscale_backbone",
     "MultiscaleBackboneSparsifier",
+    "simmelian_backbone",
+    "SimmelianBackboneSparsifier",
     "table_to_bipartite_graph",
     "tables_to_graph",
     "edges_table_to_graph",
@@ -84,7 +88,11 @@ __toc__ = [
     {"title": "Graph projection", "fns": [monopartite_projection]},
     {
         "title": "Graph sparsification",
-        "fns": [global_threshold_sparsification, multiscale_backbone],
+        "fns": [
+            global_threshold_sparsification,
+            multiscale_backbone,
+            simmelian_backbone,
+        ],
     },
     {
         "title": "Miscellaneous graph-related metrics",

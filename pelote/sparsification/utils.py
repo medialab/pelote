@@ -7,10 +7,10 @@ import networkx as nx
 from pelote.graph import check_graph, union_of_maximum_spanning_trees
 
 
-def decorate_predicate_factory_with_umst(predicate_factory):
+def decorate_predicate_factory_with_umst(predicate_factory, edge_weight_attr):
     def decorated_factory(graph):
         predicate = predicate_factory(graph)
-        umst = set((u, v) for u, v, _ in union_of_maximum_spanning_trees(graph))
+        umst = set((u, v) for u, v, _ in union_of_maximum_spanning_trees(graph, edge_weight_attr=edge_weight_attr))
 
         def decorated_predicate(u, v, a):
             return predicate(u, v, a) or (u, v) in umst
@@ -27,6 +27,7 @@ class Sparsifier(object):
         relevant_edges_generator=None,
         redundant_edges_generator=None,
         keep_connected=False,
+        edge_weight_attr="weight",
     ):
         if (
             edge_predicate_factory is None
@@ -93,7 +94,7 @@ class Sparsifier(object):
 
         if keep_connected:
             edge_predicate_factory = decorate_predicate_factory_with_umst(
-                edge_predicate_factory
+                edge_predicate_factory, edge_weight_attr
             )
 
         self.edge_predicate_factory = edge_predicate_factory
